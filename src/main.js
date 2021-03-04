@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from "./store/index";
 import firebase from 'firebase';
-import ElementUI from 'element-ui';
+import * as ElementUI from 'element-ui';
+// import * as VueGoogleMaps from 'vue2-google-maps'
 import 'element-ui/lib/theme-chalk/index.css';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -15,14 +16,21 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+// Vue.use(VueGoogleMaps, {
+//     load: {
+//         key: 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk',
+//         libraries: "places"
+//     },
+//     installComponents: true
+// })
 
 var firebaseConfig = {
-    apiKey: "AIzaSyAOYgRWxir39_MiNbXeYBBWMgL7EG6T7iA",
-    authDomain: "pet-rescue-58782.firebaseapp.com",
-    projectId: "pet-rescue-58782",
-    storageBucket: "pet-rescue-58782.appspot.com",
-    messagingSenderId: "334911547930",
-    appId: "1:334911547930:web:300883a8f882994c9c3fa3"
+    apiKey: "AIzaSyBZOR3FERmrQ1ZoLUNShtBqphdXTZkCb2w",
+    authDomain: "pet-rescue-fb.firebaseapp.com",
+    projectId: "pet-rescue-fb",
+    storageBucket: "pet-rescue-fb.appspot.com",
+    messagingSenderId: "918318848462",
+    appId: "1:918318848462:web:326b0953dd28ae60dbf39f"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
