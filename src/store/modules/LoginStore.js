@@ -41,10 +41,29 @@ export default {
                     id: user.id,
                     lastName: user.lastName,
                     phone: user.phone,
+                    token: user.token
                 }
                 localStorage.setItem("user", JSON.stringify(current_user));
                 commit("SET_USER", current_user);
             }
         },
+
+        logout({ commit }) {
+            let currentUser = {
+                jwtToken: null,
+                address: null,
+                centerId: null,
+                dob: null,
+                email: null,
+                firstName: null,
+                gender: true,
+                id: null,
+                lastName: null,
+                phone: null,
+            };
+            localStorage.removeItem("user");
+            commit("SET_USER", currentUser);
+
+        }
     }
 };

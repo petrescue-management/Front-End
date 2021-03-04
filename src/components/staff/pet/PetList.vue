@@ -65,7 +65,7 @@
           {{ pet.petFurColorName }}
           <br />
           <p class="att-pet">Tiêm phòng:</p>
-          {{ pet.isVaccinated }}
+          {{ pet.isVaccinated == 'True' ? "Có" : "Không"}}
         </div>
       </div>
 
@@ -98,6 +98,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import { petStatus } from "@/enum/pet-status-enum";
+import { petGender } from '@/enum/gender-enum'
 import AddPet from "./modal/AddPet";
 export default {
   components: {
@@ -126,7 +127,7 @@ export default {
           name: data.petName,
           petAge: data.petAge,
           petFurColorName: data.petFurColorName,
-          petGender: data.petGender,
+          petGender: petGender.get(data.petGender),
           isVaccinated: data.isVaccinated,
           color: petStatus.get(data.petStatus).color,
           status: petStatus.get(data.petStatus).name,
@@ -143,7 +144,7 @@ export default {
         breed: "",
         color: "",
         status: 0,
-        centerId: "4bed700a-e24a-4410-9b39-503e780dc8a6",
+        centerId: "3f2c6c41-e139-4bbf-873b-b085f0a25355",
         pageIndex: page,
       };
       await this.getListPetPaging(data);

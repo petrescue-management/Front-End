@@ -21,11 +21,13 @@
             label="Center Address"
             width="180"
           ></el-table-column>
-          <el-table-column
-            prop="status"
-            label="Status"
-            width="180"
-          ></el-table-column>
+          <el-table-column label="Trạng thái" width="180">
+            <template slot-scope="scope">
+              <el-tag class="status" :type="scope.row.color" size="small">
+                {{ scope.row.status }}
+              </el-tag>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           background
@@ -42,11 +44,12 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { centerStatus } from "@/enum/center-status-enum";
 export default {
   data() {
     return {
-      listCenter:[],
-      totalCenter: 0
+      listCenter: [],
+      totalCenter: 0,
     };
   },
   computed: {
@@ -54,35 +57,34 @@ export default {
   },
 
   methods: {
-    ...mapActions("centerInfo",["getListCenterPaging"]),
+    ...mapActions("centerInfo", ["getListCenterPaging"]),
 
     getTableData(list) {
       this.listCenter = [];
-      list.forEach(data => {
+      list.forEach((data) => {
         let store = {
           name: data.centerName,
           phone: data.phone,
           address: data.address,
-          status: data.centerStatus
+          status: centerStatus.get(data.centerStatus).name,
+          color: centerStatus.get(data.centerStatus).color,
         };
         this.listCenter.push(store);
       });
-
-      console.log(this.listCenter)
     },
 
     async getCenter(page) {
       let data = {
-        pageIndex : page
-      }
+        pageIndex: page,
+      };
       await this.getListCenterPaging(data);
       this.getTableData(JSON.parse(JSON.stringify(this.getListCenter)));
-    }
+    },
   },
 
   created() {
     this.getCenter(1);
-  }
+  },
 };
 </script>
 

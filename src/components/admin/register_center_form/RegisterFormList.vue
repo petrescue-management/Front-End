@@ -5,7 +5,7 @@
         <span class="title">List</span>
       </div>
       <div>
-        <el-table :data="listForm">
+        <el-table :data="listForm" v-loading="loading">
           <el-table-column
             prop="name"
             label="Center Name"
@@ -26,11 +26,13 @@
             label="Email"
             width="180"
           ></el-table-column>
-          <el-table-column
-            prop="status"
-            label="Trạng thái"
-            width="180"
-          ></el-table-column>
+          <el-table-column label="Trạng thái" width="180">
+            <template slot-scope="scope">
+              <el-tag class="status" :type="scope.row.color" size="small">
+                {{ scope.row.status }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="Chi tiết" width="100">
             <template slot-scope="scope">
               <el-button
@@ -64,6 +66,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import RegisterFormDetail from "./modal/RegisterFormDetail";
+import { centerRegisterStatus } from "@/enum/center-register-status-enum";
 export default {
   components: {
     RegisterFormDetail,
@@ -73,6 +76,7 @@ export default {
       listForm: [],
       totalForm: 0,
       dialogVisible: false,
+      loading : false
     };
   },
   computed: {
@@ -86,15 +90,17 @@ export default {
       this.listForm = [];
       list.forEach((data) => {
         let store = {
-          id: data.formId,
+          id: data.centerRegistrationId,
           name: data.centerName,
           phone: data.phone,
           address: data.centerAddress,
           email: data.email,
-          status: data.centerRegisterStatus,
+          status: centerRegisterStatus.get(data.centerRegistrationStatus).name,
+          color: centerRegisterStatus.get(data.centerRegistrationStatus).color,
         };
         this.listForm.push(store);
       });
+      this.loading = false;
     },
 
     async getCenter(page) {
@@ -112,7 +118,9 @@ export default {
   },
 
   created() {
+    this.loading = true;
     this.getCenter(1);
+
   },
 };
 </script>

@@ -54,7 +54,7 @@ export default {
                 })
         },
 
-        getRegisterFormDetail({ commit }, data) {
+        async getRegisterFormDetail({ commit }, data) {
             let form = {
                 id: null,
                 name: null,
@@ -64,7 +64,7 @@ export default {
                 description: null,
                 status: null,
             };
-            getRegisterCenterFormByIdAPI(data)
+            await getRegisterCenterFormByIdAPI(data)
                 .then(response => response.json())
                 .then(data => {
                     form = {

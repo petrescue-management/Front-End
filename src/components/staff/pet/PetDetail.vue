@@ -11,6 +11,11 @@
         <b-row class="info">
           <b-col sm="4">
             <img :src="pet.imageUrl" width="100%" />
+            <div class="button">
+              <el-button type="info" @click="changeStatusReceipt('approve')"
+                >Chỉnh sửa thông tin</el-button
+              >
+            </div>
           </b-col>
           <b-col>
             <h2>{{ pet.petName }}</h2>
@@ -53,12 +58,46 @@
                   </el-tag></span
                 >
               </b-col>
-              <b-col class="text-info-res">
-                <div></div>
-              </b-col>
             </b-row>
           </b-col>
         </b-row>
+        <br />
+        <h3>Thông Tin</h3>
+        <hr />
+        <div class="row">
+          <div class="col-3">
+            <div class="row">
+              <div class="col-2">
+                <i
+                  :class="
+                    pet.isVaccinated == 'True'
+                      ? 'text-success fas fa-check-circle'
+                      : 'text-warning fas fa-question-circle'
+                  "
+                ></i>
+              </div>
+              <div>
+                <span>Tiêm phòng bệnh</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="row">
+              <div class="col-2">
+                <i
+                  :class="
+                    pet.isSterilized == 'True'
+                      ? 'text-success fas fa-check-circle'
+                      : 'text-warning fas fa-question-circle'
+                  "
+                ></i>
+              </div>
+              <div>
+                <span>Tiệt trùng</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </el-main>
   </div>
@@ -66,7 +105,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-
+import { petGender } from "@/enum/gender-enum";
 export default {
   data() {
     return {
@@ -84,6 +123,7 @@ export default {
         petBreedName: null,
         petFurColorName: null,
         imageUrl: null,
+        desc: null,
       },
     };
   },
@@ -102,7 +142,7 @@ export default {
         petStatus: petInfo.petStatus,
         petName: petInfo.petName,
         petTypeName: petInfo.petTypeName,
-        petGender: petInfo.petGender,
+        petGender: petGender.get(petInfo.petGender),
         petAge: petInfo.petAge,
         weight: petInfo.weight,
         isVaccinated: petInfo.isVaccinated,
@@ -112,19 +152,15 @@ export default {
         imageUrl: petInfo.imageUrl,
       };
     },
-
-    async getPet(petId) {
-      let data = {
-        petId,
-      };
-      await this.getPetById(data);
-      this.getPetInfo(JSON.parse(JSON.stringify(this.getPetFromStore)));
-    },
   },
 
-  created() {
+  async created() {
     let petId = this.$router.history.current.params.id;
-    this.getPet(petId);
+    let data = {
+      petId,
+    };
+    await this.getPetById(data);
+    this.getPetInfo(this.getPetFromStore);
   },
 };
 </script>
@@ -143,7 +179,7 @@ export default {
   padding: 50px;
 }
 .tag {
-  border-top: 2px dashed #8c8b8b;
+  border-top: 1px dashed #8c8b8b;
   margin: 5px;
 }
 
@@ -153,5 +189,18 @@ export default {
 
 .value {
   font-weight: 300;
+}
+
+.button {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.text-warning {
+  color: #ffc107;
+}
+
+.text-success {
+  color: #28a745;
 }
 </style>

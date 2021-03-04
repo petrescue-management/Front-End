@@ -20,7 +20,7 @@ export function getPetByIdApi(params) {
     });
 }
 
-export function createNewPetApi(data) {
+export function createNewPetApi(data, token) {
     let requestBody = {
         petStatus: data.petStatus,
         centerId: data.centerId,
@@ -40,6 +40,7 @@ export function createNewPetApi(data) {
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
+            Authorization: "Bearer " + token
         },
         body: JSON.stringify(requestBody),
     });

@@ -59,7 +59,7 @@
         </b-col>
       </b-row>
       <div class="map">
-        <HereMap ref="map" :apikey="apikey" :lat="lat" :lng="lng" />
+        <HereMap/>
       </div>
     </el-main>
   </div>
@@ -81,24 +81,24 @@ export default {
   },
 
   mounted() {
-    let map = this.$refs.map;
-    map.dropMarker({ lat: 10.84157038648921, lng: 106.81006578904247 });
-    map.dropMarker({ lat: 10.801145010307543, lng: 106.7886794543127 });
-    map.drawRoute(
-      {
-        lat: 10.84157038648921,
-        lng: 106.81006578904247,
-      },
-      {
-        lat: 10.801145010307543,
-        lng: 106.7886794543127,
-      }
-    );
+    // let map = this.$refs.map;
+    // map.dropMarker({ lat: 10.84157038648921, lng: 106.81006578904247 });
+    // map.dropMarker({ lat: 10.801145010307543, lng: 106.7886794543127 });
+    // map.drawRoute(
+    //   {
+    //     lat: 10.84157038648921,
+    //     lng: 106.81006578904247,
+    //   },
+    //   {
+    //     lat: 10.801145010307543,
+    //     lng: 106.7886794543127,
+    //   }
+    // );
   },
 };
 </script>
 
-<style scope>
+<style scoped>
 .el-main {
   background-color: #e9eef3;
   color: #333;
@@ -127,8 +127,6 @@ export default {
 
 .map {
   width: 100%;
-  height: 300px;
-  padding: 20px;
   background-color: #838383;
 }
 </style>

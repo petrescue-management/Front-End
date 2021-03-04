@@ -27,9 +27,9 @@ export default {
   methods: {
     ...mapActions("user", ["loginUser"]),
 
-    submit() {
+    async submit() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      firebase
+      await firebase
         .auth()
         .signInWithPopup(provider)
         .then(() => this.login())
@@ -44,25 +44,27 @@ export default {
 
     async login() {
       let user = firebase.auth().currentUser;
-      let token = await user.getIdToken();
-      let jwtToken;
-      await loginApi(token)
-        .then((response) => response.text())
-        .then((data) => {
-          jwtToken = data;
-        });
-
-      getDetailUser(jwtToken)
-        .then((response) => response.json())
-        .then((data) => {
-          this.loginUser(data);
-          this.$message({
-            message: "Login thành công",
-            type: "success",
+      if (user) {
+        let token = await user.getIdToken();
+        let jwtToken;
+        await loginApi(token)
+          .then((response) => response.text())
+          .then((data) => {
+            jwtToken = data;
           });
-        });
 
-      // this.$router.push({ name: "DashboardStaff" });
+        getDetailUser(jwtToken)
+          .then((response) => response.json())
+          .then((data) => {
+            data.token = jwtToken;
+            this.loginUser(data);
+            this.$message({
+              message: "Login thành công",
+              type: "success",
+            });
+          });
+        this.$router.push({ name: "DashboardStaff" });
+      }
     },
   },
 };

@@ -1,14 +1,17 @@
 import { baseURL } from "../../enum/consts";
 
-export function getListRegisterCenterFormPagingAPI(data) {
+export function getListRegisterCenterFormPagingAPI() {
     return fetch(baseURL + `api/search-center-registration-form`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
             // Authorization: "Bearer " + IdToken
+            keyword: "",
+            pageIndex: 0,
+            pageSize: 0,
+            status: 0
         },
-        body: JSON.stringify(data),
     });
 }
 
@@ -24,6 +27,7 @@ export function getRegisterCenterFormByIdAPI(data) {
 }
 
 export function changeStatusRegisterCenterFormByIdAPI(data) {
+    console.log(data);
     let requestBody = {
         id: data.id,
         status: data.status
@@ -33,7 +37,7 @@ export function changeStatusRegisterCenterFormByIdAPI(data) {
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            // Authorization: "Bearer " + IdToken
+            Authorization: "Bearer " + data.idToken
         },
         body: JSON.stringify(requestBody),
     });

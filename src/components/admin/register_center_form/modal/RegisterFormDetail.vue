@@ -9,7 +9,7 @@
         />
       </div>
       <div class="rowInline" style="padding: 20px 20px 0px 20px">
-        <span class="header">Center 1</span>
+        <span class="header">{{ form.name }}</span>
         <br />
         <span>Create form : 21/08/1999</span>
       </div>
@@ -20,10 +20,10 @@
         </el-row>
         <el-row>
           <el-col :span="12" class="content">
-            <p>petrescuevt@gmail.com</p>
+            <p>{{ form.email }}</p>
           </el-col>
           <el-col :span="12" class="content">
-            <p>0903149876</p>
+            <p>{{ form.phone }}</p>
           </el-col>
         </el-row>
       </div>
@@ -32,24 +32,24 @@
         <i class="el-icon-location icon" />
       </div>
       <div class="location" style="padding: 5px 10px 0px 10px">
-        <span>79/13/2 Xô Viết Nghệ Tĩnh, phường Thắng Tam, Vũng Tàu</span>
+        <span>{{ form.address }}</span>
       </div>
       <hr />
       <div class="table">
         <el-row>
-          <el-col class="title"> Description </el-col>
+          <el-col class="title"> Mô tả </el-col>
         </el-row>
         <el-row>
           <el-col class="content">
-            <p>Tổ chứ phi lợi nhuận về cứu hộ vật nuôi (chủ yếu là chó mèo)</p>
+            <p>{{ form.description }}</p>
           </el-col>
         </el-row>
       </div>
-      <div class="button">
-        <el-button type="success" @click="changeStatusReceipt('approve')"
+      <div class="button" v-if="form.status != 2 || form.status != 3">
+        <el-button type="success" @click="changeStatus(2)"
           >Accept</el-button
         >
-        <el-button type="danger" @click="changeStatusReceipt('reject')"
+        <el-button type="danger" @click="changeStatus(3)"
           >Reject</el-button
         >
       </div>
@@ -58,9 +58,8 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-// import { getRegisterCenterFormByIdAPI } from "@/api/admin/registerCenterFormApi";
-// import { status } from "../../../enum/ReceiptEnum";
-// import { type } from "../../../enum/TypeEnum";
+import {changeStatusRegisterCenterFormByIdAPI} from "@/api/admin/registerCenterFormApi";
+// import { status } from "@/enum/center-register-status-enum";
 // import EventBus from "@/EventBus";
 export default {
   props: ["id"],
@@ -75,6 +74,7 @@ export default {
         email: null,
         description: null,
         status: null,
+        color: null,
       },
       loading: false,
       storeId: null,
@@ -83,19 +83,45 @@ export default {
   computed: {
     // ...mapGetters("user", ["user"]),
     ...mapGetters("registerForm", ["getFormDetail"]),
+
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
   },
   methods: {
     ...mapActions("registerForm", ["getRegisterFormDetail"]),
 
+    getDetail() {
+      this.form = {
+        id: this.getFormDetail.id,
+        name: this.getFormDetail.name,
+        phone: this.getFormDetail.phone,
+        address: this.getFormDetail.address,
+        email: this.getFormDetail.email,
+        description: this.getFormDetail.description,
+        status : this.getFormDetail.status
+      };
+      this.loading = false
+    },
+
+    async changeStatus(status) {
+      let data = {
+        id : this.id,
+        status,
+        idToken : this.getUser.token
+      }
+      await changeStatusRegisterCenterFormByIdAPI(data)
+    }
   },
-  async created() {
+  created() {
     this.loading = true;
     let data = {
       id: this.id,
     };
-    console.log(data);
-    await this.getRegisterFormDetail(data);
-    this.loading = false;
+    this.getRegisterFormDetail(data).then(() => {
+      this.getDetail();
+    });
   },
 };
 </script>
@@ -121,7 +147,7 @@ export default {
 }
 .header {
   font-size: 27px;
-  color: #008a4f;
+  color: #5D6F92;
 }
 .date {
   font-size: 18px;
@@ -146,7 +172,7 @@ hr {
   margin: 5px 0;
   clear: both;
 }
-.button{
+.button {
   text-align: center;
 }
 .status1 {

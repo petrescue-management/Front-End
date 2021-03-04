@@ -12,7 +12,12 @@ export default {
   name: 'App',
 
   mounted() {
-    // this.$router.replace({ name: "LoginStaff" });
+    if (localStorage.getItem("user") == null) {
+      this.$router.replace({ name: "LoginStaff" });
+    } else {
+      if (this.$router.history.current.fullPath == "/")
+        this.$router.replace({ name: "DashboardStaff" });
+    }
   },
 }
 </script>

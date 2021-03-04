@@ -2,12 +2,12 @@ importScripts('https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js');
 
 var firebaseConfig = {
-    apiKey: "AIzaSyAOYgRWxir39_MiNbXeYBBWMgL7EG6T7iA",
-    authDomain: "pet-rescue-58782.firebaseapp.com",
-    projectId: "pet-rescue-58782",
-    storageBucket: "pet-rescue-58782.appspot.com",
-    messagingSenderId: "334911547930",
-    appId: "1:334911547930:web:300883a8f882994c9c3fa3"
+    apiKey: "AIzaSyBZOR3FERmrQ1ZoLUNShtBqphdXTZkCb2w",
+    authDomain: "pet-rescue-fb.firebaseapp.com",
+    projectId: "pet-rescue-fb",
+    storageBucket: "pet-rescue-fb.appspot.com",
+    messagingSenderId: "918318848462",
+    appId: "1:918318848462:web:326b0953dd28ae60dbf39f"
 };
 
 firebase.initializeApp(firebaseConfig);

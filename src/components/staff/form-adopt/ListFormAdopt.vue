@@ -63,6 +63,7 @@
 
 <script>
 import FormAdoptDetail from "./modal/FormAdoptDetail";
+import { getListAdoptionFormApi } from "@/api/staff/adoptionFormApi"
 export default {
   components: {
     FormAdoptDetail,
@@ -89,10 +90,18 @@ export default {
       // this.id = id;
     },
   },
+
+  created(){
+    let params = {
+      keyword : null,
+      pageIndex: 1
+    }
+    getListAdoptionFormApi(params);
+  }
 };
 </script>
 
-<style scope>
+<style scoped>
 .el-main {
   background-color: #e9eef3;
   color: #333;

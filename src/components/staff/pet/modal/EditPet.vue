@@ -1,51 +1,19 @@
 <template>
   <div>
     <el-main>
-      <el-steps :active="active" finish-status="success" align-center>
-        <el-step title="Chọn loại pet"></el-step>
-        <el-step title="Điền thông tin Pet"></el-step>
-      </el-steps>
-      <br />
-
-      <el-form v-if="this.active == 0" label-width="120px">
-        <el-form-item label="Chọn loại pet">
-          <el-select v-model="petTypeId" placeholder="Chọn loại Pet">
-            <el-option
-              v-for="item in listPetType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            style="margin-top: 12px"
-            :disabled="!this.petTypeId"
-            v-if="this.active == 0"
-            @click="next"
-            >Next step</el-button
-          >
-        </el-form-item>
-      </el-form>
-      <el-form
-        ref="form"
-        :model="form"
-        v-if="this.active == 1"
-        label-width="120px"
-      >
+      <el-form ref="form" :model="form" label-width="120px">
         <el-form-item label="Chọn ảnh">
           <img :src="previewImage" class="uploading-image" width="150px" />
           <input type="file" accept="image/*" @change="uploadImage" />
         </el-form-item>
 
         <el-form-item label="Tên thú cưng">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.petname"></el-input>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="Tuổi">
-              <el-input type="number" v-model="form.age"></el-input>
+              <el-input type="number" v-model="form.petAge"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -55,14 +23,14 @@
           </el-col>
         </el-row>
         <el-form-item label="Giới thiệu:">
-          <el-radio-group v-model="form.gender">
+          <el-radio-group v-model="form.petGender">
             <el-radio :label="1">Đực</el-radio>
             <el-radio :label="2">Cái</el-radio>
             <el-radio :label="3">Chưa rõ</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="Màu sắc">
-          <el-select v-model="form.petColorId" placeholder="Chọn màu">
+          <el-select v-model="form.petFurColorName" placeholder="Chọn màu">
             <el-option
               v-for="item in listPetColor"
               :key="item.id"
@@ -72,7 +40,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Giống loài">
-          <el-select v-model="form.petBreedId" placeholder="Chọn giống">
+          <el-select v-model="form.petBreedName" placeholder="Chọn giống">
             <el-option
               v-for="item in listPetBreed"
               :key="item.id"
@@ -82,7 +50,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Trạng thái:">
-          <el-radio-group v-model="form.status">
+          <el-radio-group v-model="form.petStatus">
             <el-radio :label="1">Đang điều trị</el-radio>
             <el-radio :label="2">Chưa nhận nuôi</el-radio>
             <el-radio :label="3">Đã nhận nuôi</el-radio>
@@ -105,15 +73,14 @@
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button v-if="this.active == 1" @click="onUploadImg()"
-          >Thêm Pet mới</el-button
-        >
+        <el-button @click="onUploadImg()">Thêm Pet mới</el-button>
       </div>
     </el-main>
   </div>
 </template>
 <script>
 import firebase from "firebase";
+import { mapGetters, mapActions } from "vuex";
 import {
   createNewPetApi,
   getAllPetTypeApi,
@@ -122,24 +89,29 @@ import {
 } from "@/api/staff/petApi";
 export default {
   name: "AddPet",
+  props: {
+    petId: String,
+  },
   data() {
     return {
-      active: 0,
       form: {
-        name: "",
-        age: "",
-        weight: "",
-        gender: "",
-        petColorId: "",
-        petBreedId: "",
-        status: "",
-        isVaccinated: true,
-        isSterilized: true,
-        desc: "",
+        petId: null,
+        centerId: null,
+        petStatus: null,
+        petName: null,
+        petTypeName: null,
+        petGender: null,
+        petAge: null,
+        weight: null,
+        isVaccinated: null,
+        isSterilized: null,
+        petBreedName: null,
+        petFurColorName: null,
+        imageUrl: null,
+        desc: null,
       },
       previewImage: null,
       fileUploadToFirebase: null,
-      listPetType: [],
       petTypeId: "",
       listPetColor: [],
       listPetBreed: [],
@@ -147,6 +119,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters("petInfo", ["getPetFromStore"]),
     getUser() {
       let user = localStorage.getItem("user");
       return JSON.parse(user);
@@ -154,80 +127,7 @@ export default {
   },
 
   methods: {
-    async next() {
-      this.active++;
-      if (this.active == 1) {
-        await this.getPetBreedByTypeId(this.petTypeId);
-        await this.getAllPetColors();
-      }
-    },
-
-    uploadImage(e) {
-      this.fileUploadToFirebase = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(this.fileUploadToFirebase);
-      reader.onload = (e) => {
-        this.previewImage = e.target.result;
-      };
-    },
-
-    onUploadImg() {
-      const storageRef = firebase
-        .storage()
-        .ref(`pet-img/`)
-        .child(`${this.fileUploadToFirebase.name}`)
-        .put(this.fileUploadToFirebase);
-
-      storageRef.on(
-        `state_changed`,
-        (snapshot) => {
-          console.log(snapshot);
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          storageRef.snapshot.ref.getDownloadURL().then((url) => {
-            this.createNewPet(url);
-          });
-        }
-      );
-    },
-
-    async createNewPet(imgUrl) {
-      let data = {
-        petStatus: this.form.status,
-        centerId: "4bed700a-e24a-4410-9b39-503e780dc8a6",
-        petName: this.form.name,
-        petGender: this.form.gender,
-        petAge: this.form.age,
-        weight: this.form.weight,
-        description: this.form.desc,
-        petBreedId: this.form.petBreedId,
-        petFurColorId: this.form.petColorId,
-        isVaccinated: this.form.isVaccinated,
-        isSterilized: this.form.isSterilized,
-        imageUrl: imgUrl,
-      };
-      let token = this.getUser.token;
-      await createNewPetApi(data,token).then((response) => console.log(response));
-    },
-
-    async getAllPetType() {
-      this.listPetType = [];
-      await getAllPetTypeApi()
-        .then((response) => response.json())
-        .then((data) =>
-          data.forEach((element) => {
-            let petType = {
-              id: element.petTypeId,
-              name: element.petTypeName,
-            };
-            this.listPetType.push(petType);
-          })
-        );
-    },
-
+    ...mapActions("petInfo", ["getPetById"]),
     async getAllPetColors() {
       this.listPetColor = [];
       await getAllPetColorsApi()
@@ -257,10 +157,38 @@ export default {
           })
         );
     },
-  },
 
+    async getPet(petId) {
+      let data = {
+        petId,
+      };
+      await this.getPetById(data);
+      this.getPetInfo(JSON.parse(JSON.stringify(this.getPetFromStore)));
+    },
+
+    getPetInfo(petInfo) {
+      this.pet = {
+        petId: petInfo.petId,
+        centerId: petInfo.centerId,
+        petStatus: petInfo.petStatus,
+        petName: petInfo.petName,
+        petTypeName: petInfo.petTypeName,
+        petGender: petGender.get(petInfo.petGender),
+        petAge: petInfo.petAge,
+        weight: petInfo.weight,
+        isVaccinated: petInfo.isVaccinated,
+        isSterilized: petInfo.isSterilized,
+        petBreedName: petInfo.petBreedName,
+        petFurColorName: petInfo.petFurColorName,
+        imageUrl: petInfo.imageUrl,
+      };
+    },
+  },
   async created() {
-    await this.getAllPetType();
+    await this.getPet(petId);
+    await this.getPetBreedByTypeId(this.petTypeId);
+		await this.getAllPetColors();
+		await this.getAllPetType();
   },
 };
 </script>
