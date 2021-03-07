@@ -4,8 +4,6 @@
       <div>
         Dashboard
         <div v-if="user">You are logged in!</div>
-        <h1>{{ this.getUserInfo.displayName }}</h1>
-        <h1>{{ this.getUserInfo.email }}</h1>
       </div>
     </el-main>
   </div>

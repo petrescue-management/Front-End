@@ -6,18 +6,18 @@
       </div>
       <div>
         <el-table :data="listForm">
-          <el-table-column label="Ảnh Boss" width="180">
+          <el-table-column label="Ảnh Boss" width="180" height="180">
             <template slot-scope="scope">
-              <img :src="scope.row.imgPet" width="80px"/>
+              <img :src="scope.row.petImg" width="80px"/>
             </template>
           </el-table-column>
           <el-table-column
-            prop="namePet"
+            prop="petName"
             label="Tên Boss"
             width="180"
           ></el-table-column>
           <el-table-column
-            prop="nameAdopter"
+            prop="username"
             label="Tên người nhận nuôi"
             width="250"
           ></el-table-column>
@@ -26,17 +26,19 @@
             label="Số điện thoại"
             width="180"
           ></el-table-column>
-          <el-table-column
-            prop="status"
-            label="Trạng thái"
-            width="180"
-          ></el-table-column>
+          <el-table-column label="Trạng thái" width="180">
+            <template slot-scope="scope">
+              <el-tag class="status" :type="scope.row.color" size="small">
+                {{ scope.row.status }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="Chi tiết" width="100">
-            <template>
+            <template slot-scope="scope">
               <el-button
                 type="text"
                 size="small"
-                @click="goToDetail()"
+                @click="goToDetail(scope.row.id)"
                 >Detail</el-button
               >
             </template>
@@ -62,42 +64,66 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+import { adoptionFormStatus } from '@/enum/adoption-form-status'
 import FormAdoptDetail from "./modal/FormAdoptDetail";
-import { getListAdoptionFormApi } from "@/api/staff/adoptionFormApi"
 export default {
   components: {
     FormAdoptDetail,
   },
+
+  computed: {
+    ...mapGetters("adoptionForm", ["getListAdoptionForm"]),
+  },
+
   data() {
     return {
-      listForm: [
-        {
-          imgPet: require("@/assets/img/alley.jpg"),
-          namePet: "Arvil",
-          nameAdopter: "Võ Quang Minh",
-          phone: "0784445345",
-          status: "chờ duyệt",
-        },
-      ],
-      totalForm: 0,
+      listForm: [],
+      total: 0,
       dialogVisible: false,
+      id: null,
     };
   },
 
   methods: {
-    goToDetail() {
-      this.dialogVisible = true;
-      // this.id = id;
-    },
-  },
+    ...mapActions("adoptionForm", ["getListAdoptionFormPaging"]),
 
-  created(){
-    let params = {
+    goToDetail(id) {
+      this.dialogVisible = true;
+      this.id = id;
+    },
+
+    getTableData(list) {
+      this.listForm = [];
+      list.forEach((data) => {
+        let form = {
+          id: data.adoptionRegisterId,
+          petName: data.pet.petName,
+          petImg: data.pet.imgUrl,
+          username: data.userName,
+          phone: data.phone,
+          status : adoptionFormStatus.get(data.adoptionRegisterStatus).name,
+          color : adoptionFormStatus.get(data.adoptionRegisterStatus).color
+        };
+        this.listForm.push(form);
+      });
+
+      console.log(this.listForm);
+    },
+
+    async getlistForm() {
+      let params = {
       keyword : null,
       pageIndex: 1
     }
-    getListAdoptionFormApi(params);
-  }
+    await this.getListAdoptionFormPaging(params);
+    this.getTableData(JSON.parse(JSON.stringify(this.getListAdoptionForm)));
+    }
+  },
+
+  created(){
+    this.getlistForm();
+  },
 };
 </script>
 

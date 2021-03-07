@@ -125,7 +125,7 @@ export default {
 };
 </script>
 
-<style scope>
+<style scoped>
 .el-main {
   background-color: #e9eef3;
   color: #333;

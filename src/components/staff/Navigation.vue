@@ -14,7 +14,7 @@
       >
         <template slot="title">
           <i class="fas fa-home"></i>
-          <span to="/main/dashboard">Dashboard</span>
+          <span class="title">Dashboard</span>
         </template>
       </el-menu-item>
       <el-menu-item
@@ -24,7 +24,7 @@
       >
         <template slot="title">
           <i class="fas fa-paw"></i>
-          <span>Boss</span>
+          <span class="title">Boss</span>
         </template>
       </el-menu-item>
       <el-menu-item
@@ -34,7 +34,7 @@
       >
         <template slot="title">
           <i class="fas fa-file-alt"></i>
-          <span>Đơn nhận nuôi</span>
+          <span class="title">Đơn nhận nuôi</span>
         </template>
       </el-menu-item>
     </el-menu>
@@ -63,6 +63,9 @@ export default {
   font-size: 20px;
 }
 .el-menu-item{
-  font-size: 18px;
+  font-size: 17px;
+}
+.title{
+  margin-left: 10px;
 }
 </style>

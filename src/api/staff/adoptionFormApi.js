@@ -9,3 +9,13 @@ export function getListAdoptionFormApi(params) {
         }
     });
 }
+
+export function getListAdoptionFormByIdApi(data) {
+    return fetch(baseURL + `api/get-adoption-register-form-by-id/${data.id}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+        }
+    });
+}
