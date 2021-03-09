@@ -12,7 +12,7 @@
         <b-button pill variant="warning">Chó</b-button>
         <b-button pill variant="warning">Mèo</b-button>
       </div>
-      <div class="filter-dropdown">
+      <div class="filter-dropdown" style="padding: 20px">
         <b-row>
           <b-col>
             <b-form-group
@@ -171,6 +171,7 @@ export default {
   background-color: #e9eef3;
   color: #333;
   height: 89vh;
+  padding: 0;
 }
 .contain {
   width: 25%;

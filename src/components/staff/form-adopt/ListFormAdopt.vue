@@ -1,9 +1,13 @@
 <template>
   <div>
     <el-main>
-      <div style="text-align: left; padding: 20px 0px">
-        <span class="title">Danh sách đơn đăng kí nhận nuôi chó mèo</span>
+      <div class="row bg-title form-adoption">
+        <div style="width: 5%"></div>
+        <div style="width: 90%; margin: auto; z-index: 2">
+          <h1 class="title">Thông Tin Từng Boss</h1>
+        </div>
       </div>
+      <br/>
       <div>
         <el-table :data="listForm">
           <el-table-column label="Ảnh Boss" width="180" height="180">
@@ -132,9 +136,13 @@ export default {
   background-color: #e9eef3;
   color: #333;
   height: 89vh;
+  padding: 0;
 }
 .title {
-  font-size: 25px;
+  font-size: 35px;
+  color: #fff;
+  text-transform: capitalize;
+  font-weight: 700;
 }
 .small {
   max-width: 500px;

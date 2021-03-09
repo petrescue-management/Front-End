@@ -4,7 +4,7 @@ import router from './router'
 import store from "./store/index";
 import firebase from 'firebase';
 import * as ElementUI from 'element-ui';
-// import * as VueGoogleMaps from 'vue2-google-maps'
+import * as VueGoogleMaps from 'vue2-google-maps'
 import 'element-ui/lib/theme-chalk/index.css';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -16,13 +16,13 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
-// Vue.use(VueGoogleMaps, {
-//     load: {
-//         key: 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk',
-//         libraries: "places"
-//     },
-//     installComponents: true
-// })
+Vue.use(VueGoogleMaps, {
+    load: {
+        key: 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk',
+        libraries: "places"
+    },
+    installComponents: true
+})
 
 var firebaseConfig = {
     apiKey: "AIzaSyBZOR3FERmrQ1ZoLUNShtBqphdXTZkCb2w",
