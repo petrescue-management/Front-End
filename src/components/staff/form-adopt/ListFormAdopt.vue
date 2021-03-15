@@ -78,6 +78,11 @@ export default {
 
   computed: {
     ...mapGetters("adoptionForm", ["getListAdoptionForm"]),
+
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
   },
 
   data() {
@@ -117,8 +122,9 @@ export default {
 
     async getlistForm() {
       let params = {
-      keyword : null,
-      pageIndex: 1
+      keyword : "",
+      pageIndex: 1,
+      token : this.getUser.token
     }
     await this.getListAdoptionFormPaging(params);
     this.getTableData(JSON.parse(JSON.stringify(this.getListAdoptionForm)));

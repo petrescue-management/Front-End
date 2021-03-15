@@ -1,2 +1,2 @@
 //export const baseURL = "https://localhost:44305/"
-export const baseURL = "https://petrescue-api.azurewebsites.net/"
+export const baseURL = "https://petrescueapi.azurewebsites.net/"

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListAdoptionFormApi, getListAdoptionFormByIdApi } from "@/api/staff/adoptionFormApi";
+import { getListAdoptionFormApi, getAdoptionFormByIdApi } from "@/api/staff/adoptionFormApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
@@ -74,7 +74,7 @@ export default {
                 havePet: null,
                 adoptionRegisterStatus: null,
             }
-            await getListAdoptionFormByIdApi(data)
+            await getAdoptionFormByIdApi(data)
                 .then(response => response.json())
                 .then(data => {
                     adoptionForm = {

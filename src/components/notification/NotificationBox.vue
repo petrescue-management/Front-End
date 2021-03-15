@@ -3,13 +3,15 @@
     <div v-if="notify">
         <div id="notification-box" class="notification-box">
             <a href="#" id="notification-close" @click="closed()" title="close">x</a>
-
+            <img
+            src="@/assets/img/Logo 4_circle.png"
+            width="50px"
+            height="50px"
+          />
             <div class="notification-data">
                 <div class="notification-title">
                     <p id="title">
-                        {{from}}
-                        <br />
-                        <span id="title" style="font-size: 12px; font-weight: 600;">{{title}}</span>
+                        {{title}}
                     </p>
                 </div>
 
@@ -30,10 +32,9 @@ export default {
 
     data() {
         return {
-            title: "",
+            title: "Titlte",
             from: "",
-            subject: "",
-            userimg: "",
+            subject: "Body",
             messaging: firebase.messaging(),
             currentMessage: "",
             notify: false,
@@ -51,9 +52,8 @@ export default {
                     // message =
                     //     payload.data.username + ":\n\n" + payload.data.message;
                     this.setNotificationBoxForm(
-                        payload.form,
+                        payload.notification.title,
                         payload.notification.body,
-                        payload.notification.title
                     );
                     // console.log(message)
                     this.notify = true;
@@ -66,9 +66,8 @@ export default {
             }
         },
       
-        setNotificationBoxForm(title, from, subject) {
+        setNotificationBoxForm(title, subject) {
             this.title = title;
-            this.from = from;
             this.subject = subject;
         },
     },
@@ -91,7 +90,7 @@ export default {
     position: absolute;
     right: 5px;
     bottom: 10px;
-    width: 30%;
+    width: 35%;
     height: 100px;
     background-color: #fff;
     z-index: 999;
@@ -130,7 +129,8 @@ export default {
 .notification-wall-number small {
     font-size: 8px;
 }
+
 img{
-    width: 30px;
+    margin: auto;
 }
 </style>

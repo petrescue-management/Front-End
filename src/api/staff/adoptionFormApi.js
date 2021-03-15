@@ -6,11 +6,12 @@ export function getListAdoptionFormApi(params) {
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
+            Authorization: "Bearer " + params.token
         }
     });
 }
 
-export function getListAdoptionFormByIdApi(data) {
+export function getAdoptionFormByIdApi(data) {
     return fetch(baseURL + `api/get-adoption-register-form-by-id/${data.id}`, {
         method: "GET",
         headers: {

@@ -34,7 +34,7 @@
               </b-col>
               <b-col>
                 <div style="white-space: pre-wrap">
-                  Bạn nhận được yêu cầu cầu cứu Pet
+                  Bạn nhận được yêu cầu trợ giúp Pet
                 </div>
               </b-col>
             </b-row>

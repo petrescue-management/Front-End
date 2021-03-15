@@ -9,14 +9,14 @@
 </template>
 
 <script>
-import NotificationBox from './components/staff/notification/NotificationBox'
+import NotificationBox from './components/notification/NotificationBox'
 export default {
   components: { NotificationBox },
   name: 'App',
   component :{
     NotificationBox
   },
-  mounted() {
+  created() {
     if (localStorage.getItem("user") == null) {
       this.$router.replace({ name: "LoginStaff" });
     } else {
@@ -32,5 +32,9 @@ export default {
   margin: 0;
   padding: 0;
   width: 100%;
+}
+
+.el-dialog{
+  margin-top: 5vh !important;
 }
 </style>

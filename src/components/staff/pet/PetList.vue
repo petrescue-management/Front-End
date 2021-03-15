@@ -113,6 +113,11 @@ export default {
   },
   computed: {
     ...mapGetters("petInfo", ["getListPetFromStore"]),
+
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
   },
 
   methods: {
@@ -144,7 +149,7 @@ export default {
         breed: "",
         color: "",
         status: 0,
-        centerId: "3f2c6c41-e139-4bbf-873b-b085f0a25355",
+        centerId: this.getUser.centerId,
         pageIndex: page,
       };
       await this.getListPetPaging(data);

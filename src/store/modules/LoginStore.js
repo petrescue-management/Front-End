@@ -16,6 +16,7 @@ export default {
             id: null,
             lastName: null,
             phone: null,
+            roles: [],
         }
     },
     getters: {
@@ -41,7 +42,8 @@ export default {
                     id: user.id,
                     lastName: user.lastName,
                     phone: user.phone,
-                    token: user.token
+                    token: user.token,
+                    roles: user.roles
                 }
                 localStorage.setItem("user", JSON.stringify(current_user));
                 commit("SET_USER", current_user);

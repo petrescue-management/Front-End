@@ -37,15 +37,3 @@ export function deleteCenter(idCenter) {
         // body: JSON.stringify(data),
     });
 }
-
-export function createCenter(data) {
-    return fetch(baseURL + `api/CreateCenter`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-            Accept: "*/*",
-            // Authorization: "Bearer " + IdToken
-        },
-        body: JSON.stringify(data),
-    });
-}
