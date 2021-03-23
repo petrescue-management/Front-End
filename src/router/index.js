@@ -2,17 +2,17 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import LoginStaff from '@/views/staff/LoginView'
+import RegisterCenter from '@/views/staff/RegisterView'
 import MainStaff from '@/views/staff/MainView'
 import DashboardStaff from '@/components/staff/Dashboard'
 import PetList from '@/components/staff/pet/PetList'
 import PetDetail from '@/components/staff/pet/PetDetail'
 import ReportRescue from '@/components/staff/report-rescue/ReportRescue'
-import FormAdopt from '@/components/staff/form-adopt/ListFormAdopt'
+import PetAdopt from '@/components/staff/form-adopt/ListPetAdopt'
+import ListFormAdopt from '@/components/staff/form-adopt/ListForm'
+import Adoption from '@/components/staff/adoption/ListAdoption'
+import Volunteer from '@/components/staff/volunteer/ListVolunteer'
 
-import LoginAdmin from '@/views/admin/LoginView'
-import MainAdmin from '@/views/admin/MainView'
-import CenterList from '@/components/admin/center/CenterList'
-import RegisterCenterFormList from '@/components/admin/register_center_form/RegisterFormList'
 Vue.use(Router)
 
 export default new Router({
@@ -20,6 +20,11 @@ export default new Router({
             path: '/login-staff',
             name: 'LoginStaff',
             component: LoginStaff
+        },
+        {
+            path: '/register-center',
+            name: 'RegisterCenter',
+            component: RegisterCenter
         },
         {
             path: '/main-staff',
@@ -46,30 +51,24 @@ export default new Router({
                     component: ReportRescue
                 },
                 {
-                    path: "/main-staff/form-adopt",
-                    name: "FormAdopt",
-                    component: FormAdopt
-                },
-            ]
-        },
-        {
-            path: '/login-admin',
-            name: 'LoginAdmin',
-            component: LoginAdmin
-        },
-        {
-            path: '/main-admin',
-            name: 'MainAdmin',
-            component: MainAdmin,
-            children: [{
-                    path: "/main-admin/center-list",
-                    name: "CenterList",
-                    component: CenterList
+                    path: "/main-staff/pet-adopt",
+                    name: "PetAdopt",
+                    component: PetAdopt
                 },
                 {
-                    path: "/main-admin/register-form-list",
-                    name: "RegisterCenterFormList",
-                    component: RegisterCenterFormList
+                    path: "/main-staff/list-form-adopt/:id",
+                    name: "ListFormAdopt",
+                    component: ListFormAdopt
+                },
+                {
+                    path: "/main-staff/adoption",
+                    name: "Adoption",
+                    component: Adoption
+                },
+                {
+                    path: "/main-staff/volunteer",
+                    name: "Volunteer",
+                    component: Volunteer
                 },
             ]
         },

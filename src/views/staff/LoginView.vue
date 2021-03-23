@@ -9,7 +9,11 @@
             height="80px"
             style="margin-bottom: 20px"
           />
-          <button @click="login()" class="btn btn-dark btn-lg btn-block login" v-loading.fullscreen.lock="fullscreenLoading">
+          <button
+            @click="login()"
+            class="btn btn-dark btn-lg btn-block login"
+            v-loading.fullscreen.lock="fullscreenLoading"
+          >
             <img src="@/assets/img/icon-google.png" alt="GOOGLE" />
             Đăng nhập với Google
           </button>
@@ -26,7 +30,7 @@
 <script>
 import firebase from "firebase";
 import { mapActions } from "vuex";
-import { loginApi, getDetailUser } from "@/api/staff/loginApi";
+import { loginAPI, getDetailUser } from "@/api/staff/loginApi";
 export default {
   data() {
     return {
@@ -48,17 +52,22 @@ export default {
           const email = error.email;
           const credential = error.credential;
           console.log(errorCode, errorMessage, email, credential);
-          this.fullscreenLoading = false
+          this.fullscreenLoading = false;
         });
     },
 
     async login() {
       let user = firebase.auth().currentUser;
+      let deviceToken = await firebase.messaging().getToken();
       if (user) {
         let token = await user.getIdToken();
         let jwtToken;
         this.fullscreenLoading = true;
-        await loginApi(token)
+        let params = {
+          token,
+          deviceToken,
+        };
+        await loginAPI(params)
           .then((response) => response.text())
           .then((data) => {
             jwtToken = data;
@@ -76,7 +85,7 @@ export default {
                 type: "success",
               });
               this.$router.push({ name: "DashboardStaff" });
-            }else{
+            } else {
               this.$message({
                 message: "Tài khoản này không tồn tại",
                 type: "error",
@@ -84,12 +93,12 @@ export default {
             }
           });
       }
-      this.fullscreenLoading = false
+      this.fullscreenLoading = false;
     },
 
-    registerPage(){
-      this.$router.push({ name: 'RegisterCenter' });
-    }
+    registerPage() {
+      this.$router.push({ name: "RegisterCenter" });
+    },
   },
 };
 </script>

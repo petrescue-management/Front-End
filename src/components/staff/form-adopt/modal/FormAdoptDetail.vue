@@ -28,7 +28,11 @@
           <el-input v-model="form.address" readonly></el-input>
         </el-form-item>
         <el-form-item label="Địa chỉ trên là">
-          <el-radio-group v-model="form.houseType" style="width: 100%" onclick="return false">
+          <el-radio-group
+            v-model="form.houseType"
+            style="width: 100%"
+            onclick="return false"
+          >
             <el-row :gutter="20">
               <el-col :span="10">
                 <el-radio :label="1">Nhà riêng</el-radio>
@@ -77,23 +81,31 @@
               label=" Có trẻ em ở nhà hay không ?"
               class="long-label"
             >
-              <el-radio-group v-model="form.haveChildren" onclick="return false">
+              <el-radio-group
+                v-model="form.haveChildren"
+                onclick="return false"
+              >
                 <el-radio :label="true">Có</el-radio>
                 <el-radio :label="false">Không</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="Độ tuổi của trẻ (nếu có)" class="long-label">
-              <el-input v-model="form.childAge" readonly></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
+        <el-form-item label="Độ tuổi của trẻ (nếu có)" class="label-inline">
+          <el-radio-group v-model="form.childAge" onclick="return false">
+            <el-radio :label="1">Dưới 5 tuổi</el-radio>
+            <el-radio :label="2">Dưới 10 tuổi</el-radio>
+            <el-radio :label="3">Dưới 15 tuổi</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item
           label="Có bất kỳ thành viên nào trong gia đình bạn thể hiện hoặc có xu hướng bạo lực không?"
           class="label-inline"
         >
-          <el-radio-group v-model="form.beViolentTendencies" onclick="return false">
+          <el-radio-group
+            v-model="form.beViolentTendencies"
+            onclick="return false"
+          >
             <el-radio :label="true">Có</el-radio>
             <el-radio :label="false">Không</el-radio>
           </el-radio-group>
@@ -112,19 +124,15 @@
           class="label-inline"
         >
           <el-radio-group v-model="form.havePet" onclick="return false">
-            <el-radio :label="1" >Đã từng nuôi</el-radio>
-            <el-radio :label="2" >Đang nuôi</el-radio>
-            <el-radio :label="3" >Chưa từng nuôi</el-radio>
+            <el-radio :label="1">Đã từng nuôi</el-radio>
+            <el-radio :label="2">Đang nuôi</el-radio>
+            <el-radio :label="3">Chưa từng nuôi</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <div class="button">
-        <el-button type="success" @click="changeStatusReceipt('approve')"
-          >Accept</el-button
-        >
-        <el-button type="danger" @click="changeStatusReceipt('reject')"
-          >Reject</el-button
-        >
+        <el-button type="success" @click="changeStatus(2)">Accept</el-button>
+        <el-button type="danger" @click="changeStatus(3)">Reject</el-button>
       </div>
     </el-main>
   </div>
@@ -132,7 +140,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-// import { adoptionFormStatus } from '@/enum/adoption-form-status'
+import { changeStatusAdoptionFormAPI } from "@/api/staff/adoptionFormApi";
+import EventBus from "@/EventBus";
 export default {
   props: ["id"],
   name: "FormAdoptDetail",
@@ -153,12 +162,16 @@ export default {
         havePet: null,
         adoptionRegisterStatus: null,
       },
-      loading : false
+      loading: false,
     };
   },
 
   computed: {
     ...mapGetters("adoptionForm", ["getAdoptionForm"]),
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
   },
 
   methods: {
@@ -181,16 +194,31 @@ export default {
         adoptionRegisterStatus: formInfo.adoptionRegisterStatus,
       };
     },
+
+    async changeStatus(status) {
+      this.loading = true;
+      let token = this.getUser.token;
+      let data = {
+        id: this.id,
+        status,
+      };
+      await changeStatusAdoptionFormAPI(data, token).then((response) => {
+        if (response.status == 200) {
+          this.loading = false;
+          EventBus.$emit("CloseAdoptDialog", false);
+        }
+      });
+    },
   },
 
   async created() {
-    this.loading = true
+    this.loading = true;
     let data = {
       id: this.id,
     };
     await this.getListAdoptionFormById(data);
     this.getFormInfo(JSON.parse(JSON.stringify(this.getAdoptionForm)));
-    this.loading = false
+    this.loading = false;
   },
 };
 </script>

@@ -1,11 +1,12 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListAdoptionFormApi, getAdoptionFormByIdApi } from "@/api/staff/adoptionFormApi";
+import { getListAdoptionFormByPetIdAPI, getAdoptionFormByIdAPI, getListPetToBeRegistedAPI } from "@/api/staff/adoptionFormApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
     state: {
         listAdoptionForm: [],
+        listPetWaiting: [],
         total: 0,
         adoptionForm: {
             id: null,
@@ -22,7 +23,8 @@ export default {
             haveAgreement: null,
             havePet: null,
             adoptionRegisterStatus: null,
-        }
+        },
+        pet: {}
     },
     getters: {
         getListAdoptionForm(state) {
@@ -35,6 +37,13 @@ export default {
 
         getAdoptionForm(state) {
             return state.adoptionForm;
+        },
+
+        getListPetWaiting(state) {
+            return state.listPetWaiting;
+        },
+        getPet(state) {
+            return state.pet
         }
     },
     mutations: {
@@ -47,14 +56,22 @@ export default {
         SET_ADOPTION_FORM(state, data) {
             state.adoptionForm = data;
         },
+        SET_LIST_PET_WAITING(state, data) {
+            state.listPetWaiting = data;
+        },
+        SET_PET(state, data) {
+            state.pet = data
+        }
     },
     actions: {
-        async getListAdoptionFormPaging({ commit }, data) {
-            await getListAdoptionFormApi(data)
+        async getListAdoptionFormByPetId({ commit }, data) {
+            await getListAdoptionFormByPetIdAPI(data.petId, data.token)
                 .then(response => response.json())
                 .then(data => {
-                    commit("SET_LIST_ADOPTION_FORM", data.result);
-                    commit("SET_TOTAL", data.totalCount);
+                    let adoption = data.adoptionRegisterforms;
+                    let pet = data.pet
+                    commit("SET_LIST_ADOPTION_FORM", adoption);
+                    commit("SET_PET", pet);
                 })
         },
         async getListAdoptionFormById({ commit }, data) {
@@ -74,7 +91,7 @@ export default {
                 havePet: null,
                 adoptionRegisterStatus: null,
             }
-            await getAdoptionFormByIdApi(data)
+            await getAdoptionFormByIdAPI(data)
                 .then(response => response.json())
                 .then(data => {
                     adoptionForm = {
@@ -96,5 +113,15 @@ export default {
                     commit("SET_ADOPTION_FORM", adoptionForm);
                 })
         },
-    }
+
+        async getListPetToBeRegisted({ commit }, data) {
+            await getListPetToBeRegistedAPI(data)
+                .then(response => response.json())
+                .then(data => {
+                    commit("SET_LIST_PET_WAITING", data);
+                })
+        },
+    },
+
+
 };

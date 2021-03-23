@@ -6,7 +6,6 @@ export function createCenterForm(data) {
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            // Authorization: "Bearer " + IdToken
         },
         body: JSON.stringify(data),
     });

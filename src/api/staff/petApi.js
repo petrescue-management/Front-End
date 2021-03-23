@@ -1,6 +1,6 @@
 import { baseURL } from "../../enum/consts";
 
-export function getListPetApi(params) {
+export function getListPetAPI(params) {
     return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.type}&PetFurColorName=${params.type}&fields=detail&limit=10`, {
         method: "GET",
         headers: {
@@ -10,7 +10,7 @@ export function getListPetApi(params) {
     });
 }
 
-export function getPetByIdApi(params) {
+export function getPetByIdAPI(params) {
     return fetch(baseURL + `api/get-pet?PetId=${params.petId}&fields=detail&limit=-1`, {
         method: "GET",
         headers: {
@@ -20,7 +20,7 @@ export function getPetByIdApi(params) {
     });
 }
 
-export function createNewPetApi(data, token) {
+export function createNewPetAPI(data, token) {
     let requestBody = {
         petStatus: data.petStatus,
         centerId: data.centerId,
@@ -46,7 +46,7 @@ export function createNewPetApi(data, token) {
     });
 }
 
-export function getAllPetColorsApi() {
+export function getAllPetColorsAPI() {
     return fetch(baseURL + `api/get-all-pet-fur_colors`, {
         method: "GET",
         headers: {
@@ -56,7 +56,7 @@ export function getAllPetColorsApi() {
     });
 }
 
-export function getPetBreedByTypeIdsApi(typeId) {
+export function getPetBreedByTypeIdsAPI(typeId) {
     return fetch(baseURL + `api/get-pet-breeds-by-type-id/${typeId}`, {
         method: "GET",
         headers: {
@@ -66,7 +66,7 @@ export function getPetBreedByTypeIdsApi(typeId) {
     });
 }
 
-export function getAllPetTypeApi() {
+export function getAllPetTypeAPI() {
     return fetch(baseURL + `api/get-all-pet-types`, {
         method: "GET",
         headers: {

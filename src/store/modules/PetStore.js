@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListPetApi, getPetByIdApi } from "@/api/staff/petApi";
+import { getListPetAPI, getPetByIdAPI } from "@/api/staff/petApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
@@ -48,7 +48,7 @@ export default {
     },
     actions: {
         async getListPetPaging({ commit }, data) {
-            await getListPetApi(data)
+            await getListPetAPI(data)
                 .then(response => response.json())
                 .then(data => {
                     commit("SET_LIST_PET", data.result);
@@ -57,7 +57,7 @@ export default {
         },
 
         async getPetById({ commit }, data) {
-            await getPetByIdApi(data)
+            await getPetByIdAPI(data)
                 .then(response => response.json())
                 .then(data => {
                     let info = data.result

@@ -4,18 +4,14 @@
       <router-link to="/login-staff"></router-link>
     </div>
     <router-view/>
-    <notification-box/>
+    
   </div>
 </template>
 
 <script>
-import NotificationBox from './components/notification/NotificationBox'
+
 export default {
-  components: { NotificationBox },
   name: 'App',
-  component :{
-    NotificationBox
-  },
   created() {
     if (localStorage.getItem("user") == null) {
       this.$router.replace({ name: "LoginStaff" });

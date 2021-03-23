@@ -1,7 +1,7 @@
 import { baseURL } from "../../enum/consts";
 
-export function loginApi(token) {
-    return fetch(baseURL + `/jwt?token=${token}`, {
+export function loginAPI(params) {
+    return fetch(baseURL + `/jwt?Token=${params.token}&DeviceToken=${params.deviceToken}&ApplicationName=${'Petrescue.app.managercenter'}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

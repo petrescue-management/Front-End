@@ -29,12 +29,32 @@
       </el-menu-item>
       <el-menu-item
         index="/main-staff/form-adopt"
-        :route="{ name: 'FormAdopt' }"
-        @click="goTo('FormAdopt')"
+        :route="{ name: 'PetAdopt' }"
+        @click="goTo('PetAdopt')"
       >
         <template slot="title">
           <i class="fas fa-file-alt"></i>
           <span class="title">Đơn nhận nuôi</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item
+        index="/main-staff/pet-adopt" 
+        :route="{ name: 'PetAdopt' }"
+        @click="goTo('PetAdopt')"
+      >
+        <template slot="title">
+          <i class="fas fa-house-user"></i>
+          <span class="title">Pet nhận nuôi</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item
+        index="/main-staff/volunteer" 
+        :route="{ name: 'Volunteer' }"
+        @click="goTo('Volunteer')"
+      >
+        <template slot="title">
+          <i class="fas fa-hands-helping"></i>
+          <span class="title">Tình nguyện viên</span>
         </template>
       </el-menu-item>
     </el-menu>

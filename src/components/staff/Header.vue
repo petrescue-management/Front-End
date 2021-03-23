@@ -44,7 +44,7 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>User</em>
+            <em>{{ getUser.lastName + ' ' +getUser.firstName}}</em>
           </template>
           <b-dropdown-item href="#">Profile</b-dropdown-item>
           <b-dropdown-item @click="signout">Sign Out</b-dropdown-item>
@@ -55,9 +55,20 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import NotiService from "../../services/NotiService";
 export default {
   name: "Navbar",
-  computed: {},
+  computed: {
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
+  },
+  data() {
+    return {
+      listNoti: [],
+    };
+  },
   methods: {
     ...mapActions("user", ["logout"]),
 
@@ -71,6 +82,33 @@ export default {
         name: "LoginStaff",
       });
     },
+
+    onDataChange(items) {
+      let _noti = [];
+
+      items.forEach((item) => {
+        let key = item.key;
+        let data = item.val();
+        _noti.push({
+          key: key,
+          type: data.type,
+          id: data.id,
+          isCheck: data.isCheck,
+          date: data.date,
+        });
+      });
+
+      this.listNoti = _noti;
+      console.log(this.listNoti);
+    },
+  },
+
+  mounted() {
+    NotiService.getAll().on("value", this.onDataChange);
+  },
+
+  beforeDestroy() {
+    NotiService.getAll().off("value", this.onDataChange);
   },
 };
 </script>

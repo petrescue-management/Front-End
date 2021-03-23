@@ -115,10 +115,10 @@
 <script>
 import firebase from "firebase";
 import {
-  createNewPetApi,
-  getAllPetTypeApi,
-  getPetBreedByTypeIdsApi,
-  getAllPetColorsApi,
+  createNewPetAPI,
+  getAllPetTypeAPI,
+  getPetBreedByTypeIdsAPI,
+  getAllPetColorsAPI,
 } from "@/api/staff/petApi";
 export default {
   name: "AddPet",
@@ -210,12 +210,12 @@ export default {
         imageUrl: imgUrl,
       };
       let token = this.getUser.token;
-      await createNewPetApi(data,token).then((response) => console.log(response));
+      await createNewPetAPI(data,token).then((response) => console.log(response));
     },
 
     async getAllPetType() {
       this.listPetType = [];
-      await getAllPetTypeApi()
+      await getAllPetTypeAPI()
         .then((response) => response.json())
         .then((data) =>
           data.forEach((element) => {
@@ -230,7 +230,7 @@ export default {
 
     async getAllPetColors() {
       this.listPetColor = [];
-      await getAllPetColorsApi()
+      await getAllPetColorsAPI()
         .then((response) => response.json())
         .then((data) =>
           data.forEach((element) => {
@@ -245,7 +245,7 @@ export default {
 
     async getPetBreedByTypeId(typeId) {
       this.listPetBreed = [];
-      await getPetBreedByTypeIdsApi(typeId)
+      await getPetBreedByTypeIdsAPI(typeId)
         .then((response) => response.json())
         .then((data) =>
           data.forEach((element) => {
