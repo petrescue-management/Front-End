@@ -3,7 +3,7 @@
     <el-menu
       text-color="#545454"
       background-color="#F8F9FA"
-      active-text-color="#55A6FD"
+      active-text-color="rgb(155, 61, 61)"
       :default-active="activeIndex"
       :route="true"
     >
@@ -24,7 +24,7 @@
       >
         <template slot="title">
           <i class="fas fa-paw"></i>
-          <span class="title">Boss</span>
+          <span class="title">Pet</span>
         </template>
       </el-menu-item>
       <el-menu-item

@@ -1,8 +1,8 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="dark">
+  <b-navbar toggleable="lg">
     <b-navbar-brand href="#">
-      <img src="@/assets/img/Logo 4_circle.png" width="40px" height="40px" />
-      Pet Rescue
+      <img src="@/assets/img/Logo_withtitle_circle.png" width="50px" height="50px" />
+      PET RESCUE
     </b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -17,26 +17,26 @@
               icon="bell-fill"
               variant="light"
             ></b-icon>
-            <span class="badge badge-danger">6</span>
+            <span class="badge badge-danger">{{ count }}</span>
           </template>
           <b-dropdown-text style="width: 340px; text-align: center">
-            Notification <span class="badge2 badge-danger">6</span>
+            Notification <span class="badge2 badge-danger">{{ count }}</span>
           </b-dropdown-text>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item class="noti" v-for="n in 6" :key="n">
-            <b-row @click="goToRescuePost()">
-              <b-col sm="3">
-                <img
-                  src="@/assets/img/Logo 4_circle.png"
-                  width="45px"
-                  height="45px"
-                />
+          <b-dropdown-item class="noti" v-for="noti in listNoti" :key="noti.id">
+            <b-row @click="goToDetail(noti.id)">
+              <b-col sm="2" style="margin: auto auto auto 0; padding: 0">
+                <img :src="noti.logo" width="65px" height="65px" />
               </b-col>
-              <b-col>
-                <div style="white-space: pre-wrap">
-                  Bạn nhận được yêu cầu trợ giúp Pet
+              <b-col sm="9">
+                <div style="white-space: pre-wrap; padding: 1px">
+                  {{ noti.message }}
+                  <br />
+                  <span class="date">{{ noti.date }}</span>
                 </div>
               </b-col>
+              <span :class="!noti.isCheck ? 'unread' : 'read'"></span>
+              <b-col> </b-col>
             </b-row>
           </b-dropdown-item>
         </b-nav-item-dropdown>
@@ -44,7 +44,7 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>{{ getUser.lastName + ' ' +getUser.firstName}}</em>
+            <em>{{ getUser.lastName + " " + getUser.firstName }}</em>
           </template>
           <b-dropdown-item href="#">Profile</b-dropdown-item>
           <b-dropdown-item @click="signout">Sign Out</b-dropdown-item>
@@ -56,6 +56,8 @@
 <script>
 import { mapActions } from "vuex";
 import NotiService from "../../services/NotiService";
+import firebase from "firebase";
+import { Notification } from "@/enum/notification-enum";
 export default {
   name: "Navbar",
   computed: {
@@ -67,48 +69,62 @@ export default {
   data() {
     return {
       listNoti: [],
+      count: 0,
     };
   },
   methods: {
     ...mapActions("user", ["logout"]),
 
-    goToRescuePost() {
+    goToDetail(id) {
+      let value = {
+        isCheck : true
+      }
+      NotiService.updateNoti(this.getUser.centerId,id,value);
       this.$router.push({ name: "ReportRescue" });
     },
 
     signout() {
-      this.logout();
-      this.$router.push({
-        name: "LoginStaff",
-      });
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.logout();
+          this.$router.push({
+            name: "LoginStaff",
+          });
+        });
     },
 
     onDataChange(items) {
       let _noti = [];
-
+      this.count = 0;
       items.forEach((item) => {
         let key = item.key;
         let data = item.val();
         _noti.push({
-          key: key,
+          id: key,
+          message: Notification.get(data.type).message,
+          logo: Notification.get(data.type).logo,
           type: data.type,
-          id: data.id,
-          isCheck: data.isCheck,
           date: data.date,
+          isCheck: data.isCheck,
         });
+
+        if(data.isCheck == false){
+          this.count++
+        }
       });
 
+      _noti.sort((a, b) => (a.date > b.date) ? 1 : -1)
       this.listNoti = _noti;
-      console.log(this.listNoti);
     },
   },
 
   mounted() {
-    NotiService.getAll().on("value", this.onDataChange);
-  },
-
-  beforeDestroy() {
-    NotiService.getAll().off("value", this.onDataChange);
+    NotiService.getListNoti(this.getUser.centerId).on(
+      "value",
+      this.onDataChange
+    );
   },
 };
 </script>
@@ -146,10 +162,33 @@ export default {
   border-radius: 10px;
 }
 .badge-danger {
-  background-color: #db5565;
+  background-color:  #9B3D3D;
 }
 
 .noti {
   padding: 5px;
+}
+.unread {
+  width: 12px;
+  background-color: hsl(214deg 100% 59%);
+  border-radius: 100%;
+  height: 12px;
+  margin: auto;
+}
+
+.read {
+  width: 12px;
+  background-color: #FFFFFF;
+  border-radius: 100%;
+  height: 12px;
+  margin: auto;
+}
+.date{
+  font-size: 13px; 
+  color: hsl(214deg 100% 59%)
+}
+
+.navbar {
+  background-color: #F9AFAF;
 }
 </style>

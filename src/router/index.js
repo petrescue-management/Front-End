@@ -12,7 +12,7 @@ import PetAdopt from '@/components/staff/form-adopt/ListPetAdopt'
 import ListFormAdopt from '@/components/staff/form-adopt/ListForm'
 import Adoption from '@/components/staff/adoption/ListAdoption'
 import Volunteer from '@/components/staff/volunteer/ListVolunteer'
-
+import Profile from '@/components/staff/profile/Profile'
 Vue.use(Router)
 
 export default new Router({
@@ -69,6 +69,11 @@ export default new Router({
                     path: "/main-staff/volunteer",
                     name: "Volunteer",
                     component: Volunteer
+                },
+                {
+                    path: "/main-staff/profile",
+                    name: "Profile",
+                    component: Profile
                 },
             ]
         },

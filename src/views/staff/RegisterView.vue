@@ -62,7 +62,7 @@
     </el-dialog>
 
     <el-dialog
-      title="Tips"
+      title="Đăng ký thành công"
       :visible.sync="dialogInfo"
       width="30%"
     >

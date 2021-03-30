@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import NotificationBox from '../../components/notification/NotificationBox'
+import NotificationBox from '@/components/notification/NotificationBox'
 import Header from "@/components/staff/Header";
 import Navigation from "@/components/staff/Navigation";
 export default {

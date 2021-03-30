@@ -38,17 +38,21 @@
           <img :src="previewImage" class="uploading-image" width="150px" />
           <input type="file" accept="image/*" @change="uploadImage" />
         </el-form-item>
-
         <el-form-item label="Tên thú cưng">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="15">
             <el-form-item label="Tuổi">
-              <el-input type="number" v-model="form.age"></el-input>
+            <el-radio-group v-model="form.age">
+            <el-radio :label="1">Trẻ</el-radio>
+            <el-radio :label="2">Trưởng thành</el-radio>
+            <el-radio :label="3">Già</el-radio>
+            <el-radio :label="4">Chưa rõ</el-radio>
+          </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="9">
             <el-form-item label="Cân nặng">
               <el-input type="number" v-model="form.weight"></el-input>
             </el-form-item>

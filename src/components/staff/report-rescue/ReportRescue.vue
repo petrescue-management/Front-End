@@ -5,14 +5,6 @@
       <b-row class="info">
         <b-col sm="4">
           <img src="@/assets/img/alley.jpg" width="100%" />
-          <div class="button">
-            <el-button type="success" @click="changeStatusReceipt('approve')"
-              >Accept</el-button
-            >
-            <el-button type="danger" @click="changeStatusReceipt('reject')"
-              >Reject</el-button
-            >
-          </div>
         </b-col>
         <b-col>
           <b-row class="info">
@@ -58,42 +50,24 @@
           </b-row>
         </b-col>
       </b-row>
-      <div class="map">
-        <HereMap/>
-      </div>
     </el-main>
   </div>
 </template>
 
 <script>
-import HereMap from "@/components/here-map/HereMap";
+import DirectionsMap from "@/components/google-map/DirectionGGMap";
 export default {
   components: {
-    HereMap,
+    DirectionsMap,
   },
 
   data() {
     return {
-      lat: 10.84157038648921,
-      lng: 106.81006578904247,
-      apikey: "JZHycLyILFf7YeYjJDBvhkxs7tADa1b5U5cWuURXehQ",
     };
   },
 
   mounted() {
-    // let map = this.$refs.map;
-    // map.dropMarker({ lat: 10.84157038648921, lng: 106.81006578904247 });
-    // map.dropMarker({ lat: 10.801145010307543, lng: 106.7886794543127 });
-    // map.drawRoute(
-    //   {
-    //     lat: 10.84157038648921,
-    //     lng: 106.81006578904247,
-    //   },
-    //   {
-    //     lat: 10.801145010307543,
-    //     lng: 106.7886794543127,
-    //   }
-    // );
+
   },
 };
 </script>

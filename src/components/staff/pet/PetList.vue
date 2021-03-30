@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <el-main>
       <div class="row bg-title all-pet">
         <div style="width: 5%"></div>
@@ -8,9 +8,24 @@
         </div>
       </div>
       <div class="filter-btn">
-        <b-button pill variant="primary">Tất cả</b-button>
-        <b-button pill variant="warning">Chó</b-button>
-        <b-button pill variant="warning">Mèo</b-button>
+        <b-button
+          pill
+          :variant="type === 0 ? 'primary' : 'warning'"
+          @click="filterType(0)"
+          >Tất cả</b-button
+        >
+        <b-button
+          pill
+          :variant="type === 1 ? 'primary' : 'warning'"
+          @click="filterType(1)"
+          >Chó</b-button
+        >
+        <b-button
+          pill
+          :variant="type === 2 ? 'primary' : 'warning'"
+          @click="filterType(2)"
+          >Mèo</b-button
+        >
       </div>
       <div class="filter-dropdown" style="padding: 20px">
         <b-row>
@@ -20,7 +35,11 @@
               label="Trạng thái:"
               label-for="input-3"
             >
-              <b-form-select id="input-3" required></b-form-select>
+              <b-form-select
+                id="input-3"
+                v-model="status"
+                :options="listStatus"
+              ></b-form-select>
             </b-form-group>
           </b-col>
           <b-col>
@@ -29,25 +48,28 @@
               label="Màu sắc:"
               label-for="input-3"
             >
-              <b-form-select id="input-3" required></b-form-select>
+              <b-form-select
+                id="input-3"
+                v-model="color"
+                :options="listPetColor"
+              ></b-form-select>
             </b-form-group>
           </b-col>
-          <b-col>
-            <b-form-group id="input-group-3" label="Tên:" label-for="input-3">
-              <b-form-select id="input-3" required></b-form-select>
-            </b-form-group>
+          <b-col style="margin: auto">
+            <div style="text-align: center">
+              <b-button pill variant="info" @click="filterPet()"
+                >Tìm Boss</b-button
+              >
+            </div>
           </b-col>
         </b-row>
-        <div style="text-align: center">
-          <b-button pill variant="info">Tìm Boss</b-button>
-        </div>
       </div>
       <div v-for="pet in listPet" :key="pet.id" class="contain">
         <div
           style="width: 100%; height: 185px; overflow: hidden"
           @click="goToDetail(pet.id)"
         >
-          <img :src="pet.img" width="100%" height="100%" />
+          <img class="pet-img" :src="pet.img" width="100%" height="100%" />
         </div>
         <div class="overlay">
           <p class="name-pet" @click="goToDetail(pet.id)">{{ pet.name }}</p>
@@ -65,7 +87,7 @@
           {{ pet.petFurColorName }}
           <br />
           <p class="att-pet">Tiêm phòng:</p>
-          {{ pet.isVaccinated == 'True' ? "Có" : "Không"}}
+          {{ pet.isVaccinated == "True" ? "Có" : "Không" }}
         </div>
       </div>
 
@@ -85,11 +107,7 @@
         ></el-button>
       </el-popover>
     </el-main>
-    <el-dialog
-      title="Thêm thú cưng"
-      :visible.sync="dialogVisible"
-      center
-    >
+    <el-dialog title="Thêm thú cưng" :visible.sync="dialogVisible" center>
       <AddPet v-if="dialogVisible" />
     </el-dialog>
   </div>
@@ -98,17 +116,25 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import { petStatus } from "@/enum/pet-status-enum";
-import { petGender } from '@/enum/gender-enum'
+import { petGender } from "@/enum/gender-enum";
+import { getAllPetColorsAPI } from "@/api/staff/petApi";
 import AddPet from "./modal/AddPet";
 export default {
   components: {
-    AddPet
+    AddPet,
   },
   data() {
     return {
       listPet: [],
       totalPage: 0,
       dialogVisible: false,
+      loading: false,
+      type: 0,
+      listPetColor: [],
+      listStatus: [],
+      status: 0,
+      color: "",
+      name: "",
     };
   },
   computed: {
@@ -122,6 +148,15 @@ export default {
 
   methods: {
     ...mapActions("petInfo", ["getListPetPaging"]),
+
+    filterType(type) {
+      this.type = type;
+      this.getlistPet(0);
+    },
+
+    filterPet() {
+      this.getlistPet(0);
+    },
 
     getTableData(list) {
       this.listPet = [];
@@ -139,21 +174,32 @@ export default {
         };
         this.listPet.push(pet);
       });
-
-      console.log(this.listPet);
     },
 
     async getlistPet(page) {
+      this.loading = true;
+
+      let _type = "";
+      if (this.type == 0) {
+        _type = "";
+      } else if (this.type == 1) {
+        _type = "Dog";
+      } else if (this.type == 2) {
+        _type = "Cat";
+      }
+
       let data = {
-        type: "",
+        type: _type,
         breed: "",
-        color: "",
-        status: 0,
+        color: this.color,
+        status: this.status,
         centerId: this.getUser.centerId,
         pageIndex: page,
       };
+
       await this.getListPetPaging(data);
       this.getTableData(JSON.parse(JSON.stringify(this.getListPetFromStore)));
+      this.loading = false;
     },
 
     goToDetail(id) {
@@ -163,9 +209,36 @@ export default {
     goToAddPet() {
       this.dialogVisible = true;
     },
+
+    getStatus() {
+      petStatus.forEach((values, keys) => {
+        let status = {
+          value: keys,
+          text: values.name,
+        };
+        this.listStatus.push(status);
+      });
+    },
+
+    async getAllPetColors() {
+      this.listPetColor = [];
+      await getAllPetColorsAPI()
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach((element) => {
+            let petColor = {
+              value: element.petFurColorName,
+              text: element.petFurColorName,
+            };
+            this.listPetColor.push(petColor);
+          });
+        });
+    },
   },
 
   created() {
+    this.getAllPetColors();
+    this.getStatus();
     this.getlistPet(0);
   },
 };
@@ -238,7 +311,7 @@ export default {
 
 .btn {
   margin: 0 15px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   padding: 10px 30px;
   color: #fff;
@@ -248,5 +321,14 @@ export default {
   position: fixed;
   bottom: 5%;
   right: 3%;
+}
+
+.pet-img {
+  transition: 0.5s;
+}
+
+.pet-img:hover {
+  width: 105%;
+  height: 105%;
 }
 </style>

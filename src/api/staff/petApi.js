@@ -1,7 +1,7 @@
 import { baseURL } from "../../enum/consts";
 
 export function getListPetAPI(params) {
-    return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.type}&PetFurColorName=${params.type}&fields=detail&limit=10`, {
+    return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=10`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -57,7 +57,7 @@ export function getAllPetColorsAPI() {
 }
 
 export function getPetBreedByTypeIdsAPI(typeId) {
-    return fetch(baseURL + `api/get-pet-breeds-by-type-id/${typeId}`, {
+    return fetch(baseURL + `api/get-pet-breeds-by-type-id?id=${typeId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

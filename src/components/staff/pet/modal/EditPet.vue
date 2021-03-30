@@ -82,10 +82,10 @@
 import firebase from "firebase";
 import { mapGetters, mapActions } from "vuex";
 import {
-  createNewPetApi,
-  getAllPetTypeApi,
-  getPetBreedByTypeIdsApi,
-  getAllPetColorsApi,
+  createNewPetAPI,
+  getAllPetTypeAPI,
+  getPetBreedByTypeIdsAPI,
+  getAllPetColorsAPI,
 } from "@/api/staff/petApi";
 export default {
   name: "AddPet",
@@ -130,7 +130,7 @@ export default {
     ...mapActions("petInfo", ["getPetById"]),
     async getAllPetColors() {
       this.listPetColor = [];
-      await getAllPetColorsApi()
+      await getAllPetColorsAPI()
         .then((response) => response.json())
         .then((data) =>
           data.forEach((element) => {
@@ -145,7 +145,7 @@ export default {
 
     async getPetBreedByTypeId(typeId) {
       this.listPetBreed = [];
-      await getPetBreedByTypeIdsApi(typeId)
+      await getPetBreedByTypeIdsAPI(typeId)
         .then((response) => response.json())
         .then((data) =>
           data.forEach((element) => {

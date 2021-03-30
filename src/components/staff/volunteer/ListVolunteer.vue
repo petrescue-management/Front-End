@@ -27,7 +27,7 @@
       <br /><br />
       <div>
         <b-card header="Danh sách tình nguyện viên" header-tag="header">
-          <el-table :data="listForm">
+          <el-table :data="listForm" v-loading="loading">
             <el-table-column label="Ảnh cá nhân" width="130" height="180">
               <template slot-scope="scope">
                 <img :src="scope.row.img" width="70px" />
@@ -105,6 +105,7 @@ export default {
     return {
       listForm: [],
       dialogVisible: false,
+      loading: false,
       id: null,
       form: {
         email: "",
@@ -171,6 +172,7 @@ export default {
       let token = this.getUser.token;
       await this.getListVolunteerOfCenter(token);
       this.getTableData(JSON.parse(JSON.stringify(this.getListVolunteer)));
+      this.loading = false
     },
   },
 
@@ -182,6 +184,7 @@ export default {
   },
 
   created() {
+    this.loading = true
     this.getList();
   },
 };
@@ -193,7 +196,6 @@ export default {
   color: #333;
   height: 89vh;
   padding: 0;
-  overflow-y: hidden;
 }
 .title {
   font-size: 35px;

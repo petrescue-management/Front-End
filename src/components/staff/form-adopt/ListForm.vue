@@ -7,12 +7,11 @@
           <h1 class="title">Danh sách nhận nuôi</h1>
         </div>
       </div>
-      <br />
       <div class="pet-info">
         <h3>Thông Tin của Pet</h3>
         <hr />
         <b-row class="info">
-          <b-col sm="4">
+          <b-col sm="4" style="display: block; margin: auto">
             <img :src="pet.imageUrl" width="80%" />
           </b-col>
           <b-col>
@@ -110,7 +109,7 @@
           layout="prev, pager, next"
         ></el-pagination> -->
       </div>
-      <br/><br/><br/><br/>
+      <br /><br /><br /><br />
     </el-main>
     <el-dialog
       title="DETAILS OF REGISTRATION FORM"

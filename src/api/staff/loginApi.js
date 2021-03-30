@@ -21,3 +21,13 @@ export function getDetailUser(token) {
         }
     });
 }
+
+export function loginVolunteerAPI(params) {
+    return fetch(baseURL + `/jwt?Token=${params.token}&DeviceToken=${params.deviceToken}&ApplicationName=${'Petrescue.app.volunteer'}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+        }
+    });
+}

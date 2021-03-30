@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-main>
+    <el-main v-loading="loading">
       <div class="row bg-title pet-detail">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
@@ -9,7 +9,7 @@
       </div>
       <div class="pet-info">
         <b-row class="info">
-          <b-col sm="4">
+          <b-col sm="4" style="display: block; margin: auto">
             <img :src="pet.imageUrl" width="100%" />
             <div class="button">
               <el-button type="info" @click="changeStatusReceipt('approve')"
@@ -98,6 +98,42 @@
             </div>
           </div>
         </div>
+        <h3>Thông Tin</h3>
+        <hr />
+        <div class="row">
+          <div class="col-3">
+            <div class="row">
+              <div class="col-2">
+                <i
+                  :class="
+                    pet.isVaccinated == 'True'
+                      ? 'text-success fas fa-check-circle'
+                      : 'text-warning fas fa-question-circle'
+                  "
+                ></i>
+              </div>
+              <div>
+                <span>Tiêm phòng bệnh</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="row">
+              <div class="col-2">
+                <i
+                  :class="
+                    pet.isSterilized == 'True'
+                      ? 'text-success fas fa-check-circle'
+                      : 'text-warning fas fa-question-circle'
+                  "
+                ></i>
+              </div>
+              <div>
+                <span>Tiệt trùng</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </el-main>
   </div>
@@ -125,6 +161,7 @@ export default {
         imageUrl: null,
         desc: null,
       },
+      loading: false,
     };
   },
 
@@ -155,12 +192,14 @@ export default {
   },
 
   async created() {
+    this.loading = true
     let petId = this.$router.history.current.params.id;
     let data = {
       petId,
     };
     await this.getPetById(data);
     this.getPetInfo(this.getPetFromStore);
+    this.loading = false
   },
 };
 </script>

@@ -28,6 +28,7 @@ export default {
   margin: 0;
   padding: 0;
   width: 100%;
+  overflow-y: hidden;
 }
 
 .el-dialog{
