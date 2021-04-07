@@ -4,9 +4,9 @@
       <div class="vue-tempalte">
         <form @submit.prevent="submit" style="text-align: center">
           <img
-            src="@/assets/img/Logo 4_circle.png"
-            width="80px"
-            height="80px"
+            src="@/assets/img/Logo_withtitle_circle.png"
+            width="120px"
+            height="120px"
             style="margin-bottom: 20px"
           />
           <button
@@ -19,7 +19,7 @@
           </button>
           <p class="sign-up">
             Chưa có tài khoản cho trung tâm ?
-            <span class="register" @click="registerPage()">Đăng ký ngay</span>
+            <span class="register" @click="registerPage(1)">Đăng ký ngay</span>
           </p>
         </form>
       </div>
@@ -96,8 +96,11 @@ export default {
       this.fullscreenLoading = false;
     },
 
-    registerPage() {
+    registerPage(page) {
+      if(page === 1)
       this.$router.push({ name: "RegisterCenter" });
+      else if (page === 2)
+      this.$router.push({ name: "RegisterVolunteer" });
     },
   },
 };

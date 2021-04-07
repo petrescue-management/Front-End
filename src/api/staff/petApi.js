@@ -11,7 +11,7 @@ export function getListPetAPI(params) {
 }
 
 export function getPetByIdAPI(params) {
-    return fetch(baseURL + `api/get-pet?PetId=${params.petId}&fields=detail&limit=-1`, {
+    return fetch(baseURL + `api/get-document-pet?petProfileId=${params.petId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -23,19 +23,16 @@ export function getPetByIdAPI(params) {
 export function createNewPetAPI(data, token) {
     let requestBody = {
         petStatus: data.petStatus,
-        centerId: data.centerId,
         petName: data.petName,
         petGender: data.petGender,
         petAge: data.petAge,
-        weight: data.weight,
-        description: data.description,
+        petDocumentId: data.petDocumentId,
+        petProfileDescription: data.description,
         petBreedId: data.petBreedId,
         petFurColorId: data.petFurColorId,
-        isVaccinated: data.isVaccinated,
-        isSterilized: data.isSterilized,
         imageUrl: data.imageUrl
     }
-    return fetch(baseURL + `api/create-new-pet`, {
+    return fetch(baseURL + `api/create-pet-profile`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -73,5 +70,36 @@ export function getAllPetTypeAPI() {
             "content-type": "application/json",
             Accept: "*/*",
         }
+    });
+}
+
+export function createPetTracking(data, token) {
+    let requestBody = {
+        petProfileId: data.petProfileId,
+        isVaccinated: data.isVaccinated,
+        isSterilized: data.isSterilized,
+        imageUrl: data.imageUrl,
+        description: data.description,
+        weight: data.weight,
+    }
+    return fetch(baseURL + `/api/create-pet-tracking`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(requestBody)
+    });
+}
+
+export function getPetTrackingByIdAPI(data) {
+    return fetch(baseURL + `/api/get-pet-tracking-by-id?petTrackingId=${data.petTrackingId}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + data.token
+        },
     });
 }

@@ -10,3 +10,13 @@ export function createCenterForm(data) {
         body: JSON.stringify(data),
     });
 }
+
+export function getCenterOpeningAPI(status) {
+    return fetch(baseURL + `api/search-center?Status=${status}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+        },
+    });
+}

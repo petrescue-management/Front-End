@@ -4,6 +4,7 @@ import router from './router'
 import store from "./store/index";
 import firebase from './firebase';
 import * as ElementUI from 'element-ui';
+import locale from 'element-ui/lib/locale/lang/en'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import 'element-ui/lib/theme-chalk/index.css';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
@@ -13,8 +14,9 @@ import '@/assets/sass/light-bootstrap-dashboard.scss'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
+
 Vue.config.productionTip = false
-Vue.use(ElementUI);
+Vue.use(ElementUI, { locale });
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(VueGoogleMaps, {

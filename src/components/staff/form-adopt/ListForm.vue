@@ -36,30 +36,16 @@
             <hr class="tag" />
             <b-row class="info">
               <b-col>
-                Cân nặng: <span class="value">{{ pet.weight }}</span>
-              </b-col>
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
                 Giới tính: <span class="value">{{ pet.petGender }}</span>
               </b-col>
             </b-row>
             <hr class="tag" />
             <b-row class="info">
-              <b-col>
-                Tình trạng:
-                <span
-                  ><el-tag class="status" :type="'warning'">
-                    Injured
-                  </el-tag></span
-                >
-              </b-col>
             </b-row>
           </b-col>
         </b-row>
       </div>
-      <div style="padding: 50px">
+      <div style="padding: 30px 50px;">
         <h3>Danh sách đơn nhận nuôi</h3>
         <hr />
         <el-table :data="listForm">
@@ -123,9 +109,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { adoptionFormStatus } from "@/enum/adoption-form-status";
+import { adoptionFormStatus,petGender} from "@/enum/consts";
 import FormAdoptDetail from "./modal/FormAdoptDetail";
-import { petGender } from "@/enum/gender-enum";
 import EventBus from "@/EventBus";
 export default {
   components: {
@@ -251,7 +236,7 @@ export default {
 }
 
 .pet-info {
-  padding: 50px;
+  padding: 10px 50px;
 }
 .tag {
   border-top: 1px dashed #8c8b8b;

@@ -7,25 +7,87 @@
           <h1 class="title">Pet đang chờ nhận nuôi</h1>
         </div>
       </div>
+      <div class="filter-btn">
+        <b-button
+          pill
+          :variant="type === 'Chó' ? 'primary' : 'warning'"
+          @click="filterType('Chó')"
+          >Chó</b-button
+        >
+        <b-button
+          pill
+          :variant="type === 'Mèo' ? 'primary' : 'warning'"
+          @click="filterType('Mèo')"
+          >Mèo</b-button
+        >
+      </div>
+      <div class="filter-dropdown" style="padding: 20px">
+        <b-row>
+          <b-col>
+            <b-form-group
+              id="input-group-3"
+              label="Màu sắc:"
+              label-for="input-3"
+            >
+              <b-form-select
+                id="input-3"
+                v-model="color"
+                :options="listPetColor"
+              ></b-form-select>
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group id="input-group-3" label="Giống:" label-for="input-3">
+              <b-form-select
+                id="input-3"
+                v-model="breed"
+                :options="listPetBreed"
+              ></b-form-select>
+            </b-form-group>
+          </b-col>
+          <b-col style="margin: auto">
+            <div style="text-align: center">
+              <b-button pill variant="info" @click="filterPet()"
+                >Tìm Boss</b-button
+              >
+            </div>
+          </b-col>
+        </b-row>
+      </div>
       <br />
       <div>
-        <div v-for="pet in listPetWaiting" :key="pet.petId" class="contain" @click="goToListForm(pet.petId)">
-          <el-badge :value="pet.count" class="item">
-            <div style="width: 100%; height: 185px; overflow: hidden">
-              <img :src="pet.imgUrl" width="100%" height="100%" />
+        <div
+          v-for="pet in listPetWaiting"
+          :key="pet.petId"
+          class="contain"
+          @click="goToListForm(pet.petId)"
+        >
+          <div style="box-shadow: 5px 10px:">
+            <el-badge :value="pet.count" class="item">
+              <div
+                style="
+                  width: 100%;
+                  height: 185px;
+                  overflow: hidden;
+                  border-top-left-radius: 5%;
+                  border-top-right-radius: 5%;
+                "
+              >
+                <img :src="pet.imgUrl" width="100%" height="100%" />
+              </div>
+            </el-badge>
+            <div class="overlay">
+              <p class="name-pet">{{ pet.petName }}</p>
+              <hr class="tag" />
+              <p class="att-pet">Giới tính :</p>
+              {{ pet.gender }}
+              <br />
+              <p class="att-pet">Tuổi :</p>
+              {{ pet.age }}
+              <br />
+              <p class="att-pet">Giống :</p>
+              {{ pet.breedName }}
             </div>
-          </el-badge>
-          <div class="overlay">
-            <p class="name-pet">{{ pet.petName}}</p>
-            <hr class="tag" />
-            <p class="att-pet">Giới tính :</p>
-            {{pet.gender}}
-            <br />
-            <p class="att-pet">Tuổi :</p>
-            {{pet.age}}
-            <br />
-            <p class="att-pet">Giống :</p>
-            {{pet.breedName}}
           </div>
         </div>
         <!-- <el-pagination
@@ -42,6 +104,11 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import {
+  getAllPetColorsAPI,
+  getAllPetTypeAPI,
+  getPetBreedByTypeIdsAPI,
+} from "@/api/staff/petApi";
 export default {
   computed: {
     ...mapGetters("adoptionForm", ["getListPetWaiting"]),
@@ -58,7 +125,14 @@ export default {
       total: 0,
       dialogVisible: false,
       id: null,
-      loading: false
+      type: "Chó",
+      loading: false,
+      listPetColor: [],
+      color: "",
+      name: "",
+      breed: "",
+      listPetType: [],
+      listPetBreed: [],
     };
   },
 
@@ -85,17 +159,89 @@ export default {
       });
     },
 
+    filterType(type) {
+      this.type = type;
+      this.getPetBreedByTypeId();
+      this.getlistPet(0);
+    },
+
+    filterPet() {
+      this.getlistPet(0);
+    },
+
     async getList() {
+      this.loading = true;
       let token = this.getUser.token;
       await this.getListPetToBeRegisted(token);
       this.getTableData(JSON.parse(JSON.stringify(this.getListPetWaiting)));
+      this.loading = false;
+    },
+
+    async getPetBreedByTypeId() {
+      let typeId = this.listPetType.filter((list) => {
+        return list.name == this.type;
+      });
+      console.log(typeId);
+      this.listPetBreed = [];
+      let all = {
+        value: "",
+        text: "Tất cả",
+      };
+      this.listPetBreed.push(all);
+      await getPetBreedByTypeIdsAPI(typeId[0].id)
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petbreed = {
+              value: element.petBreedName,
+              text: element.petBreedName,
+            };
+            this.listPetBreed.push(petbreed);
+          })
+        );
+    },
+
+    async getAllPetColors() {
+      this.listPetColor = [];
+      let all = {
+        value: "",
+        text: "Tất cả",
+      };
+      this.listPetColor.push(all);
+      await getAllPetColorsAPI()
+        .then((response) => response.json())
+        .then((data) => {
+          data.forEach((element) => {
+            let petColor = {
+              value: element.petFurColorName,
+              text: element.petFurColorName,
+            };
+            this.listPetColor.push(petColor);
+          });
+        });
+    },
+
+    async getAllPetType() {
+      this.listPetType = [];
+      await getAllPetTypeAPI()
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petType = {
+              id: element.petTypeId,
+              name: element.petTypeName,
+            };
+            this.listPetType.push(petType);
+          })
+        );
     },
   },
 
   async created() {
-    this.loading = true;
+    await this.getAllPetType();
+    await this.getPetBreedByTypeId();
+    this.getAllPetColors();
     await this.getList();
-    this.loading = false
   },
 };
 </script>
@@ -119,6 +265,8 @@ export default {
   position: relative;
   margin-top: -5px;
   padding: 20px 20px;
+  border-top-left-radius: 5%;
+  border-top-right-radius: 5%;
 }
 
 .overlay {
@@ -164,5 +312,24 @@ export default {
   color: #fff;
   text-transform: capitalize;
   font-weight: 700;
+}
+
+.filter-btn {
+  text-align: center;
+  margin: 15px;
+}
+
+.btn {
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 10px 30px;
+  color: #fff;
+}
+
+.float-btn {
+  position: fixed;
+  bottom: 5%;
+  right: 3%;
 }
 </style>

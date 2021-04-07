@@ -9,140 +9,78 @@
       </div>
       <div class="pet-info">
         <b-row class="info">
-          <b-col sm="4" style="display: block; margin: auto">
-            <img :src="pet.imageUrl" width="100%" />
-            <div class="button">
-              <el-button type="info" @click="changeStatusReceipt('approve')"
-                >Chỉnh sửa thông tin</el-button
-              >
-            </div>
+          <b-col sm="4" style="display: block">
+            <el-image
+              style="width: 100%"
+              :src="pet.imageUrl"
+              :preview-src-list="listImgUrl"
+            >
+            </el-image>
           </b-col>
-          <b-col>
-            <h2>{{ pet.petName }}</h2>
-            <b-row class="info">
-              <b-col
-                >Giống: <span class="value">{{ pet.petBreedName }}</span></b-col
-              >
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
-                Màu sắc: <span class="value">{{ pet.petFurColorName }}</span>
-              </b-col>
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
-                Tuổi: <span class="value">{{ pet.petAge }}</span>
-              </b-col>
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
-                Cân nặng: <span class="value">{{ pet.weight }}</span>
-              </b-col>
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
-                Giới tính: <span class="value">{{ pet.petGender }}</span>
-              </b-col>
-            </b-row>
-            <hr class="tag" />
-            <b-row class="info">
-              <b-col>
-                Tình trạng:
-                <span
-                  ><el-tag class="status" :type="'warning'">
-                    Injured
-                  </el-tag></span
-                >
-              </b-col>
-            </b-row>
+          <b-col sm="8">
+            <el-tabs type="border-card">
+              <el-tab-pane label="Thông tin của bé">
+                <InformationPet :pet="pet" />
+              </el-tab-pane>
+              <el-tab-pane label="Cập nhật tình trạng">
+                <div style="padding: 0px 10px 20px">
+                  <el-button
+                    type="primary"
+                    icon="el-icon-document-add"
+                    @click="dialogAddTracking = true"
+                    :disabled="pet.petStatus == 'Đã nhận nuôi' ? true : false"
+                    >Cập nhật thêm</el-button
+                  >
+                </div>
+                <div v-if="pet.petTracking">
+                  <PetTracking :petTracking="pet.petTracking" />
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="Người phát hiện">
+                <div v-if="pet.finderForm">
+                  <FinderForm
+                    :pickerForm="pet.pickerForm"
+                    :finderForm="pet.finderForm"
+                  />
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="Người mang về">
+                <div v-if="pet.pickerForm">
+                  <PickerForm :pickerForm="pet.pickerForm" />
+                </div>
+              </el-tab-pane>
+            </el-tabs>
           </b-col>
         </b-row>
-        <br />
-        <h3>Thông Tin</h3>
-        <hr />
-        <div class="row">
-          <div class="col-3">
-            <div class="row">
-              <div class="col-2">
-                <i
-                  :class="
-                    pet.isVaccinated == 'True'
-                      ? 'text-success fas fa-check-circle'
-                      : 'text-warning fas fa-question-circle'
-                  "
-                ></i>
-              </div>
-              <div>
-                <span>Tiêm phòng bệnh</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="row">
-              <div class="col-2">
-                <i
-                  :class="
-                    pet.isSterilized == 'True'
-                      ? 'text-success fas fa-check-circle'
-                      : 'text-warning fas fa-question-circle'
-                  "
-                ></i>
-              </div>
-              <div>
-                <span>Tiệt trùng</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <h3>Thông Tin</h3>
-        <hr />
-        <div class="row">
-          <div class="col-3">
-            <div class="row">
-              <div class="col-2">
-                <i
-                  :class="
-                    pet.isVaccinated == 'True'
-                      ? 'text-success fas fa-check-circle'
-                      : 'text-warning fas fa-question-circle'
-                  "
-                ></i>
-              </div>
-              <div>
-                <span>Tiêm phòng bệnh</span>
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="row">
-              <div class="col-2">
-                <i
-                  :class="
-                    pet.isSterilized == 'True'
-                      ? 'text-success fas fa-check-circle'
-                      : 'text-warning fas fa-question-circle'
-                  "
-                ></i>
-              </div>
-              <div>
-                <span>Tiệt trùng</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </el-main>
+    <el-dialog
+      title="Cập nhật tình trạng"
+      :visible.sync="dialogAddTracking"
+      center
+    >
+      <AddTracking :petProfileId="pet.petProfileId" v-if="dialogAddTracking" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { petGender } from "@/enum/gender-enum";
+import { petGender, petStatus } from "@/enum/consts";
+import InformationPet from "./modal/InformationPet.vue";
+import PetTracking from "./modal/PetTracking.vue";
+import AddTracking from "./modal/AddTracking.vue";
+import FinderForm from "./modal/FinderForm.vue";
+import EventBus from "@/EventBus";
+import PickerForm from "./modal/PickerForm.vue";
 export default {
+  components: {
+    InformationPet,
+    PetTracking,
+    AddTracking,
+    FinderForm,
+    PickerForm,
+  },
   data() {
     return {
       pet: {
@@ -153,15 +91,17 @@ export default {
         petTypeName: null,
         petGender: null,
         petAge: null,
-        weight: null,
-        isVaccinated: null,
-        isSterilized: null,
         petBreedName: null,
         petFurColorName: null,
         imageUrl: null,
-        desc: null,
+        petProfileDescription: null,
+        petTracking: null,
+        finderForm: null,
+        pickerForm: null,
       },
+      listImgUrl: [],
       loading: false,
+      dialogAddTracking: false,
     };
   },
 
@@ -174,32 +114,48 @@ export default {
 
     getPetInfo(petInfo) {
       this.pet = {
-        petId: petInfo.petId,
+        petProfileId: petInfo.petProfileId,
+        petDocumentId: petInfo.petDocumentId,
         centerId: petInfo.centerId,
-        petStatus: petInfo.petStatus,
+        petStatus: petStatus.get(petInfo.petStatus).name,
+        color: petStatus.get(petInfo.petStatus).color,
         petName: petInfo.petName,
-        petTypeName: petInfo.petTypeName,
         petGender: petGender.get(petInfo.petGender),
         petAge: petInfo.petAge,
-        weight: petInfo.weight,
-        isVaccinated: petInfo.isVaccinated,
-        isSterilized: petInfo.isSterilized,
         petBreedName: petInfo.petBreedName,
         petFurColorName: petInfo.petFurColorName,
         imageUrl: petInfo.imageUrl,
+        petProfileDescription: petInfo.petProfileDescription,
+        petTracking: petInfo.petTracking,
+        finderForm: petInfo.finderForm,
+        pickerForm: petInfo.pickerForm,
       };
+      this.listImgUrl.push(petInfo.imageUrl);
+      console.log(this.pet);
+    },
+
+    async getData() {
+      this.loading = true;
+      let petId = this.$router.history.current.params.id;
+      let data = {
+        petId,
+      };
+      await this.getPetById(data);
+      this.getPetInfo(this.getPetFromStore);
+
+      this.loading = false;
     },
   },
 
+  mounted() {
+    EventBus.$on("CloseAddTrackingDialog", (visible) => {
+      this.dialogAddTracking = visible;
+      this.getData();
+    });
+  },
+
   async created() {
-    this.loading = true
-    let petId = this.$router.history.current.params.id;
-    let data = {
-      petId,
-    };
-    await this.getPetById(data);
-    this.getPetInfo(this.getPetFromStore);
-    this.loading = false
+    await this.getData();
   },
 };
 </script>
@@ -233,13 +189,5 @@ export default {
 .button {
   text-align: center;
   padding-top: 20px;
-}
-
-.text-warning {
-  color: #ffc107;
-}
-
-.text-success {
-  color: #28a745;
 }
 </style>

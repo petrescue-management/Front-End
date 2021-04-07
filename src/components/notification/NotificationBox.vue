@@ -23,8 +23,8 @@
 
 <script>
 import firebase from "firebase";
-import NotiService from "@/services/NotiService";
-import { Notification } from "@/enum/notification-enum";
+// import NotiService from "@/services/NotiService";
+// import { Notification } from "@/enum/consts";
 export default {
   name: "NotificationBox",
 
@@ -49,9 +49,9 @@ export default {
       try {
         this.messaging.onMessage((payload) => {
           console.log("Message received. ", payload);
-          let type = payload.data.Type;
-          this.setSubject(Notification.get(parseInt(type)).message);
-          this.saveNotiToRealtimeDB(payload.data.AdoptionRegistrationId,parseInt(type))
+          // let type = payload.data.Type;
+          // this.setSubject(Notification.get(parseInt(type)).message);
+          // this.saveNotiToRealtimeDB(payload.data.AdoptionRegistrationId,parseInt(type))
           this.notify = true;
           setTimeout(() => {
             this.notify = false;
@@ -66,32 +66,32 @@ export default {
       this.subject = message;
     },
 
-    saveNotiToRealtimeDB(notiId,type) {
-      let today = new Date();
-      let date =
-        today.getFullYear() +
-        "-" +
-        (today.getMonth() + 1) +
-        "-" +
-        today.getDate();
-      let time =
-        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      let datetime = date + " " + time;
+    // saveNotiToRealtimeDB(notiId,type) {
+    //   let today = new Date();
+    //   let date =
+    //     today.getFullYear() +
+    //     "-" +
+    //     (today.getMonth() + 1) +
+    //     "-" +
+    //     today.getDate();
+    //   let time =
+    //     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    //   let datetime = date + " " + time;
 
-      let data = {
-        date: datetime,
-        isCheck: false,
-        type: type,
-      };
+    //   let data = {
+    //     date: datetime,
+    //     isCheck: false,
+    //     type: type,
+    //   };
 
-      NotiService.createNoti(this.getUser.centerId, notiId, data)
-        .then(() => {
-          console.log("Created new item successfully!");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
+    //   NotiService.createNoti(this.getUser.centerId, notiId, data)
+    //     .then(() => {
+    //       console.log("Created new item successfully!");
+    //     })
+    //     .catch((e) => {
+    //       console.log(e);
+    //     });
+    // },
   },
 
   created() {

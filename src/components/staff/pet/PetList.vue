@@ -10,20 +10,14 @@
       <div class="filter-btn">
         <b-button
           pill
-          :variant="type === 0 ? 'primary' : 'warning'"
-          @click="filterType(0)"
-          >Tất cả</b-button
-        >
-        <b-button
-          pill
-          :variant="type === 1 ? 'primary' : 'warning'"
-          @click="filterType(1)"
+          :variant="type === 'Chó' ? 'primary' : 'warning'"
+          @click="filterType('Chó')"
           >Chó</b-button
         >
         <b-button
           pill
-          :variant="type === 2 ? 'primary' : 'warning'"
-          @click="filterType(2)"
+          :variant="type === 'Mèo' ? 'primary' : 'warning'"
+          @click="filterType('Mèo')"
           >Mèo</b-button
         >
       </div>
@@ -55,20 +49,22 @@
               ></b-form-select>
             </b-form-group>
           </b-col>
-          <b-col style="margin: auto">
-            <div style="text-align: center">
-              <b-button pill variant="info" @click="filterPet()"
-                >Tìm Boss</b-button
-              >
-            </div>
+          <b-col>
+            <b-form-group id="input-group-3" label="Giống:" label-for="input-3">
+              <b-form-select
+                id="input-3"
+                v-model="breed"
+                :options="listPetBreed"
+              ></b-form-select>
+            </b-form-group>
           </b-col>
         </b-row>
+        <div style="text-align: center">
+          <b-button pill variant="info" @click="filterPet()">Tìm Boss</b-button>
+        </div>
       </div>
       <div v-for="pet in listPet" :key="pet.id" class="contain">
-        <div
-          style="width: 100%; height: 185px; overflow: hidden"
-          @click="goToDetail(pet.id)"
-        >
+        <div class="contain-img" @click="goToDetail(pet.id)">
           <img class="pet-img" :src="pet.img" width="100%" height="100%" />
         </div>
         <div class="overlay">
@@ -86,8 +82,6 @@
           <p class="att-pet">Màu sắc :</p>
           {{ pet.petFurColorName }}
           <br />
-          <p class="att-pet">Tiêm phòng:</p>
-          {{ pet.isVaccinated == "True" ? "Có" : "Không" }}
         </div>
       </div>
 
@@ -115,9 +109,12 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { petStatus } from "@/enum/pet-status-enum";
-import { petGender } from "@/enum/gender-enum";
-import { getAllPetColorsAPI } from "@/api/staff/petApi";
+import { petStatus, petGender, typePet } from "@/enum/consts";
+import {
+  getAllPetColorsAPI,
+  getAllPetTypeAPI,
+  getPetBreedByTypeIdsAPI,
+} from "@/api/staff/petApi";
 import AddPet from "./modal/AddPet";
 export default {
   components: {
@@ -129,12 +126,15 @@ export default {
       totalPage: 0,
       dialogVisible: false,
       loading: false,
-      type: 0,
+      type: typePet.dog,
       listPetColor: [],
       listStatus: [],
       status: 0,
       color: "",
       name: "",
+      breed: "",
+      listPetType: [],
+      listPetBreed: [],
     };
   },
   computed: {
@@ -151,11 +151,36 @@ export default {
 
     filterType(type) {
       this.type = type;
+      this.getPetBreedByTypeId();
       this.getlistPet(0);
     },
 
     filterPet() {
       this.getlistPet(0);
+    },
+
+    async getPetBreedByTypeId() {
+      let typeId = this.listPetType.filter((list) => {
+        return list.name == this.type;
+      });
+      console.log(typeId);
+      this.listPetBreed = [];
+      let all = {
+        value: "",
+        text: "Tất cả",
+      };
+      this.listPetBreed.push(all);
+      await getPetBreedByTypeIdsAPI(typeId[0].id)
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petbreed = {
+              value: element.petBreedName,
+              text: element.petBreedName,
+            };
+            this.listPetBreed.push(petbreed);
+          })
+        );
     },
 
     getTableData(list) {
@@ -178,19 +203,9 @@ export default {
 
     async getlistPet(page) {
       this.loading = true;
-
-      let _type = "";
-      if (this.type == 0) {
-        _type = "";
-      } else if (this.type == 1) {
-        _type = "Dog";
-      } else if (this.type == 2) {
-        _type = "Cat";
-      }
-
       let data = {
-        type: _type,
-        breed: "",
+        type: this.type,
+        breed: this.breed,
         color: this.color,
         status: this.status,
         centerId: this.getUser.centerId,
@@ -222,6 +237,11 @@ export default {
 
     async getAllPetColors() {
       this.listPetColor = [];
+      let all = {
+        value: "",
+        text: "Tất cả",
+      };
+      this.listPetColor.push(all);
       await getAllPetColorsAPI()
         .then((response) => response.json())
         .then((data) => {
@@ -234,9 +254,26 @@ export default {
           });
         });
     },
+
+    async getAllPetType() {
+      this.listPetType = [];
+      await getAllPetTypeAPI()
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petType = {
+              id: element.petTypeId,
+              name: element.petTypeName,
+            };
+            this.listPetType.push(petType);
+          })
+        );
+    },
   },
 
-  created() {
+  async created() {
+    await this.getAllPetType();
+    await this.getPetBreedByTypeId();
     this.getAllPetColors();
     this.getStatus();
     this.getlistPet(0);
@@ -264,15 +301,25 @@ export default {
   text-align: left;
   width: 100%;
   padding: 7px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
 .name-pet {
   margin: 0px;
   padding: 5px 0px;
   color: #222222;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 600;
   display: inline;
   transition: 0.5s;
+}
+
+.contain-img {
+  width: 100%;
+  height: 185px;
+  overflow: hidden;
+  border-top-left-radius: 5%;
+  border-top-right-radius: 5%
 }
 
 .name-pet:hover {

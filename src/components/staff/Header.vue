@@ -1,7 +1,11 @@
 <template>
   <b-navbar toggleable="lg">
     <b-navbar-brand href="#">
-      <img src="@/assets/img/Logo_withtitle_circle.png" width="50px" height="50px" />
+      <img
+        src="@/assets/img/Logo_notitle_circle.png"
+        width="45px"
+        height="45px"
+      />
       PET RESCUE
     </b-navbar-brand>
 
@@ -55,9 +59,9 @@
 </template>
 <script>
 import { mapActions } from "vuex";
-import NotiService from "../../services/NotiService";
+import CenterService from "../../services/CenterService";
 import firebase from "firebase";
-import { Notification } from "@/enum/notification-enum";
+import { Notification } from "@/enum/consts";
 export default {
   name: "Navbar",
   computed: {
@@ -77,9 +81,9 @@ export default {
 
     goToDetail(id) {
       let value = {
-        isCheck : true
-      }
-      NotiService.updateNoti(this.getUser.centerId,id,value);
+        isCheck: true,
+      };
+      CenterService.updateNoti(this.getUser.centerId, id, value);
       this.$router.push({ name: "ReportRescue" });
     },
 
@@ -106,22 +110,49 @@ export default {
           message: Notification.get(data.type).message,
           logo: Notification.get(data.type).logo,
           type: data.type,
-          date: data.date,
+          date: this.getDatetime(data.date),
           isCheck: data.isCheck,
         });
 
-        if(data.isCheck == false){
-          this.count++
+        if (data.isCheck == false) {
+          this.count++;
         }
       });
 
-      _noti.sort((a, b) => (a.date > b.date) ? 1 : -1)
+      _noti.sort((a, b) => (a.date > b.date ? 1 : -1));
       this.listNoti = _noti;
+    },
+
+    getDatetime(createdDate) {
+      let date = new Date(createdDate);
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      let hh = date.getHours();
+      let min = date.getMinutes();
+      let ss = date.getSeconds();
+      return (
+        (dd > 9 ? "" : "0") +
+        dd +
+        "-" +
+        (mm > 9 ? "" : "0") +
+        mm +
+        "-" +
+        date.getFullYear() +
+        " " +
+        (hh > 9 ? "" : "0") +
+        hh +
+        ":" +
+        (min > 9 ? "" : "0") +
+        min +
+        ":" +
+        (ss > 9 ? "" : "0") +
+        ss
+      );
     },
   },
 
   mounted() {
-    NotiService.getListNoti(this.getUser.centerId).on(
+    CenterService.getListNoti(this.getUser.centerId).on(
       "value",
       this.onDataChange
     );
@@ -162,7 +193,7 @@ export default {
   border-radius: 10px;
 }
 .badge-danger {
-  background-color:  #9B3D3D;
+  background-color: #9b3d3d;
 }
 
 .noti {
@@ -178,17 +209,17 @@ export default {
 
 .read {
   width: 12px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 100%;
   height: 12px;
   margin: auto;
 }
-.date{
-  font-size: 13px; 
-  color: hsl(214deg 100% 59%)
+.date {
+  font-size: 13px;
+  color: hsl(214deg 100% 59%);
 }
 
 .navbar {
-  background-color: #F9AFAF;
+  background-color: #f9afaf;
 }
 </style>

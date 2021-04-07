@@ -21,14 +21,24 @@ export function getVolunteerByIdAPI(id) {
     });
 }
 
-export function addVolunteerToCenterAPI(email, token) {
-    return fetch(baseURL + `/api/users/create-role-volunteer-for-user?email=${email}`, {
+export function createVolunteerRegisterFormAPI(data) {
+    let requestBody = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone,
+        dob: data.dob,
+        gender: data.gender,
+        email: data.email,
+        centerId: data.centerId
+    }
+    console.log(requestBody);
+    return fetch(baseURL + `/api/create-volunteer-registration-form`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            Authorization: "Bearer " + token
-        }
+        },
+        body: JSON.stringify(requestBody),
     });
 }
 
@@ -40,5 +50,28 @@ export function removeVolunteerToCenterAPI(id, token) {
             Accept: "*/*",
             Authorization: "Bearer " + token
         }
+    });
+}
+
+export function getListVolunteerRegistrationFormAPI(token) {
+    return fetch(baseURL + `api/get-list-volunteer_registration_form`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + token
+        }
+    });
+}
+
+export function changeStatusVolunteerRegistrationFormAPI(data, token) {
+    return fetch(baseURL + `api/progressing-volunteer-registration-form`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(data)
     });
 }

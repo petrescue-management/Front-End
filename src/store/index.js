@@ -4,6 +4,7 @@ import loginStore from "./modules/LoginStore";
 import petStore from "./modules/PetStore"
 import adoptionFormStore from './modules/AdoptionFormStore'
 import volunteerStore from './modules/VoluteerStore'
+import centerStore from './modules/CenterStore'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -11,6 +12,7 @@ export default new Vuex.Store({
         user: loginStore,
         petInfo: petStore,
         adoptionForm: adoptionFormStore,
-        volunteer: volunteerStore
+        volunteer: volunteerStore,
+        center: centerStore
     }
 })

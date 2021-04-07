@@ -3,7 +3,7 @@
     <el-main v-loading="loading">
       <el-form ref="form" :model="form" label-width="120px">
         <el-row :gutter="20">
-          <el-col :span="14">
+          <el-col :span="17">
             <el-form-item label="Họ và tên">
               <el-input v-model="form.fullname" readonly></el-input>
             </el-form-item>
@@ -19,12 +19,14 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="14">
             <el-form-item label="Email">
               <el-input v-model="form.email" readonly></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+        </el-row>
+        <el-row :gutter="20">
+        <el-col :span="14">
             <el-form-item label="SĐT">
               <el-input v-model="form.phone" readonly></el-input>
             </el-form-item>

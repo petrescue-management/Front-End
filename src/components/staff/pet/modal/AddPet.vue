@@ -3,6 +3,7 @@
     <el-main>
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="Chọn loại pet"></el-step>
+        <el-step title="Chọn ảnh cho pet"></el-step>
         <el-step title="Điền thông tin Pet"></el-step>
       </el-steps>
       <br />
@@ -28,6 +29,7 @@
           >
         </el-form-item>
       </el-form>
+
       <el-form
         ref="form"
         :model="form"
@@ -35,26 +37,58 @@
         label-width="120px"
       >
         <el-form-item label="Chọn ảnh">
-          <img :src="previewImage" class="uploading-image" width="150px" />
-          <input type="file" accept="image/*" @change="uploadImage" />
+          <el-button type="primary" @click="chooseImg()"
+            >Chọn ảnh<i class="el-icon-upload el-icon-right"></i
+          ></el-button>
+          <input
+            type="file"
+            ref="getFile"
+            accept="image/*"
+            style="display: none"
+            @change="uploadImage"
+            multiple
+          />
         </el-form-item>
+        <el-form-item>
+          <div
+            class="container-img"
+            v-for="(image, key) in previewImage"
+            :key="key"
+          >
+            <div class="img-center">
+              <img class="preview" :ref="'image'" />
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            style="margin-top: 12px"
+            :disabled="!this.imageUrl"
+            v-if="this.active == 1"
+            @click="next"
+            >Next step</el-button
+          >
+        </el-form-item>
+      </el-form>
+
+      <el-form
+        ref="form"
+        :model="form"
+        v-if="this.active == 2"
+        label-width="120px"
+      >
         <el-form-item label="Tên thú cưng">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-row :gutter="20">
           <el-col :span="15">
             <el-form-item label="Tuổi">
-            <el-radio-group v-model="form.age">
-            <el-radio :label="1">Trẻ</el-radio>
-            <el-radio :label="2">Trưởng thành</el-radio>
-            <el-radio :label="3">Già</el-radio>
-            <el-radio :label="4">Chưa rõ</el-radio>
-          </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="9">
-            <el-form-item label="Cân nặng">
-              <el-input type="number" v-model="form.weight"></el-input>
+              <el-radio-group v-model="form.age">
+                <el-radio :label="1">Trẻ</el-radio>
+                <el-radio :label="2">Trưởng thành</el-radio>
+                <el-radio :label="3">Già</el-radio>
+                <el-radio :label="4">Chưa rõ</el-radio>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -92,24 +126,12 @@
             <el-radio :label="3">Đã nhận nuôi</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Tiêm phòng:">
-          <el-radio-group v-model="form.isVaccinated">
-            <el-radio :label="true">Có</el-radio>
-            <el-radio :label="false">Không</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="Tiệt trùng:">
-          <el-radio-group v-model="form.isSterilized">
-            <el-radio :label="true">Có</el-radio>
-            <el-radio :label="false">Không</el-radio>
-          </el-radio-group>
-        </el-form-item>
         <el-form-item label="Mô tả">
           <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button v-if="this.active == 1" @click="onUploadImg()"
+        <el-button v-if="this.active == 2" @click="createNewPet()"
           >Thêm Pet mới</el-button
         >
       </div>
@@ -118,6 +140,7 @@
 </template>
 <script>
 import firebase from "firebase";
+import { emptyGuId } from "@/enum/consts";
 import {
   createNewPetAPI,
   getAllPetTypeAPI,
@@ -137,12 +160,10 @@ export default {
         petColorId: "",
         petBreedId: "",
         status: "",
-        isVaccinated: true,
-        isSterilized: true,
         desc: "",
       },
-      previewImage: null,
-      fileUploadToFirebase: null,
+      previewImage: [],
+      imageUrl: "",
       listPetType: [],
       petTypeId: "",
       listPetColor: [],
@@ -158,63 +179,74 @@ export default {
   },
 
   methods: {
+    chooseImg() {
+      this.$refs["getFile"].click();
+    },
     async next() {
       this.active++;
-      if (this.active == 1) {
+      if (this.active == 2) {
         await this.getPetBreedByTypeId(this.petTypeId);
         await this.getAllPetColors();
       }
     },
 
     uploadImage(e) {
-      this.fileUploadToFirebase = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(this.fileUploadToFirebase);
-      reader.onload = (e) => {
-        this.previewImage = e.target.result;
-      };
+      var selectedFiles = e.target.files;
+      for (let i = 0; i < selectedFiles.length; i++) {
+        this.previewImage.push(selectedFiles[i]);
+      }
+
+      for (let i = 0; i < this.previewImage.length; i++) {
+        let reader = new FileReader();
+        reader.onload = () => {
+          this.$refs.image[i].src = reader.result;
+        };
+
+        reader.readAsDataURL(this.previewImage[i]);
+      }
+
+      this.imageUrl = "";
+      this.previewImage.forEach((data) => {
+        const storageRef = firebase
+          .storage()
+          .ref(`pet-tracking/`)
+          .child(`${data.name}`)
+          .put(data);
+
+        storageRef.on(
+          `state_changed`,
+          (snapshot) => {
+            console.log(snapshot);
+          },
+          (err) => {
+            console.log(err);
+          },
+          async () => {
+            await storageRef.snapshot.ref.getDownloadURL().then((url) => {
+              this.imageUrl += url + ";";
+            });
+          }
+        );
+      });
     },
 
-    onUploadImg() {
-      const storageRef = firebase
-        .storage()
-        .ref(`pet-img/`)
-        .child(`${this.fileUploadToFirebase.name}`)
-        .put(this.fileUploadToFirebase);
-
-      storageRef.on(
-        `state_changed`,
-        (snapshot) => {
-          console.log(snapshot);
-        },
-        (error) => {
-          console.log(error.message);
-        },
-        () => {
-          storageRef.snapshot.ref.getDownloadURL().then((url) => {
-            this.createNewPet(url);
-          });
-        }
-      );
-    },
-
-    async createNewPet(imgUrl) {
+    async createNewPet() {
       let data = {
+        petDocumentId: emptyGuId,
         petStatus: this.form.status,
-        centerId: "4bed700a-e24a-4410-9b39-503e780dc8a6",
+        centerId: this.getUser.centerId,
         petName: this.form.name,
         petGender: this.form.gender,
         petAge: this.form.age,
-        weight: this.form.weight,
         description: this.form.desc,
         petBreedId: this.form.petBreedId,
         petFurColorId: this.form.petColorId,
-        isVaccinated: this.form.isVaccinated,
-        isSterilized: this.form.isSterilized,
-        imageUrl: imgUrl,
+        imageUrl: this.imageUrl,
       };
       let token = this.getUser.token;
-      await createNewPetAPI(data,token).then((response) => console.log(response));
+      await createNewPetAPI(data, token).then((response) =>
+        console.log(response)
+      );
     },
 
     async getAllPetType() {
@@ -309,5 +341,30 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+
+.container-img {
+  height: 130px;
+  width: 150px;
+  padding: 5px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  position: relative;
+  border: 1px solid black;
+  display: inline-block;
+  margin-right: 10px;
+}
+.img-center {
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  position: absolute;
+  display: block;
+}
+.preview {
+  max-height: 100px;
+  max-width: 140px;
+  display: block;
+  vertical-align: middle;
 }
 </style>

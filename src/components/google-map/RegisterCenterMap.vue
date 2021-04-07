@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <label>
+      <label style="width: 100%">
         <gmap-autocomplete
           @place_changed="setPlace"
           :options="{
@@ -9,7 +9,7 @@
           }"
         >
         </gmap-autocomplete>
-        <el-button @click="addMarker">Lấy vị trí</el-button>
+        <el-button @click="addMarker" type="danger" icon="el-icon-position"></el-button>
       </label>
       <br />
     </div>
@@ -27,11 +27,9 @@
     </gmap-map>
 
     <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="getLocation"
-          >Confirm</el-button
-        >
-      </span>
+      <el-button @click="dialogVisible = false">Cancel</el-button>
+      <el-button type="primary" @click="getLocation">Confirm</el-button>
+    </span>
   </div>
 </template>
 
@@ -79,20 +77,43 @@ export default {
       });
     },
 
-    getLocation(){
+    getLocation() {
       let value = {
-        address : this.currentPlace.formatted_address,
+        address: this.currentPlace.formatted_address,
         lat: this.currentPlace.geometry.location.lat(),
         lng: this.currentPlace.geometry.location.lng(),
-      }
+      };
       let visible = false;
-      EventBus.$emit("CloseMapDialog", visible,value);
-    }
+      EventBus.$emit("CloseMapDialog", visible, value);
+    },
   },
 };
 </script>
 <style>
 .pac-container {
-    z-index: 1051 !important;
+  z-index: 9999 !important;
+}
+.pac-icon {
+  display: none !important;
+}
+
+.pac-item {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.pac-item:hover {
+  background-color: #ececec;
+}
+.pac-item-query {
+  font-size: 16px;
+}
+.pac-target-input {
+  width: 70%;
+  padding: 8px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 </style>

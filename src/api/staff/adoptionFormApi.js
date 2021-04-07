@@ -22,7 +22,7 @@ export function getAdoptionFormByIdAPI(data) {
 }
 
 export function changeStatusAdoptionFormAPI(data, token) {
-    return fetch(baseURL + `api/update-adoption-register-form-status`, {
+    return fetch(baseURL + `api/update-adoption-registration-form-status`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",

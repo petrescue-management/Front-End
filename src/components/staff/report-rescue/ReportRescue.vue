@@ -55,12 +55,7 @@
 </template>
 
 <script>
-import DirectionsMap from "@/components/google-map/DirectionGGMap";
 export default {
-  components: {
-    DirectionsMap,
-  },
-
   data() {
     return {
     };

@@ -1,14 +1,14 @@
 import firebase from "../firebase";
 
-const db = firebase.database().ref(`/manager`);
+const db = firebase.database().ref(`/authUser`);
 
-class NotiService {
+class UserAuthService {
     getListNoti(centerId) {
         return db.child(`${centerId}/Notification/`).orderByChild('date');
     }
 
-    createNoti(centerId, notiId, notification) {
-        return db.child(`${centerId}/Notification/${notiId}`).set(notification);
+    createNoti(userId, notiId, notification) {
+        return db.child(`${userId}/Notification/${notiId}`).set(notification);
     }
 
     updateNoti(centerId, notiId, value) {
@@ -23,4 +23,4 @@ class NotiService {
     }
 }
 
-export default new NotiService();
+export default new UserAuthService();

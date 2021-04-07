@@ -1,11 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListVolunteerAPI, getVolunteerByIdAPI } from "@/api/staff/volunteerApi";
+import { getListVolunteerAPI, getVolunteerByIdAPI, getListVolunteerRegistrationFormAPI } from "@/api/staff/volunteerApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
     state: {
         listVoluteer: [],
+        listForm: [],
+        countForm: 0,
         totalPage: 0,
         volunteer: {},
     },
@@ -15,6 +17,12 @@ export default {
         },
         getVolunteer(state) {
             return state.volunteer
+        },
+        getListForm(state) {
+            return state.listForm
+        },
+        getCountForm(state) {
+            return state.countForm
         }
     },
     mutations: {
@@ -24,6 +32,12 @@ export default {
         SET_VOLUNTEER(state, data) {
             state.volunteer = data;
         },
+        SET_LIST_FORM(state, data) {
+            state.listForm = data;
+        },
+        SET_COUNT_FORM(state, data) {
+            state.countForm = data;
+        }
     },
     actions: {
         async getListVolunteerOfCenter({ commit }, data) {
@@ -39,6 +53,15 @@ export default {
                 .then(response => response.json())
                 .then(data => {
                     commit("SET_VOLUNTEER", data);
+                })
+        },
+
+        async getListVolunteerRegistrationForm({ commit }, data) {
+            await getListVolunteerRegistrationFormAPI(data)
+                .then(response => response.json())
+                .then(data => {
+                    commit("SET_LIST_FORM", data.list);
+                    commit("SET_COUNT_FORM", data.count)
                 })
         },
     }

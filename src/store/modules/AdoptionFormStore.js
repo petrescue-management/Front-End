@@ -109,6 +109,8 @@ export default {
                         haveAgreement: data.haveAgreement,
                         havePet: data.havePet,
                         adoptionRegisterStatus: data.adoptionRegisterStatus,
+                        insertedBy: data.insertedBy,
+                        insertedAt: data.insertedAt
                     }
                     commit("SET_ADOPTION_FORM", adoptionForm);
                 })

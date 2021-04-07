@@ -4,20 +4,10 @@
       <div class="row bg-title form-adoption">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
-          <h1 class="title">Danh sách tình nguyện viên</h1>
+          <h1 class="title">Danh sách hồ sơ cứu hộ</h1>
         </div>
       </div>
       <br />
-      <div style="padding: 0px 10px 20px">
-        <el-badge :value="getCountForm" class="item">
-          <el-button
-            type="primary"
-            icon="el-icon-document-checked"
-            @click="goToListForm()"
-            >Duyệt đơn</el-button
-          >
-        </el-badge>
-      </div>
 
       <div style="padding: 0 10px">
         <b-card header="Danh sách tình nguyện viên" header-tag="header">
@@ -32,7 +22,10 @@
               label="Email"
               width="200"
             ></el-table-column>
-            <el-table-column prop="name" label="Name"></el-table-column>
+            <el-table-column
+              prop="name"
+              label="Name"
+            ></el-table-column>
             <el-table-column
               prop="dob"
               label="Ngày sinh"
@@ -130,13 +123,13 @@ export default {
       let mm = date.getMonth() + 1;
       let dd = date.getDate();
       return (
-        (dd > 9 ? "" : "0") +
-        dd +
+        date.getFullYear() +
         "-" +
         (mm > 9 ? "" : "0") +
         mm +
         "-" +
-        date.getFullYear()
+        (dd > 9 ? "" : "0") +
+        dd
       );
     },
 

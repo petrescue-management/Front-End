@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListPetAPI, getPetByIdAPI } from "@/api/staff/petApi";
+import { getListPetAPI, getPetByIdAPI, getPetTrackingByIdAPI } from "@/api/staff/petApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
@@ -15,13 +15,15 @@ export default {
             petTypeName: null,
             petGender: null,
             petAge: null,
-            weight: null,
-            isVaccinated: null,
-            isSterilized: null,
             petBreedName: null,
             petFurColorName: null,
-            imageUrl: null
-        }
+            petProfileDescription: null,
+            imageUrl: null,
+            petTracking: [],
+            finderForm: null,
+            pickerForm: null,
+        },
+        trackingDetail: {}
     },
     getters: {
         getListPetFromStore(state) {
@@ -34,6 +36,9 @@ export default {
         getPetFromStore(state) {
             return state.pet;
         },
+        getPetTracking(state) {
+            return state.trackingDetail;
+        },
     },
     mutations: {
         SET_LIST_PET(state, data) {
@@ -45,6 +50,9 @@ export default {
         SET_PET(state, data) {
             state.pet = data;
         },
+        SET_PET_TRACKING(state, data) {
+            state.trackingDetail = data
+        }
     },
     actions: {
         async getListPetPaging({ commit }, data) {
@@ -60,23 +68,34 @@ export default {
             await getPetByIdAPI(data)
                 .then(response => response.json())
                 .then(data => {
-                    let info = data.result
+                    let petProfile = data.petProfile;
                     let petInfo = {
-                        petId: info[0].petId,
-                        centerId: info[0].centerId,
-                        petStatus: info[0].petStatus,
-                        petName: info[0].petName,
-                        petTypeName: info[0].petTypeName,
-                        petGender: info[0].petGender,
-                        petAge: info[0].petAge,
-                        weight: info[0].weight,
-                        isVaccinated: info[0].isVaccinated,
-                        isSterilized: info[0].isSterilized,
-                        petBreedName: info[0].petBreedName,
-                        petFurColorName: info[0].petFurColorName,
-                        imageUrl: info[0].imageUrl
+                        petProfileId: petProfile.petProfileId,
+                        petDocumentId: petProfile.petDocumentId ? petProfile.petDocumentId : null,
+                        centerId: petProfile.centerId,
+                        petStatus: petProfile.petStatus,
+                        petName: petProfile.petName,
+                        petTypeName: petProfile.petTypeName,
+                        petGender: petProfile.petGender,
+                        petAge: petProfile.petAge,
+                        petBreedName: petProfile.petBreedName,
+                        petFurColorName: petProfile.petFurColorName,
+                        petProfileDescription: petProfile.petProfileDescription,
+                        imageUrl: petProfile.petImgUrl,
+                        petTracking: data.listTracking,
+                        finderForm: data.finderForm,
+                        pickerForm: data.pickerForm,
                     }
                     commit("SET_PET", petInfo);
+                })
+        },
+
+        async getPetTrackingById({ commit }, data) {
+            await getPetTrackingByIdAPI(data)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    commit("SET_PET_TRACKING", data);
                 })
         },
     }

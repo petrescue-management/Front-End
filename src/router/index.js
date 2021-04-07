@@ -13,6 +13,8 @@ import ListFormAdopt from '@/components/staff/form-adopt/ListForm'
 import Adoption from '@/components/staff/adoption/ListAdoption'
 import Volunteer from '@/components/staff/volunteer/ListVolunteer'
 import Profile from '@/components/staff/profile/Profile'
+import VolunteerRegistration from '@/components/staff/volunteer/ListVolunteerRegistration'
+import RegisterVolunteer from '@/views/staff/RegisterVolunteer'
 Vue.use(Router)
 
 export default new Router({
@@ -25,6 +27,11 @@ export default new Router({
             path: '/register-center',
             name: 'RegisterCenter',
             component: RegisterCenter
+        },
+        {
+            path: '/register-volunteer',
+            name: 'RegisterVolunteer',
+            component: RegisterVolunteer
         },
         {
             path: '/main-staff',
@@ -74,6 +81,11 @@ export default new Router({
                     path: "/main-staff/profile",
                     name: "Profile",
                     component: Profile
+                },
+                {
+                    path: "/main-staff/volunteer-registration",
+                    name: "VolunteerRegistration",
+                    component: VolunteerRegistration
                 },
             ]
         },
