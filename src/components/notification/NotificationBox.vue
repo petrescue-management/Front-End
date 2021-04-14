@@ -50,7 +50,7 @@ export default {
         this.messaging.onMessage((payload) => {
           console.log("Message received. ", payload);
           // let type = payload.data.Type;
-          // this.setSubject(Notification.get(parseInt(type)).message);
+          this.setSubject(payload.notification.body);
           // this.saveNotiToRealtimeDB(payload.data.AdoptionRegistrationId,parseInt(type))
           this.notify = true;
           setTimeout(() => {

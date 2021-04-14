@@ -23,7 +23,7 @@ export function getDetailUser(token) {
 }
 
 export function loginVolunteerAPI(params) {
-    return fetch(baseURL + `/jwt?Token=${params.token}&DeviceToken=${params.deviceToken}&ApplicationName=${'Petrescue.app.volunteer'}`, {
+    return fetch(baseURL + `/jwt?Token=${params.token}&DeviceToken=${params.deviceToken}&ApplicationName=${'Petrescue.app.managerCenter'}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

@@ -27,8 +27,8 @@
     </gmap-map>
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">Cancel</el-button>
-      <el-button type="primary" @click="getLocation">Confirm</el-button>
+      <el-button @click="dialogVisible = false">Huỷ</el-button>
+      <el-button type="primary" @click="getLocation">Lấy địa chỉ</el-button>
     </span>
   </div>
 </template>

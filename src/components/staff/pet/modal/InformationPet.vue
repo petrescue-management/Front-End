@@ -31,16 +31,6 @@
       </b-col>
     </b-row>  
     <hr class="tag" />
-    <b-row class="info">
-      <b-col>
-        Tình trạng:
-        <span
-          ><el-tag class="status" :type="pet.color">
-            {{ pet.petStatus }}
-          </el-tag></span
-        >
-      </b-col>
-    </b-row>
   </div>
 </template>
 <script>
@@ -63,5 +53,8 @@ export default {
 
 .value {
   font-weight: 300;
+}
+h2{
+  margin: 0 0 10px 0 !important;
 }
 </style>

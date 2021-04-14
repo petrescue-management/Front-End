@@ -86,6 +86,7 @@ import { mapGetters, mapActions } from "vuex";
 import { manGender, volunteerRegistrationFormStatus } from "@/enum/consts";
 import { changeStatusVolunteerRegistrationFormAPI } from "@/api/staff/volunteerApi";
 import DialogDeny from "./modal/DialogDeny.vue";
+import EventBus from '@/EventBus'
 export default {
   components: { DialogDeny },
   computed: {
@@ -187,6 +188,7 @@ export default {
                   message: "Thao tác thành công",
                   type: "success",
                 });
+                this.getList();
               }
             }
           );
@@ -194,6 +196,13 @@ export default {
         })
         .catch(() => {});
     },
+  },
+
+  mounted() {
+    EventBus.$on("CloseVolunteerDialog", (visible) => {
+      this.dialogVisible = visible;
+      this.getList();
+    });
   },
 
   created() {
@@ -207,7 +216,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .title {

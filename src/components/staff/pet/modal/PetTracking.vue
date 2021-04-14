@@ -17,7 +17,7 @@
           <el-button
             size="mini"
             type="info"
-            icon="el-icon-edit"
+            icon="el-icon-view"
             style="font-size: 16px"
             @click="showDetail(scope.row.petTrackingId)"
           ></el-button>
@@ -63,7 +63,6 @@ export default {
       let dd = date.getDate();
       let hh = date.getHours();
       let min = date.getMinutes();
-      let ss = date.getSeconds();
       return (
         (dd > 9 ? "" : "0") +
         dd +
@@ -77,10 +76,7 @@ export default {
         hh +
         ":" +
         (min > 9 ? "" : "0") +
-        min +
-        ":" +
-        (ss > 9 ? "" : "0") +
-        ss
+        min 
       );
     },
 

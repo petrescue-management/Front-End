@@ -10,12 +10,20 @@ class CenterService {
     updateNoti(centerId, notiId, value) {
         return db.child(`${centerId}/Notification/${notiId}`).update(value);
     }
-    delete(key) {
-        return db.child(key).remove();
+
+    getListPetProfile(centerId, petDocumentId) {
+        return db.child(`${centerId}/PetDocument/${petDocumentId}`);
     }
 
-    deleteAll() {
-        return db.remove();
+    createdPetProfile(centerId, petDocumentId, pet) {
+        return db.child(`${centerId}/PetDocument/${petDocumentId}`).push(pet);
+    }
+
+    deletePetProfile(centerId, petDocumentId, key) {
+        return db.child(`${centerId}/PetDocument/${petDocumentId}/${key}`).remove();
+    }
+    deleteListPetProfile(centerId, petDocumentId) {
+        return db.child(`${centerId}/PetDocument/${petDocumentId}`).remove();
     }
 }
 

@@ -1,4 +1,5 @@
 import { baseURL } from "../../enum/consts";
+const apiKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
 
 export function getListPetAPI(params) {
     return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=10`, {
@@ -27,10 +28,10 @@ export function createNewPetAPI(data, token) {
         petGender: data.petGender,
         petAge: data.petAge,
         petDocumentId: data.petDocumentId,
-        petProfileDescription: data.description,
+        petProfileDescription: data.petProfileDescription,
         petBreedId: data.petBreedId,
         petFurColorId: data.petFurColorId,
-        imageUrl: data.imageUrl
+        petImgUrl: data.petImgUrl
     }
     return fetch(baseURL + `api/create-pet-profile`, {
         method: "POST",
@@ -101,5 +102,35 @@ export function getPetTrackingByIdAPI(data) {
             Accept: "*/*",
             Authorization: "Bearer " + data.token
         },
+    });
+}
+
+export function updatePetProfile(data, token) {
+    let requestBody = {
+        petProfileId: data.petProfileId,
+        petStatus: data.petStatus,
+        petName: data.petName,
+        petGender: data.petGender,
+        petAge: data.petAge,
+        petProfileDescription: data.description,
+        petBreedId: data.petBreedId,
+        petFurColorId: data.petFurColorId,
+        petImgUrl: data.imageUrl,
+        petDocumentId: data.petDocumentId,
+    }
+    return fetch(baseURL + `/api/update-pet-profile`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(requestBody)
+    });
+}
+
+export function getLocationAPI(lat, lng) {
+    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`, {
+        method: "GET",
     });
 }

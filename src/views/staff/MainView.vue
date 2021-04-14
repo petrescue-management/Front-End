@@ -11,7 +11,12 @@
           <Navigation />
         </th>
         <th>
+          <div>
           <router-view />
+          </div>
+          <div>
+            <Footer/>
+          </div>
         </th>
       </tr>
     </table>
@@ -22,11 +27,13 @@
 import NotificationBox from "@/components/notification/NotificationBox";
 import Header from "@/components/staff/Header";
 import Navigation from "@/components/staff/Navigation";
+import Footer from '../../components/staff/Footer.vue';
 export default {
   components: {
     Header: Header,
     Navigation: Navigation,
     NotificationBox: NotificationBox,
+    Footer: Footer
   },
 };
 </script>

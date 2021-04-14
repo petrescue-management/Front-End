@@ -3,24 +3,25 @@
     <div id="nav">
       <router-link to="/login-staff"></router-link>
     </div>
-    <router-view/>
-    
+    <router-view />
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+  name: "App",
   created() {
     if (localStorage.getItem("user") == null) {
-      this.$router.replace({ name: "LoginStaff" });
+      if (this.$router.history.current.fullPath == "/login-staff" || this.$router.history.current.fullPath == "/" )
+        this.$router.replace({ name: "LoginStaff" }).catch(()=>{});
+      else if (this.$router.history.current.fullPath == "/register-center")
+        this.$router.replace({ name: "RegisterCenter" }).catch(()=>{});
     } else {
       if (this.$router.history.current.fullPath == "/")
         this.$router.replace({ name: "DashboardStaff" });
     }
   },
-}
+};
 </script>
 
 <style>
@@ -31,7 +32,7 @@ export default {
   overflow-y: hidden;
 }
 
-.el-dialog{
+.el-dialog {
   margin-top: 6vh !important;
   width: 52% !important;
 }

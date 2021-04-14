@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-main v-loading="loading">
+  <div v-loading="loading">
+    <el-main>
       <div class="row bg-title form-adoption">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
@@ -55,7 +55,7 @@
         </b-row>
       </div>
       <br />
-      <div>
+      <div v-if="listPetWaiting.length != 0">
         <div
           v-for="pet in listPetWaiting"
           :key="pet.petId"
@@ -90,13 +90,17 @@
             </div>
           </div>
         </div>
-        <!-- <el-pagination
+        <el-pagination
           background
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
           :total="length"
           layout="prev, pager, next"
-        ></el-pagination> -->
+        ></el-pagination>
+      </div>
+      <div v-else style="text-align:center">
+        <img src="@/assets/img/notfound.png" width="10%" height="auto"/>
+        <h4>Không có thú cưng nào</h4>
       </div>
     </el-main>
   </div>
@@ -123,7 +127,6 @@ export default {
     return {
       listPetWaiting: [],
       total: 0,
-      dialogVisible: false,
       id: null,
       type: "Chó",
       loading: false,
@@ -250,7 +253,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .title {

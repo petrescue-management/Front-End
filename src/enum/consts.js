@@ -39,7 +39,8 @@ export const petStatus = new Map([
     [0, { name: "Tất cả" }],
     [1, { name: "Đang điều trị", color: "warning" }],
     [2, { name: "Chưa nhận nuôi", color: "info" }],
-    [3, { name: "Đã nhận nuôi", color: "success" }],
+    [3, { name: "Chờ đến lấy", color: "primary" }],
+    [4, { name: "Đã nhận nuôi", color: "success" }],
 ]);
 
 export const manGender = new Map([
@@ -58,3 +59,31 @@ export const typePet = {
     dog: "Chó",
     cat: "Mèo"
 }
+
+export const petAge = new Map([
+    [0, "Trẻ"],
+    [1, "Trẻ"],
+    [2, "Trưởng thành"],
+    [3, "Già"],
+    [4, "Chưa rõ"]
+]);
+
+export const adoptionStatus = new Map([
+    [0, { name: "Tất cả" }],
+    [1, { name: "Chờ đến lấy", color: "warning" }],
+    [2, { name: "Đã nhận nuôi", color: "success" }],
+    [3, { name: "Trả về", color: "danger" }],
+]);
+
+export const petDocStatus = new Map([
+    [1, { name: "Chờ cập nhật", color: "info" }],
+    [2, { name: "Hoàn thành", color: "success" }]
+]);
+
+export const petAttributeStatus = new Map([
+    [1, 'Bé đi lạc'],
+    [2, 'Bé bị bỏ rơi'],
+    [3, 'Bé bị thương/ bị bạo hành'],
+    [4, 'Bé cần cho đi'],
+    [5, 'Bé đi lạc'],
+])

@@ -60,7 +60,8 @@
           </b-col>
         </b-row>
         <div style="text-align: center">
-          <b-button pill variant="info" @click="filterPet()">Tìm Boss</b-button>
+          <b-button pill variant="info" @click="filterPet()"><b-icon icon="search" aria-hidden="true"></b-icon> Tìm Boss</b-button>
+          <b-button pill variant="primary" @click="goToAddPet()"> + Thêm Boss </b-button>
         </div>
       </div>
       <div v-for="pet in listPet" :key="pet.id" class="contain">
@@ -69,9 +70,6 @@
         </div>
         <div class="overlay">
           <p class="name-pet" @click="goToDetail(pet.id)">{{ pet.name }}</p>
-          <el-tag class="status" :type="pet.color" size="small">
-            {{ pet.status }}
-          </el-tag>
           <hr class="tag" />
           <p class="att-pet">Giới tính :</p>
           {{ pet.petGender }}
@@ -82,24 +80,13 @@
           <p class="att-pet">Màu sắc :</p>
           {{ pet.petFurColorName }}
           <br />
+          <p class="att-pet">Tình trạng:</p>
+          <el-tag :type="pet.color" size="small">
+            {{ pet.status }}
+          </el-tag>
+          <br />
         </div>
       </div>
-
-      <el-popover
-        placement="left"
-        width="150"
-        trigger="hover"
-        content="Thêm thú cưng"
-      >
-        <el-button
-          class="float-btn"
-          slot="reference"
-          type="primary"
-          icon="el-icon-plus"
-          circle
-          @click="goToAddPet()"
-        ></el-button>
-      </el-popover>
     </el-main>
     <el-dialog title="Thêm thú cưng" :visible.sync="dialogVisible" center>
       <AddPet v-if="dialogVisible" />
@@ -109,13 +96,14 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { petStatus, petGender, typePet } from "@/enum/consts";
+import { petStatus, petGender, typePet, petAge } from "@/enum/consts";
 import {
   getAllPetColorsAPI,
   getAllPetTypeAPI,
   getPetBreedByTypeIdsAPI,
 } from "@/api/staff/petApi";
 import AddPet from "./modal/AddPet";
+import EventBus from "@/EventBus";
 export default {
   components: {
     AddPet,
@@ -186,11 +174,12 @@ export default {
     getTableData(list) {
       this.listPet = [];
       list.forEach((data) => {
+        let listImg = this.getListImg(data.imageUrl);
         let pet = {
-          img: data.imageUrl,
+          img: listImg[0],
           id: data.petId,
           name: data.petName,
-          petAge: data.petAge,
+          petAge: petAge.get(data.petAge),
           petFurColorName: data.petFurColorName,
           petGender: petGender.get(data.petGender),
           isVaccinated: data.isVaccinated,
@@ -199,6 +188,14 @@ export default {
         };
         this.listPet.push(pet);
       });
+    },
+
+    getListImg(list) {
+      if (list.lastIndexOf(";") != -1) {
+        return list.substr(0, list.lastIndexOf(";")).split(";");
+      } else {
+        return list.split(";");
+      }
     },
 
     async getlistPet(page) {
@@ -271,6 +268,13 @@ export default {
     },
   },
 
+  mounted() {
+    EventBus.$on("CloseAddPetDialog", (visible) => {
+      this.dialogVisible = visible;
+      this.getlistPet(0);
+    });
+  },
+
   async created() {
     await this.getAllPetType();
     await this.getPetBreedByTypeId();
@@ -285,7 +289,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .contain {
@@ -301,7 +305,8 @@ export default {
   text-align: left;
   width: 100%;
   padding: 7px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
 .name-pet {
@@ -319,7 +324,7 @@ export default {
   height: 185px;
   overflow: hidden;
   border-top-left-radius: 5%;
-  border-top-right-radius: 5%
+  border-top-right-radius: 5%;
 }
 
 .name-pet:hover {
@@ -366,7 +371,7 @@ export default {
 
 .float-btn {
   position: fixed;
-  bottom: 5%;
+  bottom: 10%;
   right: 3%;
 }
 

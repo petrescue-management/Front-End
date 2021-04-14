@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-main>
+    <el-main v-loading="loading">
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="Chọn loại pet"></el-step>
         <el-step title="Chọn ảnh cho pet"></el-step>
@@ -56,7 +56,19 @@
             :key="key"
           >
             <div class="img-center">
-              <img class="preview" :ref="'image'" />
+              <img
+                class="preview el-upload-list__item-thumbnail"
+                :ref="'image'"
+              />
+              <span class="overlay">
+                <span
+                  v-if="!disabled"
+                  class="el-upload-list__item-delete"
+                  @click="handleRemove(image)"
+                >
+                  <i class="el-icon-delete"></i>
+                </span>
+              </span>
             </div>
           </div>
         </el-form-item>
@@ -92,7 +104,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="Giới thiệu:">
+        <el-form-item label="Giới tính:">
           <el-radio-group v-model="form.gender">
             <el-radio :label="1">Đực</el-radio>
             <el-radio :label="2">Cái</el-radio>
@@ -147,10 +159,12 @@ import {
   getPetBreedByTypeIdsAPI,
   getAllPetColorsAPI,
 } from "@/api/staff/petApi";
+import EventBus from "@/EventBus";
 export default {
   name: "AddPet",
   data() {
     return {
+      disabled: false,
       active: 0,
       form: {
         name: "",
@@ -168,6 +182,7 @@ export default {
       petTypeId: "",
       listPetColor: [],
       listPetBreed: [],
+      loading: false,
     };
   },
 
@@ -230,23 +245,39 @@ export default {
       });
     },
 
+    handleRemove(file) {
+      console.log(file);
+    },
+
     async createNewPet() {
+      this.loading = true;
       let data = {
         petDocumentId: emptyGuId,
         petStatus: this.form.status,
-        centerId: this.getUser.centerId,
         petName: this.form.name,
         petGender: this.form.gender,
         petAge: this.form.age,
-        description: this.form.desc,
+        petProfileDescription: this.form.desc,
         petBreedId: this.form.petBreedId,
         petFurColorId: this.form.petColorId,
-        imageUrl: this.imageUrl,
+        petImgUrl: this.imageUrl,
       };
       let token = this.getUser.token;
-      await createNewPetAPI(data, token).then((response) =>
-        console.log(response)
-      );
+      await createNewPetAPI(data, token).then((response) => {
+        if (response.status == 200) {
+          this.$message({
+            message: "Thao tác thành công",
+            type: "success",
+          });
+          EventBus.$emit("CloseAddPetDialog", false);
+        } else {
+          this.$message({
+            message: "Đã xảy ra lỗi",
+            type: "danger",
+          });
+        }
+      });
+      this.loading = false;
     },
 
     async getAllPetType() {
@@ -350,7 +381,6 @@ export default {
   border-radius: 15px;
   box-sizing: border-box;
   position: relative;
-  border: 1px solid black;
   display: inline-block;
   margin-right: 10px;
 }
@@ -367,4 +397,38 @@ export default {
   display: block;
   vertical-align: middle;
 }
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  cursor: default;
+  text-align: center;
+  color: #fff;
+  opacity: 0;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s;
+  display: flex;
+  justify-content: space-between;
+}
+
+.el-upload-list__item-delete {
+  position: relative;
+  margin: auto;
+  font-size: 30px;
+  color: white;
+  display: none;
+  right: 0;
+  top: 0;
+}
+
+/* .container-img:hover .overlay {
+  opacity: 1;
+}
+
+.container-img:hover .el-upload-list__item-delete {
+  display: block;
+} */
 </style>

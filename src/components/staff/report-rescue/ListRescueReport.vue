@@ -4,51 +4,60 @@
       <div class="row bg-title form-adoption">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
-          <h1 class="title">Danh sách hồ sơ cứu hộ</h1>
+          <h1 class="title">Danh sách cứu hộ</h1>
         </div>
       </div>
       <br />
 
       <div style="padding: 0 10px">
-        <b-card header="Danh sách tình nguyện viên" header-tag="header">
-          <el-table :data="listForm" v-loading="loading">
-            <el-table-column label="Ảnh cá nhân" width="130" height="180">
-              <template slot-scope="scope">
-                <img :src="scope.row.img" width="70px" />
+        <b-card header="Các ca cứu hộ thành công" header-tag="header">
+          <el-table
+            :data="
+              listDoc.filter(
+                (data) =>
+                  !search ||
+                  data.pickerName.toLowerCase().includes(search.toLowerCase())
+              )
+            "
+            v-loading="loading"
+            :default-sort="{ prop: 'date', order: 'descending' }"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <p><b>Mô tả:</b> {{ props.row.pickerDescription }}</p>
               </template>
             </el-table-column>
+            <el-table-column label="Ngày" prop="date" sortable>
+            </el-table-column>
+            <el-table-column label="Người cứu hộ" prop="pickerName">
+            </el-table-column>
             <el-table-column
-              prop="email"
-              label="Email"
-              width="200"
-            ></el-table-column>
-            <el-table-column
-              prop="name"
-              label="Name"
-            ></el-table-column>
-            <el-table-column
-              prop="dob"
-              label="Ngày sinh"
-              width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="phone"
-              label="Phone"
-              width="200"
-            ></el-table-column>
-            <el-table-column fixed="right" label="Operations">
+              label="Trạng thái"
+              :filters="filterStatus"
+              :filter-method="filterTag"
+              filter-placement="bottom-end"
+            >
               <template slot-scope="scope">
-                <!-- <el-button
+                <el-tag class="status" :type="scope.row.color" size="small">
+                  {{ scope.row.status }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="Chi tiết">
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="search"
                   size="mini"
-                  icon="el-icon-edit"
-                  @click="handleEdit(scope.$index, scope.row)"
-                  ></el-button
-                > -->
+                  placeholder="Gõ tên"
+                  :name="scope"
+                />
+              </template>
+              <template slot-scope="scope">
                 <el-button
                   size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)"
+                  type="info"
+                  icon="el-icon-view"
+                  @click="goToDetail(scope.row.petDocumentId)"
                 ></el-button>
               </template>
             </el-table-column>
@@ -62,7 +71,6 @@
           layout="prev, pager, next"
         ></el-pagination> -->
       </div>
-      <Footer />
     </el-main>
   </div>
 </template>
@@ -70,13 +78,10 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import EventBus from "@/EventBus";
-import Footer from "../Footer.vue";
+import { petDocStatus } from "@/enum/consts";
 export default {
-  components: {
-    Footer,
-  },
   computed: {
-    ...mapGetters("volunteer", ["getListVolunteer", "getCountForm"]),
+    ...mapGetters("rescueReport", ["getListDoc"]),
     getUser() {
       let user = localStorage.getItem("user");
       return JSON.parse(user);
@@ -85,64 +90,80 @@ export default {
 
   data() {
     return {
-      listForm: [],
+      listDoc: [],
       dialogVisible: false,
       dialogAddVisible: false,
       loading: false,
+      search: "",
+      filterStatus: [],
     };
   },
 
   methods: {
-    ...mapActions("volunteer", [
-      "getListVolunteerOfCenter",
-      "getListVolunteerRegistrationForm",
-    ]),
+    ...mapActions("rescueReport", ["getListPetDocument"]),
 
-    goToListForm() {
-      this.$router.push({ name: "VolunteerRegistration" });
+    goToDetail(id) {
+      this.$router.push({ name: "ReportRescue", params: { id } });
     },
 
     getTableData(list) {
-      this.listForm = [];
+      this.listDoc = [];
       list.forEach((data) => {
-        let form = {
-          id: data.userId,
-          img: data.imgUrl,
-          email: data.email,
-          name: data.lastName + " " + data.firstName,
-          phone: data.phone,
-          dob: this.getDate(data.doB),
-          address: data.address,
+        let doc = {
+          petDocumentId: data.petDocumentId,
+          status: petDocStatus.get(data.petDocumentStatus).name,
+          color: petDocStatus.get(data.petDocumentStatus).color,
+          date: this.getDatetime(data.pickerForm.pickerDate),
+          pickerName: data.pickerForm.pickerName,
+          pickerDescription: data.pickerForm.pickerDescription,
         };
-        this.listForm.push(form);
+        this.listDoc.push(doc);
       });
     },
 
-    getDate(createdDate) {
+    getDatetime(createdDate) {
       let date = new Date(createdDate);
       let mm = date.getMonth() + 1;
       let dd = date.getDate();
+      let hh = date.getHours();
+      let min = date.getMinutes();
       return (
-        date.getFullYear() +
+        (dd > 9 ? "" : "0") +
+        dd +
         "-" +
         (mm > 9 ? "" : "0") +
         mm +
         "-" +
-        (dd > 9 ? "" : "0") +
-        dd
+        date.getFullYear() +
+        " " +
+        (hh > 9 ? "" : "0") +
+        hh +
+        ":" +
+        (min > 9 ? "" : "0") +
+        min
       );
     },
 
     async getList() {
       let token = this.getUser.token;
-      await this.getListVolunteerOfCenter(token);
-      this.getTableData(JSON.parse(JSON.stringify(this.getListVolunteer)));
+      await this.getListPetDocument(token);
+      this.getTableData(JSON.parse(JSON.stringify(this.getListDoc)));
       this.loading = false;
     },
 
-    async getCount() {
-      let token = this.getUser.token;
-      await this.getListVolunteerRegistrationForm(token);
+    getStatus() {
+      petDocStatus.forEach((values, keys) => {
+        console.log(keys);
+        let status = {
+          value: values.name,
+          text: values.name,
+        };
+        this.filterStatus.push(status);
+      });
+    },
+
+    filterTag(value, row) {
+      return row.status === value;
     },
   },
 
@@ -155,8 +176,8 @@ export default {
 
   created() {
     this.loading = true;
-    this.getCount();
     this.getList();
+    this.getStatus();
   },
 };
 </script>
@@ -165,7 +186,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .title {

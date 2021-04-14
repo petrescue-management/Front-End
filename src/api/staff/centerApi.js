@@ -20,3 +20,13 @@ export function getCenterOpeningAPI(status) {
         },
     });
 }
+
+export function getCenterInfoAPI(id) {
+    return fetch(baseURL + `api/get-center-by-id/${id}`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+        },
+    });
+}

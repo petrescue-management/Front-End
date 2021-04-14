@@ -6,16 +6,27 @@
         </ul>
       </nav>
       <div class="copyright text-center">
-        &copy; Coded with
-        <i class="fa fa-heart heart"></i> by
-        <a href="https://binarcode.com" target="_blank">BinarCode</a>.
-        Designed by <a href="https://www.creative-tim.com/?ref=pdf-vuejs" target="_blank">Creative Tim</a>.
+        Địa chỉ : {{ getUser.centerAddress }};
+        SĐT : {{ getUser.centerPhone }}
       </div>
     </div>
   </footer>
 </template>
 <script>
-  export default {}
+export default {
+  data() {
+    return {
+    }
+  },
+
+  computed: {
+    getUser() {
+      let user = localStorage.getItem("user");
+      return JSON.parse(user);
+    },
+  },
+
+}
 
 </script>
 <style>

@@ -13,7 +13,7 @@
         @click="goTo('DashboardStaff')"
       >
         <template slot="title">
-          <i class="fas fa-home" wi></i>
+          <i class="fas fa-home"></i>
           <span class="title">Trang chủ</span>
         </template>
       </el-menu-item>
@@ -38,12 +38,32 @@
         </template>
       </el-menu-item>
       <el-menu-item
+      index="/main-staff/adoption"
+        :route="{ name: 'ListAdoption' }"
+        @click="goTo('ListAdoption')"
+      >
+        <template slot="title">
+          <i class="fas fa-heart"></i>
+          <span class="title">Thú cưng nhận nuôi</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item
+      index="/main-staff/report-rescue"
+      :route="{ name: 'ListRescueReport' }"
+        @click="goTo('ListRescueReport')"
+      >
+        <template slot="title">
+          <i class="fas fa-hands-helping"></i>
+          <span class="title">Danh sách cứu hộ</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item
         index="/main-staff/volunteer" 
         :route="{ name: 'Volunteer' }"
         @click="goTo('Volunteer')"
       >
         <template slot="title">
-          <i class="fas fa-hands-helping"></i>
+          <i class="fas fa-user"></i>
           <span class="title">Tình nguyện viên</span>
         </template>
       </el-menu-item>
@@ -58,6 +78,11 @@ export default {
       activeIndex: "/main/dashboard"
     };
   },
+
+  mounted() {
+    this.activeIndex =  this.$router.history.current.fullPath;
+  },
+
   methods: {
     goTo(link) {
       this.$router.push({ name: link });
@@ -73,7 +98,7 @@ export default {
   font-size: 20px;
 }
 .el-menu-item{
-  font-size: 17px;
+  font-size: 16px;
 }
 .title{
   margin-left: 10px;

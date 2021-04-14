@@ -1,60 +1,55 @@
 <template >
   <div>
-    <h3>Thông tin từ người mang về</h3>
+    <h3>Thông tin từ người nhận nuôi</h3>
     <b-row class="info">
       <b-col>
-        Người mang về: <span class="value">{{ originalData.pickerName }}</span>
+        Người nhận nuôi:
+        <span class="value">{{ data.username }}</span>
       </b-col>
     </b-row>
     <hr class="tag" />
     <b-row class="info">
       <b-col
-        >Ngày mang về:
-        <span class="value">{{ originalData.pickerDate }}</span></b-col
+        >Ngày nhận nuôi:
+        <span class="value">{{ data.adoptedAt }}</span></b-col
+      >
+    </b-row>
+    <hr class="tag" />
+    <b-row class="info">
+      <b-col
+        >Email: <span class="value">{{ data.email }}</span></b-col
+      >
+    </b-row>
+    <hr class="tag" />
+    <b-row class="info">
+      <b-col
+        >SĐT: <span class="value">{{ data.phone }}</span></b-col
       >
     </b-row>
     <hr class="tag" />
     <b-row class="info">
       <b-col>
-        Mô tả : <span class="value">{{ originalData.pickerDescription }}</span>
+        Công việc: <span class="value">{{ data.job }}</span>
       </b-col>
     </b-row>
     <hr class="tag" />
     <b-row class="info">
-      <b-col style="margin: auto">
-        <span>Ảnh của người mang về : </span>
+      <b-col>
+        Địa chỉ: <span class="value">{{ data.address }}</span>
       </b-col>
     </b-row>
-    <b-row>
-      <div
-        class="container-img"
-        v-for="(image, key) in originalData.pickerImageUrl"
-        :key="key"
-      >
-        <div class="img-center">
-          <el-image
-            class="preview"
-            :src="image"
-            :preview-src-list="originalData.pickerImageUrl"
-            :z-index="9999"
-            fit="fit"
-          >
-          </el-image>
-        </div>
-      </div>
-    </b-row>
+    <hr class="tag" />
   </div>
 </template>
 <script>
 export default {
   props: {
-    pickerForm: Object,
+    adopter: Object,
   },
 
   data() {
     return {
-      originalData: null,
-      show: false,
+      data: null,
     };
   },
 
@@ -74,20 +69,15 @@ export default {
       );
     },
 
-    getListImg(list) {
-      if (list.lastIndexOf(";") != -1) {
-        return list.substr(0, list.lastIndexOf(";")).split(";");
-      } else {
-        return list.split(";");
-      }
-    },
-
     getTableData() {
-      this.originalData = {
-        pickerDate: this.getDate(this.pickerForm.pickerDate),
-        pickerName: this.pickerForm.pickerName,
-        pickerDescription: this.pickerForm.pickerDescription,
-        pickerImageUrl: this.getListImg(this.pickerForm.pickerImageUrl),
+      this.data = {
+        adoptedAt: this.getDate(this.adopter.adoptedAt),
+        username: this.adopter.username,
+        address:this.adopter.address,
+        email: this.adopter.email,
+        phone: this.adopter.phone,
+        job: this.adopter.job,
+        userId: this.adopter.userId,
       };
     },
   },
@@ -102,7 +92,6 @@ export default {
   border-top: 1px dashed #8c8b8b;
   margin: 5px;
 }
-
 .info {
   font-size: 18px;
 }
@@ -140,7 +129,7 @@ export default {
   display: block;
   vertical-align: middle;
 }
-h3{
+h3 {
   margin: 0 0 10px 0 !important;
 }
 </style>

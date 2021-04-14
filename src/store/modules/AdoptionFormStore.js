@@ -108,7 +108,7 @@ export default {
                         beViolentTendencies: data.beViolentTendencies,
                         haveAgreement: data.haveAgreement,
                         havePet: data.havePet,
-                        adoptionRegisterStatus: data.adoptionRegisterStatus,
+                        adoptionRegisterStatus: data.adoptionRegistrationStatus,
                         insertedBy: data.insertedBy,
                         insertedAt: data.insertedAt
                     }

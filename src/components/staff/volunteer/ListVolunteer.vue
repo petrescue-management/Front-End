@@ -45,17 +45,11 @@
             ></el-table-column>
             <el-table-column fixed="right" label="Operations">
               <template slot-scope="scope">
-                <!-- <el-button
-                  size="mini"
-                  icon="el-icon-edit"
-                  @click="handleEdit(scope.$index, scope.row)"
-                  ></el-button
-                > -->
                 <el-button
                   size="mini"
                   type="danger"
                   icon="el-icon-delete"
-                  @click="handleDelete(scope.$index, scope.row)"
+                  @click="showDialogRemove(scope.row.id)"
                 ></el-button>
               </template>
             </el-table-column>
@@ -69,19 +63,19 @@
           layout="prev, pager, next"
         ></el-pagination> -->
       </div>
-      <Footer />
     </el-main>
+    <el-dialog title="Lý do từ chối đơn" :visible.sync="dialogDeny">
+      <DialogRemove :id="id" v-if="dialogDeny" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import EventBus from "@/EventBus";
-import Footer from "../Footer.vue";
+import DialogRemove from './modal/DialogRemove.vue';
 export default {
-  components: {
-    Footer,
-  },
+  components: { DialogRemove },
   computed: {
     ...mapGetters("volunteer", ["getListVolunteer", "getCountForm"]),
     getUser() {
@@ -96,6 +90,8 @@ export default {
       dialogVisible: false,
       dialogAddVisible: false,
       loading: false,
+      img: require("@/assets/img/avatar.jpg"),
+      dialogDeny: false
     };
   },
 
@@ -109,12 +105,17 @@ export default {
       this.$router.push({ name: "VolunteerRegistration" });
     },
 
+    showDialogRemove(id) {
+      this.id = id;
+      this.dialogDeny = true;
+    },
+
     getTableData(list) {
       this.listForm = [];
       list.forEach((data) => {
         let form = {
           id: data.userId,
-          img: data.imgUrl,
+          img: data.imgUrl ? data.imgUrl : this.img,
           email: data.email,
           name: data.lastName + " " + data.firstName,
           phone: data.phone,
@@ -154,8 +155,8 @@ export default {
   },
 
   mounted() {
-    EventBus.$on("CloseVolunteerDialog", (visible) => {
-      this.dialogVisible = visible;
+    EventBus.$on("CloseRemoveDialog", (visible) => {
+      this.dialogDeny = visible;
       this.getList();
     });
   },
@@ -172,7 +173,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .title {

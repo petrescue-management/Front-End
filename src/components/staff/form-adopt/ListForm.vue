@@ -40,15 +40,20 @@
               </b-col>
             </b-row>
             <hr class="tag" />
-            <b-row class="info">
-            </b-row>
+            <b-row class="info"> </b-row>
           </b-col>
         </b-row>
       </div>
-      <div style="padding: 30px 50px;">
+      <div style="padding: 30px 50px">
         <h3>Danh sách đơn nhận nuôi</h3>
         <hr />
-        <el-table :data="listForm">
+        <el-table :data="listForm" :default-sort = "{prop: 'date', order: 'asccending'}">
+          <el-table-column
+            prop="date"
+            label="Ngày đăng kí"
+            width="180"
+            sortable=""
+          ></el-table-column>
           <el-table-column
             prop="username"
             label="Tên người nhận nuôi"
@@ -57,11 +62,6 @@
           <el-table-column
             prop="phone"
             label="Số điện thoại"
-            width="180"
-          ></el-table-column>
-          <el-table-column
-            prop="address"
-            label="Địa chỉ"
             width="180"
           ></el-table-column>
           <el-table-column
@@ -79,11 +79,11 @@
           <el-table-column label="Chi tiết" width="100">
             <template slot-scope="scope">
               <el-button
-                type="text"
-                size="small"
+                size="mini"
+                type="info"
+                icon="el-icon-view"
                 @click="goToDetail(scope.row.id)"
-                >Detail</el-button
-              >
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -98,7 +98,7 @@
       <br /><br /><br /><br />
     </el-main>
     <el-dialog
-      title="DETAILS OF REGISTRATION FORM"
+      title="CHI TIẾT ĐƠN ĐĂNG KÝ NHẬN NUÔI"
       :visible.sync="dialogVisible"
       center
     >
@@ -109,7 +109,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { adoptionFormStatus,petGender} from "@/enum/consts";
+import { adoptionFormStatus, petGender } from "@/enum/consts";
 import FormAdoptDetail from "./modal/FormAdoptDetail";
 import EventBus from "@/EventBus";
 export default {
@@ -159,12 +159,28 @@ export default {
       this.id = id;
     },
 
+    getDatetime(createdDate) {
+      let date = new Date(createdDate);
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      return (
+        (dd > 9 ? "" : "0") +
+        dd +
+        "-" +
+        (mm > 9 ? "" : "0") +
+        mm +
+        "-" +
+        date.getFullYear()
+      );
+    },
+
     getTableData(list) {
       this.listForm = [];
       console.log(list);
       list.forEach((data) => {
         let form = {
           id: data.adoptionRegistrationId,
+          date: this.getDatetime(data.insertedAt),
           username: data.userName,
           phone: data.phone,
           address: data.address,
@@ -222,7 +238,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 89vh;
+  height: 80vh;
   padding: 0;
 }
 .title {

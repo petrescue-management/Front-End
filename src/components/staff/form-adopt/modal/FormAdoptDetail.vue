@@ -12,7 +12,7 @@
               </el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="16">
                 <el-form-item label="Email">
                   <el-input v-model="form.email" readonly></el-input>
                 </el-form-item>
@@ -142,9 +142,11 @@
           </el-tab-pane>
         </el-tabs>
       </el-form>
-      <div class="button">
-        <el-button type="success" @click="changeStatus(2)">Accept</el-button>
-        <el-button type="danger" @click="changeStatus(3)">Reject</el-button>
+      <div class="button" v-if="form.adoptionRegisterStatus == 1">
+        <el-button type="success" @click="changeStatus(2)"
+          >Chấp thuận</el-button
+        >
+        <el-button type="danger" @click="changeStatus(3)">Từ chối</el-button>
       </div>
     </el-main>
   </div>
@@ -213,17 +215,26 @@ export default {
     },
 
     getDate() {
-      let today = new Date();
-      let date =
-        today.getFullYear() +
+      let date = new Date();
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      let hh = date.getHours();
+      let min = date.getMinutes();
+      return (
+        date.getFullYear() +
         "-" +
-        (today.getMonth() + 1) +
+        (mm > 9 ? "" : "0") +
+        mm +
         "-" +
-        today.getDate();
-      let time =
-        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-      let datetime = date + " " + time;
-      return datetime;
+        (dd > 9 ? "" : "0") +
+        dd +
+        " " +
+        (hh > 9 ? "" : "0") +
+        hh +
+        ":" +
+        (min > 9 ? "" : "0") +
+        min
+      );
     },
 
     async changeStatus(status) {
@@ -317,7 +328,7 @@ export default {
                   console.log(e);
                 });
             });
-             this.loading = false;
+            this.loading = false;
           }
         });
       }
@@ -353,6 +364,7 @@ export default {
 }
 
 .button {
+  margin-top: 15px;
   text-align: center;
 }
 </style>

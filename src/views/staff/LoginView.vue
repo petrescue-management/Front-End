@@ -75,11 +75,11 @@ export default {
 
         await getDetailUser(jwtToken)
           .then((response) => response.json())
-          .then((data) => {
+          .then(async (data) => {
             console.log(data.roles);
             if (data.roles.includes("manager")) {
               data.token = jwtToken;
-              this.loginUser(data);
+              await this.loginUser(data);
               this.$message({
                 message: "Login thành công",
                 type: "success",

@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
+import { getCenterInfoAPI } from '@/api/staff/centerApi'
 Vue.use(Vuex);
 export default {
     namespaced: true,
@@ -43,8 +43,16 @@ export default {
                     lastName: user.lastName,
                     phone: user.phone,
                     token: user.token,
-                    roles: user.roles
+                    roles: user.roles,
+                    centerName: user.center.centerName
                 }
+                await getCenterInfoAPI(current_user.centerId)
+                    .then(response => response.json())
+                    .then(data => {
+                        current_user.centerPhone = data.phone;
+                        current_user.centerAddress = data.address;
+                    });
+
                 localStorage.setItem("user", JSON.stringify(current_user));
                 commit("SET_USER", current_user);
             }

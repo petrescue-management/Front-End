@@ -16,6 +16,20 @@
     </b-row>
     <hr class="tag" />
     <b-row class="info">
+      <b-col
+        >Tình trạng:
+        <span class="value">{{ petAttribute }}</span></b-col
+      >
+    </b-row>
+    <hr class="tag" />
+    <b-row class="info">
+      <b-col
+        >Địa điểm:
+        <span class="value">{{ location }}</span></b-col
+      >
+    </b-row>
+    <hr class="tag" />
+    <b-row class="info">
       <b-col>
         Mô tả : <span class="value">{{ originalData.finderDescription }}</span>
       </b-col>
@@ -50,7 +64,8 @@
 export default {
   props: {
     finderForm: Object,
-    pickerForm: Object,
+    petAttribute: String,
+    location: String,
   },
 
   data() {
@@ -76,16 +91,20 @@ export default {
       );
     },
 
+    getListImg(list) {
+      if (list.lastIndexOf(";") != -1) {
+        return list.substr(0, list.lastIndexOf(";")).split(";");
+      } else {
+        return list.split(";");
+      }
+    },
+
     getTableData() {
       this.originalData = {
         finderDate: this.getDate(this.finderForm.finderDate),
         finderName: this.finderForm.finderName,
         finderDescription: this.finderForm.finderDescription,
-        pickerDate: this.getDate(this.pickerForm.pickerDate),
-        pickerName: this.pickerForm.pickerName,
-        pickerDescription: this.pickerForm.pickerDescription,
-        finderImageUrl: this.finderForm.finderImageUrl.split(";"),
-        pickerImageUrl: this.pickerForm.pickerImageUrl.split(";"),
+        finderImageUrl: this.getListImg(this.finderForm.finderImageUrl),
       };
     },
   },
@@ -136,5 +155,8 @@ export default {
   max-width: 140px;
   display: block;
   vertical-align: middle;
+}
+h3{
+  margin: 0 0 10px 0 !important;
 }
 </style>

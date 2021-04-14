@@ -1,28 +1,55 @@
 <template>
-  <div>
-    <el-main v-loading="loading">
+  <div v-loading="loading">
+    <el-main>
       <div class="row bg-title pet-detail">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
           <h1 class="title">Thông Tin Từng Boss</h1>
         </div>
       </div>
+      <div style="padding: 20px 0 0 20px">
+        <el-button type="info" icon="el-icon-back" @click="back()" plain
+          >Trở về</el-button
+        >
+      </div>
       <div class="pet-info">
         <b-row class="info">
           <b-col sm="4" style="display: block">
-            <el-image
-              style="width: 100%"
-              :src="pet.imageUrl"
-              :preview-src-list="listImgUrl"
-            >
-            </el-image>
+            <el-carousel height="300px">
+              <el-carousel-item v-for="item in pet.imageUrl" :key="item">
+                <el-image
+                  style="width: 100%; height: 100%"
+                  :src="item"
+                  fit="fit"
+                  :preview-src-list="pet.imageUrl"
+                >
+                </el-image>
+              </el-carousel-item>
+            </el-carousel>
+            <div style="text-align: center; margin-top: 20px">
+              <span>Tình trạng : </span>
+              <span
+                ><el-tag class="status" :type="pet.color">
+                  {{ pet.petStatus }}
+                </el-tag></span
+              >
+              <br /><br />
+              <el-button
+                type="info"
+                icon="el-icon-edit"
+                :disabled="pet.petStatus == 'Đã nhận nuôi' ? true : false"
+                style="width: 200px"
+                @click="dialogEdit = true"
+                >Chỉnh sửa thông tin</el-button
+              >
+            </div>
           </b-col>
           <b-col sm="8">
             <el-tabs type="border-card">
               <el-tab-pane label="Thông tin của bé">
                 <InformationPet :pet="pet" />
               </el-tab-pane>
-              <el-tab-pane label="Cập nhật tình trạng">
+              <el-tab-pane label="Theo dõi tình trạng">
                 <div style="padding: 0px 10px 20px">
                   <el-button
                     type="primary"
@@ -36,15 +63,16 @@
                   <PetTracking :petTracking="pet.petTracking" />
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="Người phát hiện">
+              <el-tab-pane label="Người phát hiện" v-if="pet.finderForm">
                 <div v-if="pet.finderForm">
                   <FinderForm
-                    :pickerForm="pet.pickerForm"
                     :finderForm="pet.finderForm"
+                    :petAttribute="pet.petAttribute"
+                    :location ="pet.location"
                   />
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="Người mang về">
+              <el-tab-pane label="Người mang về" v-if="pet.pickerForm">
                 <div v-if="pet.pickerForm">
                   <PickerForm :pickerForm="pet.pickerForm" />
                 </div>
@@ -61,18 +89,28 @@
     >
       <AddTracking :petProfileId="pet.petProfileId" v-if="dialogAddTracking" />
     </el-dialog>
+
+    <el-dialog title="Chỉnh sửa thông tin" :visible.sync="dialogEdit" center>
+      <EditPet :pet="pet" v-if="dialogEdit" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { petGender, petStatus } from "@/enum/consts";
+import {
+  petGender,
+  petStatus,
+  petAge,
+  petAttributeStatus,
+} from "@/enum/consts";
 import InformationPet from "./modal/InformationPet.vue";
 import PetTracking from "./modal/PetTracking.vue";
 import AddTracking from "./modal/AddTracking.vue";
 import FinderForm from "./modal/FinderForm.vue";
 import EventBus from "@/EventBus";
 import PickerForm from "./modal/PickerForm.vue";
+import EditPet from "./modal/EditPet.vue";
 export default {
   components: {
     InformationPet,
@@ -80,6 +118,7 @@ export default {
     AddTracking,
     FinderForm,
     PickerForm,
+    EditPet,
   },
   data() {
     return {
@@ -99,9 +138,9 @@ export default {
         finderForm: null,
         pickerForm: null,
       },
-      listImgUrl: [],
       loading: false,
       dialogAddTracking: false,
+      dialogEdit: false,
     };
   },
 
@@ -112,27 +151,47 @@ export default {
   methods: {
     ...mapActions("petInfo", ["getPetById"]),
 
-    getPetInfo(petInfo) {
+    back() {
+      this.$router.push({ name: "PetList" });
+    },
+
+    async getPetInfo(petInfo) {
       this.pet = {
         petProfileId: petInfo.petProfileId,
         petDocumentId: petInfo.petDocumentId,
         centerId: petInfo.centerId,
         petStatus: petStatus.get(petInfo.petStatus).name,
+        petStatusNum: petInfo.petStatus,
         color: petStatus.get(petInfo.petStatus).color,
         petName: petInfo.petName,
         petGender: petGender.get(petInfo.petGender),
-        petAge: petInfo.petAge,
+        petGenderNum: petInfo.petGender,
+        petTypeId: petInfo.petTypeId,
+        petAge: petAge.get(petInfo.petAge),
+        petAgeNum: petInfo.petAge,
         petBreedName: petInfo.petBreedName,
+        petBreedId: petInfo.petBreedId,
         petFurColorName: petInfo.petFurColorName,
-        imageUrl: petInfo.imageUrl,
+        petFurColorId: petInfo.petFurColorId,
+        imageUrl: this.getListImg(petInfo.imageUrl),
         petProfileDescription: petInfo.petProfileDescription,
+        petAttribute: petAttributeStatus.get(petInfo.petAttribute),
         petTracking: petInfo.petTracking,
         finderForm: petInfo.finderForm,
         pickerForm: petInfo.pickerForm,
+        location : petInfo.location
       };
-      this.listImgUrl.push(petInfo.imageUrl);
-      console.log(this.pet);
     },
+
+    getListImg(list) {
+      if (list.lastIndexOf(";") != -1) {
+        return list.substr(0, list.lastIndexOf(";")).split(";");
+      } else {
+        return list.split(";");
+      }
+    },
+
+    
 
     async getData() {
       this.loading = true;
@@ -150,6 +209,11 @@ export default {
   mounted() {
     EventBus.$on("CloseAddTrackingDialog", (visible) => {
       this.dialogAddTracking = visible;
+      this.getData();
+    });
+
+     EventBus.$on("CloseEditDialog", (visible) => {
+      this.dialogEdit = visible;
       this.getData();
     });
   },
@@ -171,7 +235,7 @@ export default {
   font-weight: 700;
 }
 .pet-info {
-  padding: 50px;
+  padding: 10px 50px 50px 50px;
 }
 .tag {
   border-top: 1px dashed #8c8b8b;
@@ -189,5 +253,9 @@ export default {
 .button {
   text-align: center;
   padding-top: 20px;
+}
+
+.el-image >>> img {
+  max-height: 300px;
 }
 </style>

@@ -15,6 +15,15 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
+          <!-- Using 'button-content' slot -->
+          <template #button-content>
+            <em>{{ getUser.centerName}}</em>
+          </template>
+          <b-dropdown-item href="#">Hồ sơ</b-dropdown-item>
+          <b-dropdown-item @click="signout">Đăng xuất</b-dropdown-item>
+        </b-nav-item-dropdown>
+
+        <b-nav-item-dropdown right>
           <template #button-content>
             <b-icon
               style="font-size: 20px"
@@ -23,8 +32,8 @@
             ></b-icon>
             <span class="badge badge-danger">{{ count }}</span>
           </template>
-          <b-dropdown-text style="width: 340px; text-align: center">
-            Notification <span class="badge2 badge-danger">{{ count }}</span>
+          <b-dropdown-text style="width: 340px; text-align: center;margin-top: 10px;">
+            Thông báo <span class="badge2 badge-danger">{{ count }}</span>
           </b-dropdown-text>
           <b-dropdown-divider></b-dropdown-divider>
           <b-dropdown-item class="noti" v-for="noti in listNoti" :key="noti.id">
@@ -45,14 +54,7 @@
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item-dropdown right>
-          <!-- Using 'button-content' slot -->
-          <template #button-content>
-            <em>{{ getUser.lastName + " " + getUser.firstName }}</em>
-          </template>
-          <b-dropdown-item href="#">Profile</b-dropdown-item>
-          <b-dropdown-item @click="signout">Sign Out</b-dropdown-item>
-        </b-nav-item-dropdown>
+        
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -119,7 +121,7 @@ export default {
         }
       });
 
-      _noti.sort((a, b) => (a.date > b.date ? 1 : -1));
+      _noti.sort((a, b) => (a.date < b.date ? 1 : -1));
       this.listNoti = _noti;
     },
 
@@ -129,7 +131,6 @@ export default {
       let dd = date.getDate();
       let hh = date.getHours();
       let min = date.getMinutes();
-      let ss = date.getSeconds();
       return (
         (dd > 9 ? "" : "0") +
         dd +
@@ -143,10 +144,7 @@ export default {
         hh +
         ":" +
         (min > 9 ? "" : "0") +
-        min +
-        ":" +
-        (ss > 9 ? "" : "0") +
-        ss
+        min
       );
     },
   },

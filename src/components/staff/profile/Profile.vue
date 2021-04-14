@@ -10,11 +10,9 @@
         </div>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 <script>
-import Footer from "../Footer.vue";
 import EditProfileForm from "./UserProfile/EditProfileForm.vue";
 import UserCard from "./UserProfile/UserCard.vue";
 
@@ -22,7 +20,6 @@ export default {
   components: {
     EditProfileForm,
     UserCard,
-    Footer,
   },
 };
 </script>

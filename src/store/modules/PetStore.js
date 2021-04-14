@@ -1,28 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListPetAPI, getPetByIdAPI, getPetTrackingByIdAPI } from "@/api/staff/petApi";
+import { getListPetAPI, getPetByIdAPI, getPetTrackingByIdAPI, getLocationAPI } from "@/api/staff/petApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
     state: {
         listPet: [],
         totalPage: 0,
-        pet: {
-            petId: null,
-            centerId: null,
-            petStatus: null,
-            petName: null,
-            petTypeName: null,
-            petGender: null,
-            petAge: null,
-            petBreedName: null,
-            petFurColorName: null,
-            petProfileDescription: null,
-            imageUrl: null,
-            petTracking: [],
-            finderForm: null,
-            pickerForm: null,
-        },
+        pet: {},
         trackingDetail: {}
     },
     getters: {
@@ -65,29 +50,45 @@ export default {
         },
 
         async getPetById({ commit }, data) {
+            let petInfo = {}
             await getPetByIdAPI(data)
                 .then(response => response.json())
                 .then(data => {
                     let petProfile = data.petProfile;
-                    let petInfo = {
+                    petInfo = {
                         petProfileId: petProfile.petProfileId,
                         petDocumentId: petProfile.petDocumentId ? petProfile.petDocumentId : null,
                         centerId: petProfile.centerId,
                         petStatus: petProfile.petStatus,
                         petName: petProfile.petName,
-                        petTypeName: petProfile.petTypeName,
+                        petTypeName: petProfile.petType.petTypeName,
+                        petTypeId: petProfile.petType.petTypeId,
                         petGender: petProfile.petGender,
                         petAge: petProfile.petAge,
                         petBreedName: petProfile.petBreedName,
+                        petBreedId: petProfile.petBreedId,
                         petFurColorName: petProfile.petFurColorName,
+                        petFurColorId: petProfile.petFurColorId,
                         petProfileDescription: petProfile.petProfileDescription,
                         imageUrl: petProfile.petImgUrl,
                         petTracking: data.listTracking,
+                        petAttribute: data.petAttribute,
                         finderForm: data.finderForm,
                         pickerForm: data.pickerForm,
+                        lat: data.finderForm ? data.finderForm.lat : null,
+                        lng: data.finderForm ? data.finderForm.lng : null,
                     }
-                    commit("SET_PET", petInfo);
                 })
+            if (petInfo.lat && petInfo.lng) {
+                await getLocationAPI(petInfo.lat, petInfo.lng)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        petInfo.location = data.results[0].formatted_address
+                    });
+            } else {
+                petInfo.location = null
+            }
+            commit("SET_PET", petInfo);
         },
 
         async getPetTrackingById({ commit }, data) {

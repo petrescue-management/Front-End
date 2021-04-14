@@ -33,6 +33,7 @@
 
 <script>
 import { changeStatusVolunteerRegistrationFormAPI } from "@/api/staff/volunteerApi";
+import EventBus from "@/EventBus";
 export default {
   props: ["id"],
   name: "DenyDialog",
@@ -76,6 +77,7 @@ export default {
               type: "success",
             });
           }
+          EventBus.$emit("CloseVolunteerDialog", false);
         }
       );
       this.loading = false;

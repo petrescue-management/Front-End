@@ -10,11 +10,13 @@ import PetDetail from '@/components/staff/pet/PetDetail'
 import ReportRescue from '@/components/staff/report-rescue/ReportRescue'
 import PetAdopt from '@/components/staff/form-adopt/ListPetAdopt'
 import ListFormAdopt from '@/components/staff/form-adopt/ListForm'
-import Adoption from '@/components/staff/adoption/ListAdoption'
+import ListAdoption from '@/components/staff/adopted/ListAdoption'
 import Volunteer from '@/components/staff/volunteer/ListVolunteer'
 import Profile from '@/components/staff/profile/Profile'
 import VolunteerRegistration from '@/components/staff/volunteer/ListVolunteerRegistration'
 import RegisterVolunteer from '@/views/staff/RegisterVolunteer'
+import ListRescueReport from '@/components/staff/report-rescue/ListRescueReport'
+import Adoption from '@/components/staff/adopted/AdoptionDetail'
 Vue.use(Router)
 
 export default new Router({
@@ -53,7 +55,7 @@ export default new Router({
                     component: PetDetail
                 },
                 {
-                    path: "/main-staff/report-rescue",
+                    path: "/main-staff/report-rescue-detail/:id",
                     name: "ReportRescue",
                     component: ReportRescue
                 },
@@ -69,8 +71,8 @@ export default new Router({
                 },
                 {
                     path: "/main-staff/adoption",
-                    name: "Adoption",
-                    component: Adoption
+                    name: "ListAdoption",
+                    component: ListAdoption
                 },
                 {
                     path: "/main-staff/volunteer",
@@ -86,6 +88,16 @@ export default new Router({
                     path: "/main-staff/volunteer-registration",
                     name: "VolunteerRegistration",
                     component: VolunteerRegistration
+                },
+                {
+                    path: "/main-staff/report-rescue",
+                    name: "ListRescueReport",
+                    component: ListRescueReport
+                },
+                {
+                    path: "/main-staff/adopted/:id",
+                    name: "Adoption",
+                    component: Adoption
                 },
             ]
         },

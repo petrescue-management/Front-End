@@ -1,7 +1,82 @@
 <template>
   <div>
     <el-main v-loading="loading">
-      <el-form ref="form" :model="form" label-width="120px">
+      <el-steps :active="active" finish-status="success" align-center>
+        <el-step title="Chọn loại pet"></el-step>
+        <el-step title="Chọn ảnh cho pet"></el-step>
+        <el-step title="Điền thông tin Pet"></el-step>
+      </el-steps>
+      <br />
+
+      <el-form v-if="this.active == 0" label-width="120px">
+        <el-form-item label="Chọn loại pet">
+          <el-select v-model="petTypeId" placeholder="Chọn loại Pet">
+            <el-option
+              v-for="item in listPetType"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            style="margin-top: 12px"
+            :disabled="!this.petTypeId"
+            v-if="this.active == 0"
+            @click="next"
+            >Kết tiếp</el-button
+          >
+        </el-form-item>
+      </el-form>
+
+      <el-form
+        ref="form"
+        :model="form"
+        v-if="this.active == 1"
+        label-width="120px"
+      >
+        <el-form-item label="Chọn ảnh">
+          <el-button type="primary" @click="chooseImg()"
+            >Chọn ảnh<i class="el-icon-upload el-icon-right"></i
+          ></el-button>
+          <input
+            type="file"
+            ref="getFile"
+            accept="image/*"
+            style="display: none"
+            @change="uploadImage"
+            multiple
+          />
+        </el-form-item>
+        <el-form-item>
+          <div
+            class="container-img"
+            v-for="(image, key) in previewImage"
+            :key="key"
+          >
+            <div class="img-center">
+              <img class="preview" :ref="'image'" />
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            style="margin-top: 12px"
+            :disabled="!this.imageUrl"
+            v-if="this.active == 1"
+            @click="next"
+            >Kế tiếp</el-button
+          >
+        </el-form-item>
+      </el-form>
+
+      <el-form
+        ref="form"
+        :model="form"
+        v-if="this.active == 2"
+        label-width="120px"
+      >
         <el-form-item label="Tên thú cưng">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
@@ -54,68 +129,45 @@
         <el-form-item label="Mô tả">
           <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
-        <el-form-item label="Chọn ảnh">
-          <el-button type="primary" @click="chooseImg()"
-            >Chọn ảnh<i class="el-icon-upload el-icon-right"></i
-          ></el-button>
-          <input
-            type="file"
-            ref="getFile"
-            accept="image/*"
-            style="display: none"
-            @change="uploadImage"
-            multiple
-          />
-        </el-form-item>
-        <el-form-item>
-          <div
-            class="container-img"
-            v-for="(image, key) in previewImage"
-            :key="key"
-          >
-            <div class="img-center">
-              <img class="preview" :ref="'image'" />
-            </div>
-          </div>
-        </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button @click="editPet">Cập nhật</el-button>
+        <el-button v-if="this.active == 2" @click="createNewPet">Thêm thú cưng mới</el-button>
       </div>
     </el-main>
   </div>
 </template>
 <script>
+import firebase from "firebase";
+import CenterService from "../../../../services/CenterService";
 import {
+  getAllPetTypeAPI,
   getPetBreedByTypeIdsAPI,
   getAllPetColorsAPI,
-  updatePetProfile,
 } from "@/api/staff/petApi";
-import { emptyGuId } from "@/enum/consts";
-import firebase from "firebase";
 import EventBus from "@/EventBus";
 export default {
-  name: "EditPet",
-  props: {
-    pet: Object,
-  },
+  name: "AddPetFromDocument",
+  props: ["petDocumentId"],
   data() {
     return {
+      active: 0,
       form: {
         name: "",
         age: "",
+        weight: "",
         gender: "",
         petColorId: "",
         petBreedId: "",
         status: "",
         desc: "",
       },
+      previewImage: [],
+      imageUrl: "",
+      listPetType: [],
       petTypeId: "",
       listPetColor: [],
       listPetBreed: [],
       loading: false,
-      previewImage: [],
-      imageUrl: "",
     };
   },
 
@@ -127,78 +179,16 @@ export default {
   },
 
   methods: {
-    async getAllPetColors() {
-      this.listPetColor = [];
-      await getAllPetColorsAPI()
-        .then((response) => response.json())
-        .then((data) =>
-          data.forEach((element) => {
-            let petColor = {
-              id: element.petFurColorId,
-              name: element.petFurColorName,
-            };
-            this.listPetColor.push(petColor);
-          })
-        );
-    },
-
-    async getPetBreedByTypeId(typeId) {
-      this.listPetBreed = [];
-      await getPetBreedByTypeIdsAPI(typeId)
-        .then((response) => response.json())
-        .then((data) =>
-          data.forEach((element) => {
-            let petbreed = {
-              id: element.petBreedId,
-              name: element.petBreedName,
-            };
-            this.listPetBreed.push(petbreed);
-          })
-        );
-    },
-
-    async editPet() {
-      this.loading = true;
-      if (!this.imageUrl) {
-        this.pet.imageUrl.forEach((data) => {
-          this.imageUrl += data + ";";
-        });
-      }
-      let data = {
-        petProfileId: this.pet.petProfileId,
-        petStatus: this.form.status,
-        centerId: this.getUser.centerId,
-        petName: this.form.name,
-        petGender: this.form.gender,
-        petAge: this.form.age,
-        description: this.form.desc,
-        petBreedId: this.form.petBreedId,
-        petFurColorId: this.form.petColorId,
-        imageUrl: this.imageUrl,
-        petDocumentId: this.pet.petDocumentId
-          ? this.pet.petDocumentId
-          : emptyGuId,
-      };
-      let token = this.getUser.token;
-      await updatePetProfile(data, token).then((response) => {
-        if (response.status == 200) {
-          this.$message({
-            message: "Thao tác thành công",
-            type: "success",
-          });
-          EventBus.$emit("CloseEditDialog", false);
-        } else {
-          this.$message({
-            message: "Đã xảy ra lỗi",
-            type: "danger",
-          });
-        }
-      });
-      this.loading = false;
-    },
-
     chooseImg() {
       this.$refs["getFile"].click();
+    },
+
+    async next() {
+      this.active++;
+      if (this.active == 2) {
+        await this.getPetBreedByTypeId(this.petTypeId);
+        await this.getAllPetColors();
+      }
     },
 
     uploadImage(e) {
@@ -241,24 +231,80 @@ export default {
       });
     },
 
-    showData() {
-      this.form = {
-        name: this.pet.petName,
-        age: this.pet.petAgeNum,
-        gender: this.pet.petGenderNum,
-        petColorId: this.pet.petFurColorId,
-        petBreedId: this.pet.petBreedId,
-        status: this.pet.petStatusNum,
-        desc: this.pet.petProfileDescription,
+    async getAllPetType() {
+      this.listPetType = [];
+      await getAllPetTypeAPI()
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petType = {
+              id: element.petTypeId,
+              name: element.petTypeName,
+            };
+            this.listPetType.push(petType);
+          })
+        );
+    },
+
+    async getAllPetColors() {
+      this.listPetColor = [];
+      await getAllPetColorsAPI()
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petColor = {
+              id: element.petFurColorId,
+              name: element.petFurColorName,
+            };
+            this.listPetColor.push(petColor);
+          })
+        );
+    },
+
+    async getPetBreedByTypeId(typeId) {
+      this.listPetBreed = [];
+      await getPetBreedByTypeIdsAPI(typeId)
+        .then((response) => response.json())
+        .then((data) =>
+          data.forEach((element) => {
+            let petbreed = {
+              id: element.petBreedId,
+              name: element.petBreedName,
+            };
+            this.listPetBreed.push(petbreed);
+          })
+        );
+    },
+
+    createNewPet() {
+      let pet = {
+        petStatus: this.form.status,
+        centerId: this.getUser.centerId,
+        petName: this.form.name,
+        petGender: this.form.gender,
+        petAge: this.form.age,
+        petProfileDescription: this.form.desc,
+        petBreedId: this.form.petBreedId,
+        petFurColorId: this.form.petColorId,
+        petImgUrl: this.imageUrl,
       };
+      CenterService.createdPetProfile(
+        this.getUser.centerId,
+        this.petDocumentId,
+        pet
+      )
+        .then(() => {
+          console.log("Created new item successfully!");
+          EventBus.$emit("CloseAddDialog", false);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
+
   async created() {
-    this.loading = true;
-    await this.getPetBreedByTypeId(this.pet.petTypeId);
-    await this.getAllPetColors();
-    this.showData();
-    this.loading = false;
+    await this.getAllPetType();
   },
 };
 </script>
