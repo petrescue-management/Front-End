@@ -17,9 +17,9 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>{{ getUser.centerName}}</em>
+            <em>{{ getUser.centerName }}</em>
           </template>
-          <b-dropdown-item href="#">Hồ sơ</b-dropdown-item>
+          <b-dropdown-item @click="show">Hồ sơ</b-dropdown-item>
           <b-dropdown-item @click="signout">Đăng xuất</b-dropdown-item>
         </b-nav-item-dropdown>
 
@@ -32,10 +32,13 @@
             ></b-icon>
             <span class="badge badge-danger">{{ count }}</span>
           </template>
-          <b-dropdown-text style="width: 340px; text-align: center;margin-top: 10px;">
+          <b-dropdown-text
+            style="width: 340px; text-align: center; margin-top: 10px"
+          >
             Thông báo <span class="badge2 badge-danger">{{ count }}</span>
           </b-dropdown-text>
           <b-dropdown-divider></b-dropdown-divider>
+          <div class="list">
           <b-dropdown-item class="noti" v-for="noti in listNoti" :key="noti.id">
             <b-row @click="goToDetail(noti.id)">
               <b-col sm="2" style="margin: auto auto auto 0; padding: 0">
@@ -52,9 +55,8 @@
               <b-col> </b-col>
             </b-row>
           </b-dropdown-item>
+          </div>
         </b-nav-item-dropdown>
-
-        
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -80,6 +82,17 @@ export default {
   },
   methods: {
     ...mapActions("user", ["logout"]),
+
+    show(){
+      this.$notify({
+            title: "Thông báo mới",
+            message: "Tình nguyện viên đã hoàn thành đơn cứu hộ",
+            position: "bottom-right",
+            iconClass: 'el-icon-bell',
+            type: 'success',
+            duration: 0
+          });
+    },
 
     goToDetail(id) {
       let value = {
@@ -121,7 +134,7 @@ export default {
         }
       });
 
-      _noti.sort((a, b) => (a.date < b.date ? 1 : -1));
+      _noti.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
       this.listNoti = _noti;
     },
 
@@ -192,6 +205,12 @@ export default {
 }
 .badge-danger {
   background-color: #9b3d3d;
+}
+
+.list {
+  height: 500px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .noti {

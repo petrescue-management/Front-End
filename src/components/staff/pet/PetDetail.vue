@@ -37,7 +37,7 @@
               <el-button
                 type="info"
                 icon="el-icon-edit"
-                :disabled="pet.petStatus == 'Đã nhận nuôi' ? true : false"
+                v-show="pet.petStatusNum != 4 ? true : false"
                 style="width: 200px"
                 @click="dialogEdit = true"
                 >Chỉnh sửa thông tin</el-button
@@ -55,7 +55,7 @@
                     type="primary"
                     icon="el-icon-document-add"
                     @click="dialogAddTracking = true"
-                    :disabled="pet.petStatus == 'Đã nhận nuôi' ? true : false"
+                    v-show="pet.petStatusNum != 4 ? true : false"
                     >Cập nhật thêm</el-button
                   >
                 </div>

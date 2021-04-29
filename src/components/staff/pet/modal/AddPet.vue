@@ -23,9 +23,10 @@
           <el-button
             style="margin-top: 12px"
             :disabled="!this.petTypeId"
+            type="primary"
             v-if="this.active == 0"
             @click="next"
-            >Next step</el-button
+            >Tiếp theo</el-button
           >
         </el-form-item>
       </el-form>
@@ -37,59 +38,34 @@
         label-width="120px"
       >
         <el-form-item label="Chọn ảnh">
-          <el-button type="primary" @click="chooseImg()"
-            >Chọn ảnh<i class="el-icon-upload el-icon-right"></i
-          ></el-button>
-          <input
-            type="file"
-            ref="getFile"
-            accept="image/*"
-            style="display: none"
-            @change="uploadImage"
-            multiple
-          />
+          <vue-upload-multiple-image
+            @upload-success="uploadImageSuccess"
+            @before-remove="beforeRemove"
+            @edit-image="editImage"
+            :data-images="formdata"
+          ></vue-upload-multiple-image>
         </el-form-item>
         <el-form-item>
-          <div
-            class="container-img"
-            v-for="(image, key) in previewImage"
-            :key="key"
-          >
-            <div class="img-center">
-              <img
-                class="preview el-upload-list__item-thumbnail"
-                :ref="'image'"
-              />
-              <span class="overlay">
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleRemove(image)"
-                >
-                  <i class="el-icon-delete"></i>
-                </span>
-              </span>
-            </div>
-          </div>
-        </el-form-item>
-        <el-form-item>
+          <el-button @click="back" style="margin-top: 12px">Trở lại</el-button>
           <el-button
             style="margin-top: 12px"
-            :disabled="!this.imageUrl"
+            type="primary"
+            :disabled="this.formdata.length == 0"
             v-if="this.active == 1"
             @click="next"
-            >Next step</el-button
+            >Tiếp theo</el-button
           >
         </el-form-item>
       </el-form>
 
       <el-form
-        ref="form"
         :model="form"
+        :rules="rules"
+        ref="formAdd"
         v-if="this.active == 2"
         label-width="120px"
       >
-        <el-form-item label="Tên thú cưng">
+        <el-form-item prop="name" label="Tên thú cưng">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
         <el-row :gutter="20">
@@ -111,7 +87,7 @@
             <el-radio :label="3">Chưa rõ</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Màu sắc">
+        <el-form-item prop="petColorId" label="Màu sắc">
           <el-select v-model="form.petColorId" placeholder="Chọn màu">
             <el-option
               v-for="item in listPetColor"
@@ -121,7 +97,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Giống loài">
+        <el-form-item prop="petBreedId" label="Giống loài">
           <el-select v-model="form.petBreedId" placeholder="Chọn giống">
             <el-option
               v-for="item in listPetBreed"
@@ -135,15 +111,15 @@
           <el-radio-group v-model="form.status">
             <el-radio :label="1">Đang điều trị</el-radio>
             <el-radio :label="2">Chưa nhận nuôi</el-radio>
-            <el-radio :label="3">Đã nhận nuôi</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Mô tả">
+        <el-form-item prop="desc" label="Mô tả">
           <el-input type="textarea" v-model="form.desc"></el-input>
         </el-form-item>
       </el-form>
-      <div style="text-align: center">
-        <el-button v-if="this.active == 2" @click="createNewPet()"
+      <div style="text-align: center" v-if="this.active == 2">
+        <el-button @click="back">Trở lại</el-button>
+        <el-button type="primary" @click="createNewPet('formAdd')"
           >Thêm Pet mới</el-button
         >
       </div>
@@ -152,6 +128,7 @@
 </template>
 <script>
 import firebase from "firebase";
+import VueUploadMultipleImage from "vue-upload-multiple-image";
 import { emptyGuId } from "@/enum/consts";
 import {
   createNewPetAPI,
@@ -162,21 +139,48 @@ import {
 import EventBus from "@/EventBus";
 export default {
   name: "AddPet",
+  components: {
+    VueUploadMultipleImage,
+  },
   data() {
     return {
       disabled: false,
       active: 0,
       form: {
         name: "",
-        age: "",
-        weight: "",
-        gender: "",
+        age: 1,
+        gender: 1,
         petColorId: "",
         petBreedId: "",
-        status: "",
+        status: 1,
         desc: "",
       },
+      rules: {
+        name: [
+            { required: true, message: 'Please input Activity name', trigger: 'blur' },
+            { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+          ],
+        petColorId: [
+          {
+            required: true,
+            message: "Hãy chọn màu",
+            trigger: "change",
+          },
+        ],
+        petBreedId: [
+          {
+            required: true,
+            message: "Hãy chọn giống",
+            trigger: "change",
+          },
+        ],
+        desc: [
+            { required: true, message: 'Please input activity form', trigger: 'blur' }
+          ]
+      },
       previewImage: [],
+      images: [],
+      formdata: [],
       imageUrl: "",
       listPetType: [],
       petTypeId: "",
@@ -194,39 +198,34 @@ export default {
   },
 
   methods: {
-    chooseImg() {
-      this.$refs["getFile"].click();
+    back() {
+      this.active--;
     },
+
     async next() {
       this.active++;
       if (this.active == 2) {
+        this.loading = true;
+        this.uploadToFirebase();
         await this.getPetBreedByTypeId(this.petTypeId);
         await this.getAllPetColors();
+        this.loading = false;
       }
     },
 
-    uploadImage(e) {
-      var selectedFiles = e.target.files;
-      for (let i = 0; i < selectedFiles.length; i++) {
-        this.previewImage.push(selectedFiles[i]);
-      }
+    uploadImageSuccess(formData, index, fileList) {
+      console.log("data", formData, index, fileList);
+      this.formdata = fileList;
+    },
 
-      for (let i = 0; i < this.previewImage.length; i++) {
-        let reader = new FileReader();
-        reader.onload = () => {
-          this.$refs.image[i].src = reader.result;
-        };
-
-        reader.readAsDataURL(this.previewImage[i]);
-      }
-
+    uploadToFirebase() {
       this.imageUrl = "";
-      this.previewImage.forEach((data) => {
+      this.formdata.forEach((data) => {
         const storageRef = firebase
           .storage()
-          .ref(`pet-tracking/`)
+          .ref(`pet-img/`)
           .child(`${data.name}`)
-          .put(data);
+          .putString(data.path, "data_url");
 
         storageRef.on(
           `state_changed`,
@@ -245,39 +244,47 @@ export default {
       });
     },
 
-    handleRemove(file) {
-      console.log(file);
+    beforeRemove(index, done, fileList) {
+      console.log("index", index, fileList);
+      done();
+    },
+    editImage(formData, index, fileList) {
+      console.log("edit data", formData, index, fileList);
     },
 
-    async createNewPet() {
-      this.loading = true;
-      let data = {
-        petDocumentId: emptyGuId,
-        petStatus: this.form.status,
-        petName: this.form.name,
-        petGender: this.form.gender,
-        petAge: this.form.age,
-        petProfileDescription: this.form.desc,
-        petBreedId: this.form.petBreedId,
-        petFurColorId: this.form.petColorId,
-        petImgUrl: this.imageUrl,
-      };
-      let token = this.getUser.token;
-      await createNewPetAPI(data, token).then((response) => {
-        if (response.status == 200) {
-          this.$message({
-            message: "Thao tác thành công",
-            type: "success",
+    createNewPet(formAdd) {
+      this.$refs[formAdd].validate(async (valid) => {
+        if (valid) {
+          this.loading = true;
+          let data = {
+            petDocumentId: emptyGuId,
+            petStatus: this.form.status,
+            petName: this.form.name,
+            petGender: this.form.gender,
+            petAge: this.form.age,
+            petProfileDescription: this.form.desc,
+            petBreedId: this.form.petBreedId,
+            petFurColorId: this.form.petColorId,
+            petImgUrl: this.imageUrl,
+          };
+          let token = this.getUser.token;
+          await createNewPetAPI(data, token).then((response) => {
+            if (response.status == 200) {
+              this.$message({
+                message: "Thao tác thành công",
+                type: "success",
+              });
+              EventBus.$emit("CloseAddPetDialog", false);
+            } else {
+              this.$message({
+                message: "Đã xảy ra lỗi",
+                type: "danger",
+              });
+            }
           });
-          EventBus.$emit("CloseAddPetDialog", false);
-        } else {
-          this.$message({
-            message: "Đã xảy ra lỗi",
-            type: "danger",
-          });
+          this.loading = false;
         }
       });
-      this.loading = false;
     },
 
     async getAllPetType() {
@@ -327,7 +334,9 @@ export default {
   },
 
   async created() {
+    this.loading = true;
     await this.getAllPetType();
+    this.loading = false;
   },
 };
 </script>

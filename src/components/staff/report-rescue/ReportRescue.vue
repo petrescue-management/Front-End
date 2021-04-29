@@ -1,8 +1,11 @@
 <template>
   <div>
     <el-main v-loading="loading">
-      <h3>Thông tin cứu hộ</h3>
-      <el-tabs tab-position="left" type="border-card">
+      <b-card
+          header="Thông tin cứu hộ"
+          header-tag="header"
+        >
+      <el-tabs tab-position="left">
         <el-tab-pane label="Người phát hiện">
           <div v-if="doc.finderForm">
             <FinderForm :finderForm="doc.finderForm" :location ="doc.location" :petAttribute="doc.petAttribute" />
@@ -14,6 +17,7 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+      </b-card>
 
       <div style="margin-top: 35px">
         <b-card
@@ -121,7 +125,7 @@
       </div>
     </el-main>
     <el-dialog title="Thêm thú cưng" :visible.sync="dialogVisible" center>
-      <AddPetFromDocument :petDocumentId="petDocumentId" v-if="dialogVisible" />
+      <AddPetFromDocument :petDocumentId="petDocumentId" :img="doc.listImg" v-show="dialogVisible" />
     </el-dialog>
   </div>
 </template>
@@ -283,7 +287,7 @@ export default {
                       message: "Thao tác thành công",
                     });
                     await this.getData();
-                    await this.getPet();
+                    await this.getPetData();
                   })
                   .catch((e) => {
                     console.log(e);
@@ -303,6 +307,7 @@ export default {
         pickerForm: info.pickerForm,
         location:info.location,
         petAttribute: petAttributeStatus.get(1),
+        listImg: info.finderForm.finderImageUrl + info.pickerForm.pickerImageUrl
       };
       console.log(this.doc);
     },
@@ -374,7 +379,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
 }
 .info {
   padding: 5px;

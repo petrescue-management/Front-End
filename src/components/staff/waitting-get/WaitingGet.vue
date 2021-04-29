@@ -9,7 +9,6 @@
           @click="goToListForm(pet.petId)"
         >
           <div style="box-shadow: 5px 10px:">
-            <el-badge :value="pet.count" class="item">
               <div
                 style="
                   width: 100%;
@@ -21,7 +20,6 @@
               >
                 <img :src="pet.imgUrl" width="100%" height="100%" />
               </div>
-            </el-badge>
             <div class="overlay">
               <p class="name-pet">{{ pet.petName }}</p>
               <hr class="tag" />
@@ -33,6 +31,9 @@
               <br />
               <p class="att-pet">Giống :</p>
               {{ pet.breedName }}
+              <br/>
+              <p class="att-pet">Ngày đăng ký :</p>
+              {{ pet.updateAt }}
             </div>
           </div>
         </div>
@@ -90,7 +91,7 @@ export default {
     ...mapActions("adoptionForm", ["getListPetToBeRegisted"]),
 
     goToListForm(id) {
-      this.$router.push({ name: "ListFormAdopt", params: { id } });
+      this.$router.push({ name: "WaittingDetail", params: { id } });
     },
 
     getTableData(list) {
@@ -104,6 +105,7 @@ export default {
           age: petAge.get(data.age),
           breedName: data.breedName,
           imgUrl: data.imgUrl,
+          updateAt: this.getDate(data.updatedAt)
         };
         this.listPetWaiting.push(pet);
       });
@@ -124,11 +126,27 @@ export default {
       let token = this.getUser.token;
       let data = {
         token,
-        status : 2,
+        status : 3,
       }
       await this.getListPetToBeRegisted(data);
       this.getTableData(JSON.parse(JSON.stringify(this.getListPetWaiting)));
       this.loading = false;
+    },
+
+
+    getDate(createdDate) {
+      let date = new Date(createdDate);
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      return (
+        (dd > 9 ? "" : "0") +
+        dd +
+        "-" +
+        (mm > 9 ? "" : "0") +
+        mm +
+        "-" +
+        date.getFullYear()
+      );
     },
 
     async getPetBreedByTypeId() {

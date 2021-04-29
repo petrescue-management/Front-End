@@ -14,11 +14,18 @@ import '@/assets/sass/light-bootstrap-dashboard.scss'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
+import VueSelectImage from 'vue-select-image'
 
+
+// add stylesheet
+require('vue-select-image/dist/vue-select-image.css')
+
+Vue.prototype.$store = store;
 Vue.config.productionTip = false
 Vue.use(ElementUI, { locale });
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+Vue.use(VueSelectImage)
 Vue.use(VueGoogleMaps, {
     load: {
         key: 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk',

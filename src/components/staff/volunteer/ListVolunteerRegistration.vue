@@ -175,9 +175,9 @@ export default {
       }
 
       let token = this.getUser.token;
-      this.$confirm("Bạn có chắc chắn muốn duyệt đơn đăng ký này?", {
-        confirmButtonText: "Duyệt",
-        cancelButtonText: "Huỷ",
+      this.$confirm("Bạn có chắc chắn muốn chấp nhận đơn đăng ký này?", {
+        confirmButtonText: "Chấp nhận",
+        cancelButtonText: "Đóng",
       })
         .then(async () => {
           this.loading = true;
@@ -216,7 +216,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
   padding: 0;
 }
 .title {

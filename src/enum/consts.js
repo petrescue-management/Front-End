@@ -22,14 +22,18 @@ export const petGender = new Map([
 
 export const Notification = new Map([
     [1, {
-        message: "Nhân viên đã chấp nhận thông báo cứu hộ Pet",
-        logo: "https://firebasestorage.googleapis.com/v0/b/pet-rescue-fb.appspot.com/o/pet-img%2FLogo_notitle_circle.png?alt=media&token=359eb314-a538-46f5-baf3-ae9183260b2c"
-    }],
-    [2, {
         message: "Bạn có đơn đăng ký nhận nuôi chó/mèo",
         logo: "https://firebasestorage.googleapis.com/v0/b/pet-rescue-fb.appspot.com/o/pet-img%2FLogo_notitle_circle.png?alt=media&token=359eb314-a538-46f5-baf3-ae9183260b2c"
     }],
+    [2, {
+        message: "Tình nguyện viên đã cứu hộ thành công chó/mèo",
+        logo: "https://firebasestorage.googleapis.com/v0/b/pet-rescue-fb.appspot.com/o/pet-img%2FLogo_notitle_circle.png?alt=media&token=359eb314-a538-46f5-baf3-ae9183260b2c"
+    }],
     [3, {
+        message: "Bạn có đơn đăng ký làm tình nguyện viên",
+        logo: "https://firebasestorage.googleapis.com/v0/b/pet-rescue-fb.appspot.com/o/pet-img%2FLogo_notitle_circle.png?alt=media&token=359eb314-a538-46f5-baf3-ae9183260b2c"
+    }],
+    [4, {
         message: "Cám ơn bạn đã tham gia vào hệ thống chúng tôi",
         logo: "https://firebasestorage.googleapis.com/v0/b/pet-rescue-fb.appspot.com/o/pet-img%2FLogo_notitle_circle.png?alt=media&token=359eb314-a538-46f5-baf3-ae9183260b2c"
     }],
@@ -41,6 +45,7 @@ export const petStatus = new Map([
     [2, { name: "Chưa nhận nuôi", color: "info" }],
     [3, { name: "Chờ đến lấy", color: "primary" }],
     [4, { name: "Đã nhận nuôi", color: "success" }],
+    [5, { name: "Đã chết", color: "danger" }]
 ]);
 
 export const manGender = new Map([
@@ -70,9 +75,8 @@ export const petAge = new Map([
 
 export const adoptionStatus = new Map([
     [0, { name: "Tất cả" }],
-    [1, { name: "Chờ đến lấy", color: "warning" }],
-    [2, { name: "Đã nhận nuôi", color: "success" }],
-    [3, { name: "Trả về", color: "danger" }],
+    [1, { name: "Đã nhận nuôi", color: "success" }],
+    [2, { name: "Trả về", color: "danger" }],
 ]);
 
 export const petDocStatus = new Map([

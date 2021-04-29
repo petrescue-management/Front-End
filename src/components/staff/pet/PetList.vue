@@ -10,6 +10,12 @@
       <div class="filter-btn">
         <b-button
           pill
+          :variant="type === '' ? 'primary' : 'warning'"
+          @click="filterType('')"
+          >Tất cả</b-button
+        >
+        <b-button
+          pill
           :variant="type === 'Chó' ? 'primary' : 'warning'"
           @click="filterType('Chó')"
           >Chó</b-button
@@ -87,6 +93,15 @@
           <br />
         </div>
       </div>
+
+      <!-- <el-pagination
+          background
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage"
+          :total="totalPage"
+          layout="prev, pager, next"
+        ></el-pagination> -->
+
     </el-main>
     <el-dialog title="Thêm thú cưng" :visible.sync="dialogVisible" center>
       <AddPet v-if="dialogVisible" />
@@ -96,7 +111,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { petStatus, petGender, typePet, petAge } from "@/enum/consts";
+import { petStatus, petGender, petAge } from "@/enum/consts";
 import {
   getAllPetColorsAPI,
   getAllPetTypeAPI,
@@ -114,7 +129,7 @@ export default {
       totalPage: 0,
       dialogVisible: false,
       loading: false,
-      type: typePet.dog,
+      type: '',
       listPetColor: [],
       listStatus: [],
       status: 0,
@@ -148,6 +163,7 @@ export default {
     },
 
     async getPetBreedByTypeId() {
+      if(this.type != ''){
       let typeId = this.listPetType.filter((list) => {
         return list.name == this.type;
       });
@@ -169,6 +185,9 @@ export default {
             this.listPetBreed.push(petbreed);
           })
         );
+      }else{
+        this.listPetBreed = []
+      }
     },
 
     getTableData(list) {
@@ -185,8 +204,10 @@ export default {
           isVaccinated: data.isVaccinated,
           color: petStatus.get(data.petStatus).color,
           status: petStatus.get(data.petStatus).name,
+          insertAt: data.insertAt
         };
         this.listPet.push(pet);
+        this.listPet.sort((a, b) => (new Date(a.insertAt) < new Date(b.insertAt) ? 1 : -1));
       });
     },
 
@@ -277,7 +298,6 @@ export default {
 
   async created() {
     await this.getAllPetType();
-    await this.getPetBreedByTypeId();
     this.getAllPetColors();
     this.getStatus();
     this.getlistPet(0);
@@ -289,7 +309,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
   padding: 0;
 }
 .contain {

@@ -1,13 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getListAdoptedPetApi, getAdoptedPetByIdApi } from "@/api/staff/adoptedApi";
+import { getListAdoptedPetApi, getAdoptedPetByIdApi, getReportTrackingByIdAPI } from "@/api/staff/adoptedApi";
 Vue.use(Vuex);
 export default {
     namespaced: true,
     state: {
         listAdoptedPet: [],
-        total: 0,
-        adopted: {}
+        totalPage: 0,
+        adopted: {},
+        reportTracking: {},
     },
     getters: {
         getListAdopted(state) {
@@ -15,7 +16,13 @@ export default {
         },
         getAdopted(state) {
             return state.adopted;
-        }
+        },
+        getTotalPage(state) {
+            return state.totalPage
+        },
+        getReportTracking(state) {
+            return state.reportTracking;
+        },
     },
     mutations: {
         SET_LIST_ADOPTED_PET(state, data) {
@@ -23,6 +30,12 @@ export default {
         },
         SET_ADOPTED_PET(state, data) {
             state.adopted = data;
+        },
+        SET_REPORT_TRACKING(state, data) {
+            state.reportTracking = data
+        },
+        SET_TOTAL_PAGE(state, data) {
+            state.totalPage = data
         }
     },
     actions: {
@@ -30,7 +43,8 @@ export default {
             await getListAdoptedPetApi(data)
                 .then(response => response.json())
                 .then(data => {
-                    commit("SET_LIST_ADOPTED_PET", data);
+                    commit("SET_LIST_ADOPTED_PET", data.result);
+                    commit("SET_TOTAL_PAGE", data.totalPages);
                 })
         },
 
@@ -39,6 +53,15 @@ export default {
                 .then(response => response.json())
                 .then(data => {
                     commit("SET_ADOPTED_PET", data);
+                })
+        },
+
+        async getReportTrackingById({ commit }, data) {
+            await getReportTrackingByIdAPI(data)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    commit("SET_REPORT_TRACKING", data);
                 })
         },
     },

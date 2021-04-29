@@ -2,7 +2,7 @@ import { baseURL } from "../../enum/consts";
 const apiKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
 
 export function getListPetAPI(params) {
-    return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=10`, {
+    return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=-1`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

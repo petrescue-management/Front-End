@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import { removeVolunteerToCenterAPI } from "@/api/staff/volunteerApi";
-import EventBus from "@/EventBus";
 export default {
   props: ["id"],
   name: "DenyDialog",
@@ -42,23 +40,7 @@ export default {
   },
 
   methods: {
-    async removeVolunteer() {
-      this.loading = true;
-      let token = this.getUser.token;
-      
-      await removeVolunteerToCenterAPI(this.id, token).then(
-        (response) => {
-          if (response.status == 200) {
-            this.$message({
-              message: "Thao tác thành công",
-              type: "success",
-            });
-          }
-          EventBus.$emit("CloseRemoveDialog", false);
-        }
-      );
-      this.loading = false;
-    },
+   
   },
 };
 </script>

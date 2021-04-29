@@ -1,12 +1,12 @@
 import { baseURL } from "../../enum/consts";
 
-export function getListPetDocumentAPI(token) {
-    return fetch(baseURL + `api/get-list-pet-document`, {
+export function getListPetDocumentAPI(data) {
+    return fetch(baseURL + `api/get-list-pet-document?page=${data.page}&limit=10`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            Authorization: "Bearer " + token
+            Authorization: "Bearer " + data.token
         }
     });
 }

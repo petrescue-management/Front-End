@@ -2,12 +2,12 @@
   <footer class="footer">
     <div class="container-fluid">
       <nav>
-        <ul class="footer-menu">
-        </ul>
+        <ul class="footer-menu"></ul>
       </nav>
       <div class="copyright text-center">
-        Địa chỉ : {{ getUser.centerAddress }};
-        SĐT : {{ getUser.centerPhone }}
+        &copy; Coded with
+        <i class="fa fa-heart heart"></i> by
+        <a href="#" target="_blank">Pet Rescue 2021</a>.
       </div>
     </div>
   </footer>
@@ -15,20 +15,12 @@
 <script>
 export default {
   data() {
-    return {
-    }
+    return {};
   },
-
-  computed: {
-    getUser() {
-      let user = localStorage.getItem("user");
-      return JSON.parse(user);
-    },
-  },
-
-}
-
+};
 </script>
 <style>
-
+.footer .copyright {
+  padding: 0px 15px !important;
+}
 </style>

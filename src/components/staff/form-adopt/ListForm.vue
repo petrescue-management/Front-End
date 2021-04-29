@@ -238,7 +238,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
   padding: 0;
 }
 .title {

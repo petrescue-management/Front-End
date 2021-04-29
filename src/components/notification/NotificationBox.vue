@@ -1,30 +1,9 @@
-
 <template>
-  <div v-if="notify">
-    <div id="notification-box" class="notification-box">
-      <a href="#" id="notification-close" @click="closed()" title="close">x</a>
-      <div class="contain_img">
-        <img src="@/assets/img/Logo_withtitle_circle.png" width="70px" height="70px" />
-      </div>
-      <div class="notification-data">
-        <div class="notification-title">
-          <p id="title">
-            {{ title }}
-          </p>
-        </div>
-
-        <div class="notification-notice">
-          <p id="subject">{{ subject }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div></div>
 </template>
 
 <script>
 import firebase from "firebase";
-// import NotiService from "@/services/NotiService";
-// import { Notification } from "@/enum/consts";
 export default {
   name: "NotificationBox",
 
@@ -49,21 +28,17 @@ export default {
       try {
         this.messaging.onMessage((payload) => {
           console.log("Message received. ", payload);
-          // let type = payload.data.Type;
-          this.setSubject(payload.notification.body);
-          // this.saveNotiToRealtimeDB(payload.data.AdoptionRegistrationId,parseInt(type))
-          this.notify = true;
-          setTimeout(() => {
-            this.notify = false;
-          }, 5000);
+          this.$notify({
+            title: "Thông báo mới",
+            message: payload.notification.body,
+            position: "bottom-right",
+            type: 'success',
+            duration: 10000
+          });
         });
       } catch (e) {
         console.log(e);
       }
-    },
-
-    setSubject(message) {
-      this.subject = message;
     },
 
     // saveNotiToRealtimeDB(notiId,type) {
@@ -101,7 +76,6 @@ export default {
   validations: function () {
     return {};
   },
-
 };
 </script>
 

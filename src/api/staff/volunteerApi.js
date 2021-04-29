@@ -21,29 +21,29 @@ export function getVolunteerByIdAPI(id) {
     });
 }
 
-export function createVolunteerRegisterFormAPI(data) {
+export function createRoleVolunteerForuser(data, token) {
     let requestBody = {
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone,
         dob: data.dob,
         gender: data.gender,
-        email: data.email,
-        centerId: data.centerId
+        email: data.email
     }
     console.log(requestBody);
-    return fetch(baseURL + `/api/create-volunteer-registration-form`, {
+    return fetch(baseURL + `/api/users/create-role-volunteer-for-user`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
+            Authorization: "Bearer " + token
         },
         body: JSON.stringify(requestBody),
     });
 }
 
-export function removeVolunteerToCenterAPI(id, token) {
-    return fetch(baseURL + `/api/users/remove-role-volunteer-for-user?userId=${id}`, {
+export function removeVolunteerToCenterAPI(id, reason, token) {
+    return fetch(baseURL + `/api/users/remove-role-volunteer-for-user?userId=${id}&Description=${reason}`, {
         method: "DELETE",
         headers: {
             "content-type": "application/json",

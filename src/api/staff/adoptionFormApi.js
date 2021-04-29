@@ -33,13 +33,13 @@ export function changeStatusAdoptionFormAPI(data, token) {
     });
 }
 
-export function getListPetToBeRegistedAPI(token) {
-    return fetch(baseURL + `api/get-list-pet-to-be-registered-for-adoption`, {
+export function getListPetToBeRegistedAPI(data) {
+    return fetch(baseURL + `api/get-list-pet-to-be-registered-for-adoption?PetStatus=${data.status}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            Authorization: "Bearer " + token
+            Authorization: "Bearer " + data.token
         }
     });
 }

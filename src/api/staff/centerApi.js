@@ -21,12 +21,24 @@ export function getCenterOpeningAPI(status) {
     });
 }
 
-export function getCenterInfoAPI(id) {
-    return fetch(baseURL + `api/get-center-by-id/${id}`, {
+export function getCenterInfoAPI(data) {
+    return fetch(baseURL + `api/get-center-by-id/${data.id}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
+            Authorization: "Bearer " + data.token
+        },
+    });
+}
+
+export function getCountForCenter(token) {
+    return fetch(baseURL + `/api/get-count-for-center-home-page`, {
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + token
         },
     });
 }

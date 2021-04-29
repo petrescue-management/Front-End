@@ -46,7 +46,11 @@ export default {
                     roles: user.roles,
                     centerName: user.center.centerName
                 }
-                await getCenterInfoAPI(current_user.centerId)
+                let data = {
+                    id: current_user.centerId,
+                    token: current_user.token
+                }
+                await getCenterInfoAPI(data)
                     .then(response => response.json())
                     .then(data => {
                         current_user.centerPhone = data.phone;

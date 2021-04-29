@@ -146,7 +146,7 @@
         <el-button type="success" @click="changeStatus(2)"
           >Chấp thuận</el-button
         >
-        <el-button type="danger" @click="changeStatus(3)">Từ chối</el-button>
+        <el-button type="danger" @click="showDeny(3)">Từ chối</el-button>
       </div>
     </el-main>
   </div>
@@ -194,6 +194,49 @@ export default {
   methods: {
     ...mapActions("adoptionForm", ["getListAdoptionFormById"]),
 
+    showDeny(status) {
+      this.$prompt("Lý do từ chối", "Từ chối đơn", {
+        confirmButtonText: "Từ chối",
+        cancelButtonText: "Cancel",
+      })
+        .then(async ({ value }) => {
+          this.loading = true;
+          let token = this.getUser.token;
+          let data = {
+            id: this.id,
+            status,
+            reason: value,
+          };
+          await changeStatusAdoptionFormAPI(data, token).then((response) => {
+            if (response.status == 200) {
+              response.json().then((data) => {
+                let denyMessage = {
+                  titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
+                  body: "Xin lỗi, bạn không phù hợp với thú cưng này",
+                  date: this.getDate(),
+                  type: 1,
+                  description: data.reason,
+                };
+
+                UserAuthService.createNoti(
+                  data.reject.userId,
+                  data.reject.adoptionFormId,
+                  denyMessage
+                )
+                  .then(() => {
+                    console.log("Created new item successfully!");
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              });
+              this.loading = false;
+            }
+          });
+        })
+        .catch(() => {});
+    },
+
     getFormInfo(formInfo) {
       this.form = {
         username: formInfo.username,
@@ -238,101 +281,48 @@ export default {
     },
 
     async changeStatus(status) {
-      if (status == 2) {
-        this.loading = true;
-        let token = this.getUser.token;
-        let data = {
-          id: this.id,
-          status,
-          reason: "test",
-        };
-        await changeStatusAdoptionFormAPI(data, token).then((response) => {
-          if (response.status == 200) {
-            response.json().then((data) => {
-              let approve = data.approve;
-              let reject = data.rejects;
+      this.loading = true;
+      let token = this.getUser.token;
+      let data = {
+        id: this.id,
+        status,
+        reason: "test",
+      };
+      await changeStatusAdoptionFormAPI(data, token).then((response) => {
+        if (response.status == 200) {
+          response.json().then((data) => {
+            let approve = data.approve;
 
-              let approveMessage = {
-                titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
-                body: "Bạn đã được chấp thuận nhận nuôi một con thú cưng",
-                date: this.getDate(),
-                type: 1,
-                description: null,
-              };
+            let approveMessage = {
+              titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
+              body: "Bạn đã được chấp thuận nhận nuôi một con thú cưng",
+              date: this.getDate(),
+              type: 1,
+              description: null,
+            };
 
-              UserAuthService.createNoti(
-                approve.userId,
-                approve.adoptionFormId,
-                approveMessage
-              )
-                .then(() => {
-                  console.log("Created new item successfully!");
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-
-              let denyMessage = {
-                titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
-                body:
-                  "Xin lỗi, chúng tôi đã tìm ra người phù hợp cho thú cưng bạn đã đăng ký",
-                date: this.getDate(),
-                type: 1,
-                description: null,
-              };
-              reject.forEach((element) => {
-                UserAuthService.createNoti(
-                  element.userId,
-                  element.adoptionFormId,
-                  denyMessage
-                )
-                  .then(() => {
-                    console.log("Created new item successfully!");
-                  })
-                  .catch((e) => {
-                    console.log(e);
-                  });
+            UserAuthService.createNoti(
+              approve.userId,
+              approve.adoptionFormId,
+              approveMessage
+            )
+              .then(() => {
+                console.log("Created new item successfully!");
+              })
+              .catch((e) => {
+                console.log(e);
               });
-            });
-            this.loading = false;
-          }
-        });
-      } else if (status == 3) {
-        this.loading = true;
-        let token = this.getUser.token;
-        let data = {
-          id: this.id,
-          status,
-          reason: "Bạn không phù hợp",
-        };
-        await changeStatusAdoptionFormAPI(data, token).then((response) => {
-          if (response.status == 200) {
-            response.json().then((data) => {
-              let denyMessage = {
-                titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
-                body: "Xin lỗi, bạn không phù hợp với thú cưng này",
-                date: this.getDate(),
-                type: 1,
-                description: data.reason,
-              };
-
-              UserAuthService.createNoti(
-                data.reject.userId,
-                data.reject.adoptionFormId,
-                denyMessage
-              )
-                .then(() => {
-                  console.log("Created new item successfully!");
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            });
-            this.loading = false;
-          }
-        });
-      }
+          });
+          this.$message({
+            message: "Thú cưng đã được chuyển qua trạng thái chờ đến lấy",
+            type: "success",
+          });
+          this.loading = false;
+        }
+      });
     },
+
+
   },
 
   async created() {

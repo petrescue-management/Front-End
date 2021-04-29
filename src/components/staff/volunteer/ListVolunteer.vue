@@ -17,14 +17,25 @@
             >Duyệt đơn</el-button
           >
         </el-badge>
+        <el-button
+            type="primary"
+            style="margin-left: 30px"
+            icon="el-icon-plus"
+            @click="addVolunteer()"
+            >Thêm tình nguyện viên</el-button
+          >
       </div>
 
       <div style="padding: 0 10px">
         <b-card header="Danh sách tình nguyện viên" header-tag="header">
-          <el-table :data="listForm" v-loading="loading">
-            <el-table-column label="Ảnh cá nhân" width="130" height="180">
+          <el-table :data="listForm.filter(
+                (data) =>
+                  !search ||
+                  data.name.toLowerCase().includes(search.toLowerCase())
+              )" v-loading="loading">
+            <el-table-column label="Ảnh cá nhân" width="130">
               <template slot-scope="scope">
-                <img :src="scope.row.img" width="70px" />
+                <img :src="scope.row.img" width="70px"  height="70px" />
               </template>
             </el-table-column>
             <el-table-column
@@ -43,13 +54,21 @@
               label="Phone"
               width="200"
             ></el-table-column>
-            <el-table-column fixed="right" label="Operations">
+            <el-table-column fixed="right">
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="search"
+                  size="mini"
+                  placeholder="Gõ tên"
+                  :name="scope"
+                />
+              </template>
               <template slot-scope="scope">
                 <el-button
                   size="mini"
                   type="danger"
                   icon="el-icon-delete"
-                  @click="showDialogRemove(scope.row.id)"
+                  @click="removeVolunteer(scope.row.id)"
                 ></el-button>
               </template>
             </el-table-column>
@@ -64,8 +83,8 @@
         ></el-pagination> -->
       </div>
     </el-main>
-    <el-dialog title="Lý do từ chối đơn" :visible.sync="dialogDeny">
-      <DialogRemove :id="id" v-if="dialogDeny" />
+    <el-dialog  title="Thêm tình nguyện viên" :visible.sync="dialogVisible">
+      <AddVolunteer v-if="dialogVisible"/>
     </el-dialog>
   </div>
 </template>
@@ -73,9 +92,10 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import EventBus from "@/EventBus";
-import DialogRemove from './modal/DialogRemove.vue';
+import { removeVolunteerToCenterAPI } from "@/api/staff/volunteerApi";
+import AddVolunteer from './modal/AddVolunteer.vue';
 export default {
-  components: { DialogRemove },
+  components: { AddVolunteer },
   computed: {
     ...mapGetters("volunteer", ["getListVolunteer", "getCountForm"]),
     getUser() {
@@ -91,7 +111,7 @@ export default {
       dialogAddVisible: false,
       loading: false,
       img: require("@/assets/img/avatar.jpg"),
-      dialogDeny: false
+      search: "",
     };
   },
 
@@ -105,9 +125,30 @@ export default {
       this.$router.push({ name: "VolunteerRegistration" });
     },
 
-    showDialogRemove(id) {
-      this.id = id;
-      this.dialogDeny = true;
+    addVolunteer(){
+      this.dialogVisible = true;
+    },
+
+    async removeVolunteer(id) {
+      this.$prompt("Lý do vì sao xoá tình nguyện viên", "", {
+        confirmButtonText: "Từ chối",
+        cancelButtonText: "Cancel",
+      }).then(async ({ value }) => {
+        this.loading = true;
+        let token = this.getUser.token;
+
+        await removeVolunteerToCenterAPI(id, value, token).then((response) => {
+          if (response.status == 200) {
+            this.$message({
+              message: "Thao tác thành công",
+              type: "success",
+            });
+            this.getCount();
+            this.getList();
+          }
+        });
+        this.loading = false;
+      });
     },
 
     getTableData(list) {
@@ -173,7 +214,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
   padding: 0;
 }
 .title {

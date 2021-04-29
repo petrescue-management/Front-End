@@ -7,13 +7,16 @@ export default {
     namespaced: true,
     state: {
         listDoc: [],
-        total: 0,
+        totalPage: 0,
         document: {},
         listPet: [],
     },
     getters: {
         getListDoc(state) {
             return state.listDoc;
+        },
+        getTotalPage(state) {
+            return state.totalPage
         },
         getDoc(state) {
             return state.document
@@ -31,6 +34,9 @@ export default {
         },
         SET_PET(state, data) {
             state.listPet = data;
+        },
+        SET_TOTAL_PAGE(state, data) {
+            state.totalPage = data
         }
     },
     actions: {
@@ -38,7 +44,8 @@ export default {
             await getListPetDocumentAPI(data)
                 .then(response => response.json())
                 .then(data => {
-                    commit("SET_LIST_DOC", data);
+                    commit("SET_LIST_DOC", data.result);
+                    commit("SET_TOTAL_PAGE", data.totalPages);
                 })
         },
 

@@ -20,19 +20,19 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="First name" prop="firstname">
+            <el-form-item label="Tên" prop="firstname">
               <el-input v-model="form.firstname"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Last name" prop="lastname">
+            <el-form-item label="Họ" prop="lastname">
               <el-input v-model="form.lastname" required></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="15">
-            <el-form-item label="date" prop="dob">
+            <el-form-item label="Ngày sinh" prop="dob">
               <el-date-picker
                 v-model="form.dob"
                 type="date"
@@ -45,24 +45,24 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="15">
-            <el-form-item label="Phone" prop="phone">
+            <el-form-item label="SĐT" prop="phone">
               <el-input v-model="form.phone"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="Address" prop="address">
+        <el-form-item label="Địa chỉ" prop="address">
           <el-input v-model="form.address" required></el-input>
         </el-form-item>
       </el-form>
       <div class="button">
-        <el-button type="primary" @click="addVolunteer('form')">Add</el-button>
+        <el-button type="primary" @click="addVolunteer('form')">Thêm</el-button>
       </div>
     </el-main>
   </div>
 </template>
 
 <script>
-import { addVolunteerToCenterAPI } from "@/api/staff/volunteerApi";
+import { createRoleVolunteerForuser } from "@/api/staff/volunteerApi";
 // import EventBus from "@/EventBus";
 export default {
   name: "AddVolunteer",
@@ -171,15 +171,14 @@ export default {
           let token = this.getUser.token;
           let data = {
             email: this.form.email,
-            firstname: this.form.firstname,
-            lastname: this.form.lastname,
+            firstName: this.form.firstname,
+            lastName: this.form.lastname,
             dob: this.getDate(this.form.dob),
             address: this.form.address,
             gender: this.form.gender,
             phone: this.form.phone,
           };
-          console.log(data);
-          addVolunteerToCenterAPI(data, token).then((response) => {
+          createRoleVolunteerForuser(data, token).then((response) => {
             if (response.status == 200) {
               this.$message({
                 message: "Thêm thành công",

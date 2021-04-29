@@ -33,23 +33,6 @@
                   {{ pet.status }}
                 </el-tag></span
               >
-              <br /><br />
-              <el-button
-                type="success"
-                icon="el-icon-check"
-                style="width: 200px"
-                :disabled="pet.adoptionStatus == 2"
-                @click="changeStatus()"
-                >Đã đến lấy</el-button
-              >
-              <br /><br />
-              <el-button
-                type="danger"
-                icon="el-icon-refresh-left"
-                style="width: 200px"
-                @click="goToDetail()"
-                >Không đến lấy</el-button
-              >
             </div>
           </b-col>
           <b-col sm="8">
@@ -57,19 +40,11 @@
               <el-tab-pane label="Thông tin người nhận nuôi">
                 <div v-if="pet.user">
                   <Adopter :adopter="pet.user" />
-                  <el-badge is-dot class="item">
-                    <el-button
-                      type="primary"
-                      style="width: 200px"
-                      @click="goToDetail()"
-                      >Thông tin khác</el-button
-                    >
-                  </el-badge>
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="Cập nhật tình trạng">
+              <el-tab-pane label="Tình trạng thú cưng từ người nhận nuôi">
                 <div v-if="pet.petTracking">
-                  <PetTracking :petTracking="pet.petTracking" />
+                  <AdopterTracking :petTracking="pet.adoptionTracking" />
                 </div>
               </el-tab-pane>
             </el-tabs>
@@ -91,11 +66,11 @@
 import { adoptionStatus } from "@/enum/consts";
 import { mapGetters, mapActions } from "vuex";
 import FormAdoptDetail from "../form-adopt/modal/FormAdoptDetail.vue";
-import PetTracking from "../pet/modal/PetTracking.vue";
 import Adopter from "./modal/Adopter.vue";
 import { changeStatusAdoptionAPI } from "@/api/staff/adoptedApi";
+import AdopterTracking from './modal/AdopterTracking.vue';
 export default {
-  components: { PetTracking, Adopter, FormAdoptDetail },
+  components: { AdopterTracking, Adopter, FormAdoptDetail },
   data() {
     return {
       pet: {},
@@ -152,6 +127,7 @@ export default {
         },
         petImgUrl: this.getListImg(info.petImgUrl),
         petTracking: info.petTrackings,
+        adoptionTracking: info.adoptionReports,
         adoptionStatus: info.adoptionStatus,
         status: adoptionStatus.get(info.adoptionStatus).name,
         color: adoptionStatus.get(info.adoptionStatus).color,

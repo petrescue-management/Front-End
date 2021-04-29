@@ -62,14 +62,15 @@
               </template>
             </el-table-column>
           </el-table>
+
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-count="getTotalPage + 1"
+            layout="prev, pager, next"
+          ></el-pagination>
         </b-card>
-        <!-- <el-pagination
-          background
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :total="length"
-          layout="prev, pager, next"
-        ></el-pagination> -->
       </div>
     </el-main>
   </div>
@@ -81,7 +82,7 @@ import EventBus from "@/EventBus";
 import { petDocStatus } from "@/enum/consts";
 export default {
   computed: {
-    ...mapGetters("rescueReport", ["getListDoc"]),
+    ...mapGetters("rescueReport", ["getListDoc", "getTotalPage"]),
     getUser() {
       let user = localStorage.getItem("user");
       return JSON.parse(user);
@@ -106,7 +107,12 @@ export default {
       this.$router.push({ name: "ReportRescue", params: { id } });
     },
 
+    handleCurrentChange(val) {
+      this.getList(val - 1);
+    },
+
     getTableData(list) {
+      console.log(list);
       this.listDoc = [];
       list.forEach((data) => {
         let doc = {
@@ -144,9 +150,13 @@ export default {
       );
     },
 
-    async getList() {
-      let token = this.getUser.token;
-      await this.getListPetDocument(token);
+    async getList(page) {
+      this.loading = true;
+      let data = {
+        token: this.getUser.token,
+        page,
+      };
+      await this.getListPetDocument(data);
       this.getTableData(JSON.parse(JSON.stringify(this.getListDoc)));
       this.loading = false;
     },
@@ -175,8 +185,7 @@ export default {
   },
 
   created() {
-    this.loading = true;
-    this.getList();
+    this.getList(0);
     this.getStatus();
   },
 };
@@ -186,7 +195,6 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
   padding: 0;
 }
 .title {

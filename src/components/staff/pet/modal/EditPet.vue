@@ -48,7 +48,7 @@
           <el-radio-group v-model="form.status">
             <el-radio :label="1">Đang điều trị</el-radio>
             <el-radio :label="2">Chưa nhận nuôi</el-radio>
-            <el-radio :label="3">Đã nhận nuôi</el-radio>
+            <el-radio :label="5">Đã chết</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="Mô tả">

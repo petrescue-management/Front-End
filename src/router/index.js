@@ -14,9 +14,10 @@ import ListAdoption from '@/components/staff/adopted/ListAdoption'
 import Volunteer from '@/components/staff/volunteer/ListVolunteer'
 import Profile from '@/components/staff/profile/Profile'
 import VolunteerRegistration from '@/components/staff/volunteer/ListVolunteerRegistration'
-import RegisterVolunteer from '@/views/staff/RegisterVolunteer'
 import ListRescueReport from '@/components/staff/report-rescue/ListRescueReport'
 import Adoption from '@/components/staff/adopted/AdoptionDetail'
+import AdoptionManage from '@/components/staff/adopted/Adoption'
+import WaittingDetail from '@/components/staff/waitting-get/WaittingDetail'
 Vue.use(Router)
 
 export default new Router({
@@ -29,11 +30,6 @@ export default new Router({
             path: '/register-center',
             name: 'RegisterCenter',
             component: RegisterCenter
-        },
-        {
-            path: '/register-volunteer',
-            name: 'RegisterVolunteer',
-            component: RegisterVolunteer
         },
         {
             path: '/main-staff',
@@ -99,6 +95,16 @@ export default new Router({
                     name: "Adoption",
                     component: Adoption
                 },
+                {
+                    path: "/main-staff/adoption-manage",
+                    name: "AdoptionManage",
+                    component: AdoptionManage
+                },
+                {
+                    path: "/main-staff/waitting-detail/:id",
+                    name: "WaittingDetail",
+                    component: WaittingDetail
+                }
             ]
         },
     ]

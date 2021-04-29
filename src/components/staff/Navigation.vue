@@ -8,7 +8,7 @@
       :route="true"
     >
       <el-menu-item
-        index="/main-staff/dashboard-staff"
+        index="1"
         :route="{ name: 'DashboardStaff' }"
         @click="goTo('DashboardStaff')"
       >
@@ -18,7 +18,7 @@
         </template>
       </el-menu-item>
       <el-menu-item
-        index="/main-staff/pet-list"
+        index="2"
         :route="{ name: 'PetList' }"
         @click="goTo('PetList')"
       >
@@ -28,19 +28,9 @@
         </template>
       </el-menu-item>
       <el-menu-item
-        index="/main-staff/form-adopt"
-        :route="{ name: 'PetAdopt' }"
-        @click="goTo('PetAdopt')"
-      >
-        <template slot="title">
-          <i class="fas fa-file-alt"></i>
-          <span class="title">Đơn nhận nuôi</span>
-        </template>
-      </el-menu-item>
-      <el-menu-item
-      index="/main-staff/adoption"
-        :route="{ name: 'ListAdoption' }"
-        @click="goTo('ListAdoption')"
+        index="3"
+        :route="{ name: 'AdoptionManage' }"
+        @click="goTo('AdoptionManage')"
       >
         <template slot="title">
           <i class="fas fa-heart"></i>
@@ -48,8 +38,8 @@
         </template>
       </el-menu-item>
       <el-menu-item
-      index="/main-staff/report-rescue"
-      :route="{ name: 'ListRescueReport' }"
+        index="4"
+        :route="{ name: 'ListRescueReport' }"
         @click="goTo('ListRescueReport')"
       >
         <template slot="title">
@@ -58,7 +48,7 @@
         </template>
       </el-menu-item>
       <el-menu-item
-        index="/main-staff/volunteer" 
+        index="5"
         :route="{ name: 'Volunteer' }"
         @click="goTo('Volunteer')"
       >
@@ -75,32 +65,60 @@ export default {
   name: "Navigation",
   data() {
     return {
-      activeIndex: "/main/dashboard"
+      activeIndex: "1",
     };
   },
 
   mounted() {
-    this.activeIndex =  this.$router.history.current.fullPath;
+    console.log(this.$router.history.current.name);
+    switch (this.$router.history.current.name) {
+      case "DashboardStaff":
+        this.activeIndex = '1';
+        break;
+      case "PetList":
+      case "PetDetail":
+        this.activeIndex = '2';
+        break;
+      case "PetAdopt":
+      case "ListFormAdopt":
+      case "Adoption":
+      case "ListAdoption":
+      case "AdoptionManage":
+      case "WaittingDetail":
+        this.activeIndex = '3';
+        break;
+      case "ReportRescue":
+      case "ListRescueReport":
+        this.activeIndex = '4';
+        break;
+      case "Volunteer":
+      case "VolunteerRegistration":
+        this.activeIndex = '5';
+        break;
+      default:
+        break;
+    }
+    // this.activeIndex = this.$router.history.current.fullPath;
   },
 
   methods: {
     goTo(link) {
       this.$router.push({ name: link });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
 .el-aside {
-  background-color: #F8F9FA;
-  height: 89vh;
+  background-color: #f8f9fa;
+  height: 91vh;
   text-align: left;
   font-size: 20px;
 }
-.el-menu-item{
+.el-menu-item {
   font-size: 16px;
 }
-.title{
+.title {
   margin-left: 10px;
 }
 </style>

@@ -1,31 +1,7 @@
 <template>
   <div v-loading="loading">
     <el-main >
-      <div class="row bg-title form-adoption">
-        <div style="width: 5%"></div>
-        <div style="width: 90%; margin: auto; z-index: 2">
-          <h1 class="title">Thú cưng đang nhận nuôi</h1>
-        </div>
-      </div>
-      <div class="filter-dropdown" style="padding: 20px 20px 0 20px">
-        <b-row>
-          <b-col sm="3">
-            <b-form-group
-              id="input-group-3"
-              label="Trạng thái:"
-              label-for="input-3"
-            >
-              <b-form-select
-                id="input-3"
-                v-model="status"
-                :options="listStatus"
-              ></b-form-select>
-            </b-form-group>
-          </b-col>
-        </b-row>
-      </div>
-      <br />
-      <div>
+      <div v-if="listAdoption.length != 0">
         <div
           v-for="pet in listAdoption"
           :key="pet.id"
@@ -48,18 +24,18 @@
             </el-badge>
             <div class="overlay">
               <p class="name-pet">{{ pet.petName }}</p>
-              <el-tag class="status" :type="pet.color" size="small">
-                {{ pet.status }}
-              </el-tag>
+              
               <hr class="tag" />
-              <p class="att-pet">Người nhận nuôi:</p>
+              <p class="att-pet">Người nhận nuôi:</p><br/>
               {{ pet.adopter }}
               <br />
               <p class="att-pet">Ngày nhận:</p>
               {{ pet.dateAdopted }}
               <br />
-              <!-- <p class="att-pet">Giống :</p>
-              {{ pet.breedName }} -->
+              <p class="att-pet">Tình trạng:</p>
+              <el-tag class="status" :type="pet.color" size="small">
+                {{ pet.status }}
+              </el-tag>
             </div>
           </div>
         </div>
@@ -70,6 +46,10 @@
           :total="length"
           layout="prev, pager, next"
         ></el-pagination> -->
+      </div>
+      <div v-else style="text-align:center;margin-top: 20px">
+        <img src="@/assets/img/notfound.png" width="10%" height="auto"/>
+        <h4>Không có thú cưng nào</h4>
       </div>
     </el-main>
   </div>
@@ -119,6 +99,7 @@ export default {
           color: adoptionStatus.get(data.adoptionStatus).color
         };
         this.listAdoption.push(pet);
+        this.listAdoption.sort((a, b) => (new Date(a.dateAdopted) < new Date(b.dateAdopted) ? 1 : -1));
       });
     },
 
@@ -130,10 +111,13 @@ export default {
       }
     },
 
-    async getList() {
+    async getList(page) {
       this.loading = true;
-      let token = this.getUser.token;
-      await this.getListAdoptedPet(token);
+      let data = {
+        token: this.getUser.token,
+        page,
+      };
+      await this.getListAdoptedPet(data);
       this.getTableData(JSON.parse(JSON.stringify(this.getListAdopted)));
       this.loading = false;
     },
@@ -165,7 +149,7 @@ export default {
   },
 
   async created() {
-    await this.getList();
+    await this.getList(0);
     this.getStatus()
   },
 };
@@ -175,7 +159,7 @@ export default {
 .el-main {
   background-color: #e9eef3;
   color: #333;
-  height: 80vh;
+  height: auto;
   padding: 0;
 }
 .contain {
@@ -230,7 +214,6 @@ export default {
 }
 
 .status {
-  float: right;
   margin: 5px;
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="vertical-center">
-    <div class="row" style="margin: 0">
+    <div class="row" style="margin: 0; height: 90%">
       <div class="col-md-6">
         <div class="info">
           <img
@@ -15,27 +15,33 @@
             "
           />
           <h3>Pet Rescue - Đăng ký làm Trung tâm</h3>
-          <!-- <p class="content">
-            GitLab.com offers free unlimited (private) repositories and
-            unlimited collaborators.
+          <p class="content">
+            PetRescue cho trung tâm là trang web giúp quản lý trung tâm của bạn
+            một cách dễ dàng và tiện lợi hơn. Với các chức năng chính
           </p>
           <ul class="list">
-            <li>Explore projects on GitLab.com (no login needed)</li>
-            <li>More information about GitLab.com</li>
-            <li>GitLab Community Forum</li>
-            <li>GitLab Homepage</li>
+            <li>Quản lý thú cưng trong trung tâm</li>
+            <li>Quản lý các tình nguyện viên</li>
+            <li>Quản lý các trường hợp cứu hộ</li>
+            <li>Theo dõi tình hình nhận nuôi của thú cưng</li>
           </ul>
-          <p class="content">By signing up for and by signing in to this service you accept our:</p>
-          <ul class="list">
-            <li>Privacy policy</li>
-            <li>GitLab.com Terms.</li>
-          </ul> -->
         </div>
       </div>
       <div class="col-md-6">
         <div class="inner-block">
           <div v-if="this.active == 0">
-            <h5 style="font-weight: 600">Bước 1 - Nhập thông tin trung tâm</h5>
+            <h5 style="font-weight: 600">
+              Bước 1 - Điều khoản để trở thành trung tâm
+            </h5>
+            <div class="vue-tempalte">
+              <Policy />
+              <el-checkbox v-model="check"
+                >Tôi đồng ý với các điều khoản của hệ thống</el-checkbox
+              >
+            </div>
+          </div>
+          <div v-if="this.active == 2">
+            <h5 style="font-weight: 600">Bước 3 - Nhập thông tin trung tâm</h5>
             <div class="vue-tempalte">
               <el-form
                 label-position="top"
@@ -117,6 +123,7 @@
                     size="sm"
                     rows="3"
                     max-rows="6"
+                    required
                   ></b-form-textarea>
                 </el-form-item>
               </el-form>
@@ -134,41 +141,26 @@
                 v-loading="fullscreenLoading"
               >
                 <el-form-item label="Chọn ảnh">
-                  <el-button type="primary" @click="chooseImg()"
-                    >Chọn ảnh<i class="el-icon-upload el-icon-right"></i
-                  ></el-button>
-                  <input
-                    type="file"
-                    ref="getFile"
-                    accept="image/*"
-                    style="display: none"
-                    @change="uploadImage"
-                    multiple
-                  />
-                </el-form-item>
-                <el-form-item>
-                  <div
-                    class="container-img"
-                    v-for="(image, key) in previewImage"
-                    :key="key"
-                  >
-                    <div class="img-center">
-                      <img class="preview" :ref="'image'" />
-                    </div>
-                  </div>
+                  <vue-upload-multiple-image
+                    @upload-success="uploadImageSuccess"
+                    @before-remove="beforeRemove"
+                    @edit-image="editImage"
+                    :data-images="images"
+                  ></vue-upload-multiple-image>
                 </el-form-item>
               </el-form>
             </div>
           </div>
           <b-button
-            @click="next('form')"
-            v-if="this.active == 0"
+            @click="next()"
+            v-if="this.active != 2"
+            :disabled="!check"
             variant="primary"
             >Tiếp tục</b-button
           >
           <b-button
-            @click="registerCenter"
-            v-if="this.active == 1"
+            @click="registerCenter('form')"
+            v-if="this.active == 2"
             variant="primary"
             >Đăng ký</b-button
           >
@@ -185,30 +177,21 @@
     <el-dialog :visible.sync="dialogVisible" title="Chọn địa chỉ">
       <RegisterCenterMap v-if="dialogVisible" />
     </el-dialog>
-    <el-dialog
-      title="Đăng ký thành công"
-      :visible.sync="dialogInfo"
-      width="30%"
-    >
-      <span
-        >Đăng ký thành công, hãy chờ chúng tôi phản hồi mail của các bạn
-        nhé</span
-      >
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogInfo = false">OK</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import RegisterCenterMap from "@/components/google-map/RegisterCenterMap";
+import VueUploadMultipleImage from "vue-upload-multiple-image";
 import EventBus from "@/EventBus";
 import { createCenterForm } from "@/api/staff/centerApi.js";
 import firebase from "firebase";
+import Policy from "../../components/staff/Policy";
 export default {
   components: {
     RegisterCenterMap,
+    VueUploadMultipleImage,
+    Policy,
   },
   data() {
     var checkPhone = (rule, value, callback) => {
@@ -228,16 +211,19 @@ export default {
     return {
       active: 0,
       fullscreenLoading: false,
-      dialogInfo: false,
       dialogVisible: false,
-       previewImage: [],
+      dialogConfirm: false,
+      images: [],
+      formdata: [],
       imageUrl: "",
+      check: false,
       form: {
-        email: "",
-        name: "",
+        email: "minh01223095445@gmail.com",
+        name: "Cứu Hộ Chó Mèo Sài Gòn Time - SGT",
         address: "",
-        phone: "",
-        description: "",
+        phone: "0784445345",
+        description:
+          "Giải cứu các bé chó mèo :Trong hoàn cảnh cận kề với cái chết.Bị bỏ rơi vì già nua, bệnh tật.Bị lạc chủ.",
       },
       rules: {
         email: [
@@ -252,7 +238,7 @@ export default {
           {
             required: true,
             message: "Không được để trống",
-            trigger: "blur",
+            trigger: ["blur", "change"],
           },
           { validator: checkPhone, trigger: "blur" },
         ],
@@ -267,14 +253,14 @@ export default {
           {
             required: true,
             message: "Không được để trống",
-            trigger: "change",
+            trigger: ["blur", "change"],
           },
         ],
         name: [
           {
             required: true,
             message: "Không được để trống",
-            trigger: "change",
+            trigger: ["blur", "change"],
           },
         ],
       },
@@ -289,40 +275,27 @@ export default {
       this.$router.push({ name: "LoginStaff" });
     },
 
-    next(form) {
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          this.active++;
-        }
-      });
+    next() {
+      if (this.active === 1) {
+        this.uploadToFirebase();
+      }
+      this.active++;
     },
 
-    chooseImg() {
-      this.$refs["getFile"].click();
+    uploadImageSuccess(formData, index, fileList) {
+      console.log("data", formData, index, fileList);
+      this.formdata = fileList;
     },
 
-    uploadImage(e) {
-      var selectedFiles = e.target.files;
-      for (let i = 0; i < selectedFiles.length; i++) {
-        this.previewImage.push(selectedFiles[i]);
-      }
-
-      for (let i = 0; i < this.previewImage.length; i++) {
-        let reader = new FileReader();
-        reader.onload = () => {
-          this.$refs.image[i].src = reader.result;
-        };
-
-        reader.readAsDataURL(this.previewImage[i]);
-      }
-
+    uploadToFirebase() {
       this.imageUrl = "";
-      this.previewImage.forEach((data) => {
+      console.log(this.formdata);
+      this.formdata.forEach((data) => {
         const storageRef = firebase
           .storage()
           .ref(`center-img/`)
           .child(`${data.name}`)
-          .put(data);
+          .putString(data.path, "data_url");
 
         storageRef.on(
           `state_changed`,
@@ -341,28 +314,51 @@ export default {
       });
     },
 
-    async registerCenter() {
-      this.fullscreenLoading = true;
-      let data = {
-        centerName: this.form.name,
-        centerAddress: this.form.address,
-        email: this.form.email,
-        phone: this.form.phone,
-        lat: this.position.lat,
-        lng: this.position.lng,
-        description: this.form.description,
-        imageUrl: this.imageUrl,
-      };
+    beforeRemove(index, done, fileList) {
+      console.log("index", index, fileList);
+      done();
+    },
+    editImage(formData, index, fileList) {
+      console.log("edit data", formData, index, fileList);
+    },
 
-      await createCenterForm(data).then((response) => {
-        if (response.status == 200) {
-          this.fullscreenLoading = false;
-          this.dialogInfo = true;
-        } else {
-          this.fullscreenLoading = false
-          this.$message({
-            message: "Email này đã được đăng ký",
-            type: "danger",
+    registerCenter(form) {
+      this.$refs[form].validate(async (valid) => {
+        if (valid) {
+          this.fullscreenLoading = true;
+          let data = {
+            centerName: this.form.name,
+            centerAddress: this.form.address,
+            email: this.form.email,
+            phone: this.form.phone,
+            lat: this.position.lat,
+            lng: this.position.lng,
+            description: this.form.description,
+            imageUrl: this.imageUrl,
+          };
+          console.log(data);
+          await createCenterForm(data).then((response) => {
+            if (response.status == 200) {
+              this.fullscreenLoading = false;
+              this.$alert(
+                "Đăng ký thành công, hãy chờ phản hồi mail từ chúng tôi nhé",
+                "Đăng ký thành công",
+                {
+                  confirmButtonText: "OK",
+                  callback: () => {
+                    this.$router.push({
+                      name: "LoginStaff",
+                    });
+                  },
+                }
+              );
+            } else {
+              this.fullscreenLoading = false;
+              this.$message({
+                message: "Email này đã được đăng ký",
+                type: "danger",
+              });
+            }
           });
         }
       });
@@ -431,6 +427,10 @@ export default {
 
 .pac-container {
   z-index: 9999 !important;
+}
+
+.inner-block {
+  padding: 40px 55px 10px 55px !important;
 }
 
 .container-img {

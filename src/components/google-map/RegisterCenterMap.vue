@@ -1,15 +1,20 @@
 <template>
   <div>
-    <div>
+    <div v-loading="loading">
       <label style="width: 100%">
         <gmap-autocomplete
+          ref="gmapAutocomplete"
           @place_changed="setPlace"
           :options="{
             fields: ['geometry', 'formatted_address', 'address_components'],
           }"
         >
         </gmap-autocomplete>
-        <el-button @click="addMarker" type="danger" icon="el-icon-position"></el-button>
+        <el-button
+          @click="addMarker"
+          type="danger"
+          icon="el-icon-position"
+        ></el-button>
       </label>
       <br />
     </div>
@@ -19,9 +24,12 @@
       :center="center"
       :zoom="zoom"
       style="width: 100%; height: 400px"
+      @click="mark"
     >
       <gmap-marker
         :position="position"
+        :clickable="true"
+        :draggable="true"
         @click="center = position"
       ></gmap-marker>
     </gmap-map>
@@ -35,6 +43,7 @@
 
 <script>
 import EventBus from "@/EventBus";
+import { getLocationAPI } from "@/api/staff/petApi";
 export default {
   name: "RegisterCenterMap",
   data() {
@@ -44,6 +53,8 @@ export default {
       places: [],
       zoom: 12,
       position: null,
+      loading: false,
+      address: "",
     };
   },
 
@@ -56,6 +67,24 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
+
+    async mark(event) {
+      this.loading = true;
+      this.position = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+      };
+      await getLocationAPI(this.position.lat, this.position.lng)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.$refs.gmapAutocomplete.$refs.input.value =
+            data.results[0].formatted_address;
+          this.address = data.results[0].formatted_address;
+        });
+      this.loading = false;
+    },
+
     addMarker() {
       if (this.currentPlace) {
         this.position = {
@@ -79,9 +108,11 @@ export default {
 
     getLocation() {
       let value = {
-        address: this.currentPlace.formatted_address,
-        lat: this.currentPlace.geometry.location.lat(),
-        lng: this.currentPlace.geometry.location.lng(),
+        address: this.address
+          ? this.address
+          : this.currentPlace.formatted_address,
+        lat: this.position.lat,
+        lng: this.position.lng,
       };
       let visible = false;
       EventBus.$emit("CloseMapDialog", visible, value);
