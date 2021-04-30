@@ -1,27 +1,28 @@
 <template>
-  <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8">
-          <edit-profile-form> </edit-profile-form>
-        </div>
-        <div class="col-md-4">
-          <user-card> </user-card>
+  <div>
+    <el-main>
+      <div class="content">
+        <div class="container-fluid">
+            <div>
+              <edit-profile-form> </edit-profile-form>
+            </div>
         </div>
       </div>
-    </div>
+    </el-main>
   </div>
 </template>
 <script>
 import EditProfileForm from "./UserProfile/EditProfileForm.vue";
-import UserCard from "./UserProfile/UserCard.vue";
 
 export default {
   components: {
     EditProfileForm,
-    UserCard,
   },
 };
 </script>
-<style>
+<style scoped>
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+}
 </style>
