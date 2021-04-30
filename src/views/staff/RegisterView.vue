@@ -368,6 +368,7 @@ export default {
                 let message = {
                   date: this.getDate(),
                   type: 1,
+                  isCheck: false
                 };
                 SystemService.createNoti(
                   data,

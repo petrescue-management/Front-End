@@ -39,22 +39,26 @@
           </b-dropdown-text>
           <b-dropdown-divider></b-dropdown-divider>
           <div class="list">
-          <b-dropdown-item class="noti" v-for="noti in listNoti" :key="noti.id">
-            <b-row @click="goToDetail(noti.id,noti.type)">
-              <b-col sm="2" style="margin: auto auto auto 0; padding: 0">
-                <img :src="noti.logo" width="65px" height="65px" />
-              </b-col>
-              <b-col sm="9">
-                <div style="white-space: pre-wrap; padding: 1px">
-                  {{ noti.message }}
-                  <br />
-                  <span class="date">{{ noti.date }}</span>
-                </div>
-              </b-col>
-              <span :class="!noti.isCheck ? 'unread' : 'read'"></span>
-              <b-col> </b-col>
-            </b-row>
-          </b-dropdown-item>
+            <b-dropdown-item
+              class="noti"
+              v-for="noti in listNoti"
+              :key="noti.id"
+            >
+              <b-row @click="goToDetail(noti.id, noti.type)">
+                <b-col sm="2" style="margin: auto auto auto 0; padding: 0">
+                  <img :src="noti.logo" width="65px" height="65px" />
+                </b-col>
+                <b-col sm="9">
+                  <div style="white-space: pre-wrap; padding: 1px">
+                    {{ noti.message }}
+                    <br />
+                    <span class="date">{{ noti.date }}</span>
+                  </div>
+                </b-col>
+                <span :class="!noti.isCheck ? 'unread' : 'read'"></span>
+                <b-col> </b-col>
+              </b-row>
+            </b-dropdown-item>
           </div>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -83,18 +87,21 @@ export default {
   methods: {
     ...mapActions("user", ["logout"]),
 
-    show(){
-      this.$notify({
-            title: "Thông báo mới",
-            message: "Tình nguyện viên đã hoàn thành đơn cứu hộ",
-            position: "bottom-right",
-            iconClass: 'el-icon-bell',
-            type: 'success',
-            duration: 0
-          });
+    show() {
+      // this.$notify({
+      //       title: "Thông báo mới",
+      //       message: "Tình nguyện viên đã hoàn thành đơn cứu hộ",
+      //       position: "bottom-right",
+      //       iconClass: 'el-icon-bell',
+      //       type: 'success',
+      //       duration: 0
+      //     });
+      this.$router.push({
+        name: "Profile",
+      });
     },
 
-    goToDetail(id,type) {
+    goToDetail(id, type) {
       let value = {
         isCheck: true,
       };
@@ -105,10 +112,10 @@ export default {
           break;
         case 2:
           this.$router.push({ name: "ListRescueReport" });
-        break;
+          break;
         case 3:
           this.$router.push({ name: "VolunteerRegistration" });
-        break;
+          break;
         default:
           break;
       }
