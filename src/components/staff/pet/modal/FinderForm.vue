@@ -17,15 +17,13 @@
     <hr class="tag" />
     <b-row class="info">
       <b-col
-        >Tình trạng:
-        <span class="value">{{ petAttribute }}</span></b-col
+        >Tình trạng: <span class="value">{{ petAttribute }}</span></b-col
       >
     </b-row>
     <hr class="tag" />
     <b-row class="info">
       <b-col
-        >Địa điểm:
-        <span class="value">{{ location }}</span></b-col
+        >Địa điểm: <span class="value">{{ location }}</span></b-col
       >
     </b-row>
     <hr class="tag" />
@@ -58,10 +56,32 @@
         </div>
       </div>
     </b-row>
+    <b-row class="info">
+      <b-col style="margin: auto">
+        <span>Video của người phát hiện : </span>
+      </b-col>
+    </b-row>
+    <b-row>
+      <div class="container-img">
+        <video  height="150" @click="openGallery()">
+          <source :src="this.originalData.finderVideoUrl" width="200" height="200" type="video/mp4" />
+        </video>
+      </div>
+    </b-row>
+    <LightBox
+      ref="lightbox"
+      :media="media"
+      :show-caption="true"
+      :show-light-box="false"
+    ></LightBox>
   </div>
 </template>
 <script>
+import LightBox from "vue-it-bigger";
 export default {
+  components: {
+    LightBox,
+  },
   props: {
     finderForm: Object,
     petAttribute: String,
@@ -72,6 +92,7 @@ export default {
     return {
       originalData: null,
       show: false,
+      media: [],
     };
   },
 
@@ -99,13 +120,33 @@ export default {
       }
     },
 
+    openGallery() {
+      this.$refs.lightbox.showImage(0);
+    },
+
     getTableData() {
       this.originalData = {
         finderDate: this.getDate(this.finderForm.finderDate),
         finderName: this.finderForm.finderName,
         finderDescription: this.finderForm.finderDescription,
         finderImageUrl: this.getListImg(this.finderForm.finderImageUrl),
+        finderVideoUrl: this.finderForm.finderFormVidUrl,
       };
+      this.media = [
+        {
+          // For video
+          sources: [
+            {
+              src: this.finderForm.finderFormVidUrl,
+              type: "video/mp4",
+            },
+          ],
+          type: "video",
+          width: 800, // Required
+          height: 600, // Required
+          autoplay: false, // Optional: Autoplay video when the lightbox opens
+        },
+      ];
     },
   },
 
@@ -156,7 +197,7 @@ export default {
   display: block;
   vertical-align: middle;
 }
-h3{
+h3 {
   margin: 0 0 10px 0 !important;
 }
 </style>

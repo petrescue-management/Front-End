@@ -15,6 +15,7 @@
         "element-ui": "^2.15.1",
         "firebase": "^8.2.9",
         "vue": "^2.6.12",
+        "vue-it-bigger": "^0.2.2",
         "vue-router": "^3.5.1",
         "vue-select-image": "^1.9.0",
         "vue-upload-multiple-image": "^1.1.6",

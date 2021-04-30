@@ -99,6 +99,10 @@ export default {
   methods: {
     ...mapActions("adoptionForm", ["getListAdoptionFormByPetId"]),
 
+    back() {
+      this.$router.push({ name: "AdoptionManage" });
+    },
+
     getDate() {
       let date = new Date();
       let mm = date.getMonth() + 1;

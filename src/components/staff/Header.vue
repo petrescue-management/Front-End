@@ -40,7 +40,7 @@
           <b-dropdown-divider></b-dropdown-divider>
           <div class="list">
           <b-dropdown-item class="noti" v-for="noti in listNoti" :key="noti.id">
-            <b-row @click="goToDetail(noti.id)">
+            <b-row @click="goToDetail(noti.id,noti.type)">
               <b-col sm="2" style="margin: auto auto auto 0; padding: 0">
                 <img :src="noti.logo" width="65px" height="65px" />
               </b-col>
@@ -94,12 +94,24 @@ export default {
           });
     },
 
-    goToDetail(id) {
+    goToDetail(id,type) {
       let value = {
         isCheck: true,
       };
       CenterService.updateNoti(this.getUser.centerId, id, value);
-      this.$router.push({ name: "ReportRescue" });
+      switch (type) {
+        case 1:
+          this.$router.push({ name: "AdoptionManage" });
+          break;
+        case 2:
+          this.$router.push({ name: "ListRescueReport" });
+        break;
+        case 3:
+          this.$router.push({ name: "VolunteerRegistration" });
+        break;
+        default:
+          break;
+      }
     },
 
     signout() {

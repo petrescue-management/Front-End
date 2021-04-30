@@ -7,6 +7,13 @@
           <h1 class="title">Danh sách nhận nuôi</h1>
         </div>
       </div>
+
+      <div style="padding: 20px 0 0 20px">
+        <el-button type="info" icon="el-icon-back" @click="back()" plain
+          >Trở về</el-button
+        >
+      </div>
+      
       <div class="pet-info">
         <h3>Thông Tin của Pet</h3>
         <hr />
@@ -154,6 +161,10 @@ export default {
   methods: {
     ...mapActions("adoptionForm", ["getListAdoptionFormByPetId"]),
 
+    back() {
+      this.$router.push({ name: "AdoptionManage" });
+    },
+
     goToDetail(id) {
       this.dialogVisible = true;
       this.id = id;
@@ -222,9 +233,15 @@ export default {
   },
 
   mounted() {
-    EventBus.$on("CloseAdoptDialog", (visible) => {
+    EventBus.$on("CloseAdoptDialog", (visible,isDeny) => {
       this.dialogVisible = visible;
-      this.getlistForm();
+      let id = this.$router.history.current.params.id 
+      if(isDeny){
+        this.getlistForm();
+      }else{
+         this.$router.push({ name: "WaittingDetail", params: {id} });
+      }
+      
     });
   },
 

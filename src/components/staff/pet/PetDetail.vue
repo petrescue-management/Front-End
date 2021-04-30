@@ -35,7 +35,7 @@
               >
               <br /><br />
               <el-button
-                type="info"
+                type="primary"
                 icon="el-icon-edit"
                 v-show="pet.petStatusNum != 4 ? true : false"
                 style="width: 200px"

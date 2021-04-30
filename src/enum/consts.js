@@ -15,8 +15,8 @@ export const centerStatus = new Map([
 ]);
 
 export const petGender = new Map([
-    [1, "Đực"],
-    [2, "Cái"],
+    [2, "Đực"],
+    [1, "Cái"],
     [3, "Chưa rõ"],
 ]);
 

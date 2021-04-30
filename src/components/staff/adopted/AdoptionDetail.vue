@@ -95,6 +95,10 @@ export default {
       this.dialogVisible = true;
     },
 
+    back() {
+      this.$router.push({ name: "AdoptionManage" });
+    },
+    
     async changeStatus() {
       this.loading = true;
       let token = this.getUser.token;

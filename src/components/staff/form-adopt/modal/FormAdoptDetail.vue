@@ -156,7 +156,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { changeStatusAdoptionFormAPI } from "@/api/staff/adoptionFormApi";
 import UserAuthService from "@/services/UserAuthService";
-// import EventBus from "@/EventBus";
+import EventBus from "@/EventBus";
 export default {
   props: ["id"],
   name: "FormAdoptDetail",
@@ -229,6 +229,7 @@ export default {
                   .catch((e) => {
                     console.log(e);
                   });
+                EventBus.$emit("CloseAdoptDialog", false, true);
               });
               this.loading = false;
             }
@@ -280,49 +281,53 @@ export default {
       );
     },
 
-    async changeStatus(status) {
-      this.loading = true;
-      let token = this.getUser.token;
-      let data = {
-        id: this.id,
-        status,
-        reason: "test",
-      };
-      await changeStatusAdoptionFormAPI(data, token).then((response) => {
-        if (response.status == 200) {
-          response.json().then((data) => {
-            let approve = data.approve;
+    changeStatus(status) {
+      this.$confirm("Bạn có chắc chắn muốn chấp nhận đơn đăng ký này?", {
+        confirmButtonText: "Chấp nhận",
+        cancelButtonText: "Đóng",
+      }).then(async () => {
+        this.loading = true;
+        let token = this.getUser.token;
+        let data = {
+          id: this.id,
+          status,
+          reason: "test",
+        };
+        await changeStatusAdoptionFormAPI(data, token).then((response) => {
+          if (response.status == 200) {
+            response.json().then((data) => {
+              let approve = data.approve;
 
-            let approveMessage = {
-              titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
-              body: "Bạn đã được chấp thuận nhận nuôi một con thú cưng",
-              date: this.getDate(),
-              type: 1,
-              description: null,
-            };
+              let approveMessage = {
+                titlte: "Bạn có thông báo tình trạng đăng ký nhận nuôi",
+                body: "Bạn đã được chấp thuận nhận nuôi một con thú cưng",
+                date: this.getDate(),
+                type: 1,
+                description: null,
+              };
 
-            UserAuthService.createNoti(
-              approve.userId,
-              approve.adoptionFormId,
-              approveMessage
-            )
-              .then(() => {
-                console.log("Created new item successfully!");
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          });
-          this.$message({
-            message: "Thú cưng đã được chuyển qua trạng thái chờ đến lấy",
-            type: "success",
-          });
-          this.loading = false;
-        }
+              UserAuthService.createNoti(
+                approve.userId,
+                approve.adoptionFormId,
+                approveMessage
+              )
+                .then(() => {
+                  console.log("Created new item successfully!");
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            });
+            this.$message({
+              message: "Thú cưng đã được chuyển qua trạng thái chờ đến lấy",
+              type: "success",
+            });
+            this.loading = false;
+            EventBus.$emit("CloseAdoptDialog", false, false);
+          }
+        });
       });
     },
-
-
   },
 
   async created() {
