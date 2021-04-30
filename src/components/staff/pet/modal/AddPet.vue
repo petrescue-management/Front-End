@@ -82,8 +82,8 @@
         </el-row>
         <el-form-item label="Giới tính:">
           <el-radio-group v-model="form.gender">
-            <el-radio :label="1">Đực</el-radio>
-            <el-radio :label="2">Cái</el-radio>
+            <el-radio :label="2">Đực</el-radio>
+            <el-radio :label="1">Cái</el-radio>
             <el-radio :label="3">Chưa rõ</el-radio>
           </el-radio-group>
         </el-form-item>
