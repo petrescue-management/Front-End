@@ -187,6 +187,7 @@ import EventBus from "@/EventBus";
 import { createCenterForm } from "@/api/staff/centerApi.js";
 import firebase from "firebase";
 import Policy from "../../components/staff/Policy";
+import SystemService from "@/services/SystemService";
 export default {
   components: {
     RegisterCenterMap,
@@ -322,6 +323,29 @@ export default {
       console.log("edit data", formData, index, fileList);
     },
 
+    getDate() {
+      let date = new Date();
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      let hh = date.getHours();
+      let min = date.getMinutes();
+      return (
+        date.getFullYear() +
+        "-" +
+        (mm > 9 ? "" : "0") +
+        mm +
+        "-" +
+        (dd > 9 ? "" : "0") +
+        dd +
+        " " +
+        (hh > 9 ? "" : "0") +
+        hh +
+        ":" +
+        (min > 9 ? "" : "0") +
+        min
+      );
+    },
+
     registerCenter(form) {
       this.$refs[form].validate(async (valid) => {
         if (valid) {
@@ -340,6 +364,22 @@ export default {
           await createCenterForm(data).then((response) => {
             if (response.status == 200) {
               this.fullscreenLoading = false;
+              response.text().then((data) => {
+                let message = {
+                  date: this.getDate(),
+                  type: 1,
+                };
+                SystemService.createNoti(
+                  data,
+                  message
+                )
+                  .then(() => {
+                    console.log("Created new item successfully!");
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
+              });
               this.$alert(
                 "Đăng ký thành công, hãy chờ phản hồi mail từ chúng tôi nhé",
                 "Đăng ký thành công",
