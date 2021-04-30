@@ -227,7 +227,8 @@ export default {
 }
 
 .list {
-  height: 500px;
+  max-height: 500px;
+  height: auto;
   overflow: hidden;
   overflow-y: auto;
 }
