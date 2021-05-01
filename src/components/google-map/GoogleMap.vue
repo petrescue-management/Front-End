@@ -1,16 +1,20 @@
 <template>
   <div>
-    <div>
-      <h2>Search and add a pin</h2>
-      <label>
+    <div v-loading="loading">
+      <label style="width: 100%">
         <gmap-autocomplete
+          ref="gmapAutocomplete"
           @place_changed="setPlace"
           :options="{
             fields: ['geometry', 'formatted_address', 'address_components'],
           }"
         >
         </gmap-autocomplete>
-        <button @click="addMarker">Add</button>
+        <el-button
+          @click="addMarker"
+          type="danger"
+          icon="el-icon-position"
+        ></el-button>
       </label>
       <br />
     </div>
@@ -19,37 +23,45 @@
       ref="map"
       :center="center"
       :zoom="zoom"
-      style="width: 100%; height: 500px"
+      style="width: 100%; height: 400px"
+      @click="mark"
     >
       <gmap-marker
-        :key="index"
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center = m.position"
+        :position="position"
+        :clickable="true"
+        :draggable="true"
+        @click="center = position"
       ></gmap-marker>
     </gmap-map>
+
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">Huỷ</el-button>
+      <el-button type="primary" @click="getLocation">Lấy địa chỉ</el-button>
+    </span>
   </div>
 </template>
 
 <script>
+import EventBus from "@/EventBus";
+import { getLocationAPI } from "@/api/staff/petApi";
 export default {
-  name: "GoogleMap",
+  name: "RegisterCenterMap",
+  props:['lat','lng','addressOld'],
   data() {
     return {
-      //mặc định là Montreal
       center: { lat: 10.84157038648921, lng: 106.81006578904247 },
-      markers: [],
-      places: [],
       currentPlace: null,
+      places: [],
       zoom: 12,
+      position: null,
+      loading: false,
+      address: "",
     };
   },
 
   mounted() {
+    this.$refs.gmapAutocomplete.$refs.input.value = this.addressOld
     this.geolocate();
-    this.$nextTick(() => {
-      this.$refs.map.$gmapApiPromiseLazy().then(this.loadControls);
-    });
   },
 
   methods: {
@@ -57,16 +69,33 @@ export default {
     setPlace(place) {
       this.currentPlace = place;
     },
+
+    async mark(event) {
+      this.loading = true;
+      this.position = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+      };
+      await getLocationAPI(this.position.lat, this.position.lng)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          this.$refs.gmapAutocomplete.$refs.input.value =
+            data.results[0].formatted_address;
+          this.address = data.results[0].formatted_address;
+        });
+      this.loading = false;
+    },
+
     addMarker() {
       if (this.currentPlace) {
-        const marker = {
+        this.position = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
         };
-        this.markers.push({ position: marker });
+        this.center = this.position;
         this.places.push(this.currentPlace);
-        this.center = marker;
-        this.currentPlace = null;
+        // this.currentPlace = null;
         this.zoom = 17;
       }
     },
@@ -79,55 +108,53 @@ export default {
       });
     },
 
-    loadControls() {
-      var controlDiv = document.createElement("div");
-      var firstChild = document.createElement("button");
-      firstChild.style.backgroundColor = "#fff";
-      firstChild.style.border = "none";
-      firstChild.style.outline = "none";
-      firstChild.style.width = "40px";
-      firstChild.style.height = "40px";
-      firstChild.style.borderRadius = "2px";
-      firstChild.style.boxShadow = "0 1px 4px rgba(0,0,0,0.3)";
-      firstChild.style.cursor = "pointer";
-      firstChild.style.marginRight = "10px";
-      firstChild.style.padding = "0px";
-      firstChild.title = "Your Location";
-      controlDiv.appendChild(firstChild);
-      var secondChild = document.createElement("div");
-      secondChild.style.margin = "5px";
-      secondChild.style.width = "28px";
-      secondChild.style.height = "28px";
-      secondChild.style.backgroundImage =
-        "url(https://maps.gstatic.com/tactile/mylocation/mylocation-sprite-1x.png)";
-      secondChild.style.backgroundSize = "300px 30px";
-      secondChild.style.backgroundPosition = "0px 0px";
-      secondChild.style.backgroundRepeat = "no-repeat";
-      secondChild.id = "you_location_img";
-      firstChild.appendChild(secondChild);
-      window.google.maps.event.addListener(
-        this.$refs.map.$mapObject,
-        "center_changed",
-        function () {
-          secondChild.style["background-position"] = "0 0";
-        }
-      );
-      firstChild.addEventListener("click", function () {
-        navigator.geolocation.getCurrentPosition((position) => {
-          let center = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          this.markers.push({ position: center });
-          this.places.push(center);
-          this.zoom = 17;
-        });
-      });
-      controlDiv.index = 1;
-      this.$refs.map.$mapObject.controls[
-        window.google.maps.ControlPosition.RIGHT_BOTTOM
-      ].push(controlDiv);
+    getLocation() {
+      let value = {
+        address: this.address
+          ? this.address
+          : this.currentPlace.formatted_address,
+        lat: this.position.lat,
+        lng: this.position.lng,
+      };
+      let visible = false;
+      EventBus.$emit("CloseLocationUpdateDialog", visible, value);
     },
   },
+
+  created() {
+    this.position = {
+      lat: this.lat,
+      lng: this.lng,
+    }
+    this.places.push(this.position)
+  }
 };
 </script>
+<style>
+.pac-container {
+  z-index: 9999 !important;
+}
+.pac-icon {
+  display: none !important;
+}
+
+.pac-item {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.pac-item:hover {
+  background-color: #ececec;
+}
+.pac-item-query {
+  font-size: 16px;
+}
+.pac-target-input {
+  width: 70%;
+  padding: 8px 20px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+</style>

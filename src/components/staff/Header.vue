@@ -17,7 +17,7 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template #button-content>
-            <em>{{ getUser.centerName }}</em>
+            <em>{{ centerName }}</em>
           </template>
           <b-dropdown-item @click="show">Hồ sơ</b-dropdown-item>
           <b-dropdown-item @click="signout">Đăng xuất</b-dropdown-item>
@@ -70,6 +70,10 @@ import { mapActions } from "vuex";
 import CenterService from "../../services/CenterService";
 import firebase from "firebase";
 import { Notification } from "@/enum/consts";
+import {
+  getCenterInfoAPI
+} from "@/api/staff/centerApi";
+import EventBus from "@/EventBus";
 export default {
   name: "Navbar",
   computed: {
@@ -82,6 +86,7 @@ export default {
     return {
       listNoti: [],
       count: 0,
+      centerName: ""
     };
   },
   methods: {
@@ -99,6 +104,22 @@ export default {
       this.$router.push({
         name: "Profile",
       });
+    },
+
+    async getCenterProfile() {
+      this.loading = true;
+      let data = {
+        token: this.getUser.token,
+        id: this.getUser.centerId,
+      };
+      await getCenterInfoAPI(data).then((response) => {
+        if (response.status == 200) {
+          response.json().then((data) => {
+            this.centerName = data.centerName;
+          });
+        }
+      });
+      this.loading = false;
     },
 
     goToDetail(id, type) {
@@ -182,10 +203,14 @@ export default {
   },
 
   mounted() {
+    this.getCenterProfile();
     CenterService.getListNoti(this.getUser.centerId).on(
       "value",
       this.onDataChange
     );
+    EventBus.$on("changeProfile",() => {
+      this.getCenterProfile();
+    });
   },
 };
 </script>

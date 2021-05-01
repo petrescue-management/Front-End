@@ -43,12 +43,31 @@ export function getCountForCenter(token) {
     });
 }
 
-export function updateCenter(data) {
+export function updateProfileCenter(data) {
     let requestBody = {
-        centerStatus: data.status,
-        centerId: data.centerId
+        centerId: data.centerId,
+        lng: data.lng,
+        lat: data.lat,
+        centerName: data.centerName,
+        centerAddress: data.centerAddress,
+        phone: data.phone
     }
     return fetch(baseURL + `api/update-center`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json",
+            Accept: "*/*",
+            Authorization: "Bearer " + data.token
+        },
+        body: JSON.stringify(requestBody)
+    });
+}
+
+export function updateCenter(data) {
+    let requestBody = {
+        status: data.status,
+    }
+    return fetch(baseURL + `api/change-status-of-center`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",

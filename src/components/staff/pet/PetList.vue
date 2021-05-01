@@ -66,8 +66,8 @@
           </b-col>
         </b-row>
         <div style="text-align: center">
-          <b-button pill variant="info" @click="filterPet()"><b-icon icon="search" aria-hidden="true"></b-icon> Tìm Boss</b-button>
-          <b-button pill variant="primary" @click="goToAddPet()"> + Thêm Boss </b-button>
+          <b-button pill variant="info" @click="filterPet()"><b-icon icon="search" aria-hidden="true"></b-icon> Tìm thú cưng </b-button>
+          <b-button pill variant="primary" @click="goToAddPet()"> + Thêm thú cưng </b-button>
         </div>
       </div>
       <div v-for="pet in listPet" :key="pet.id" class="contain">

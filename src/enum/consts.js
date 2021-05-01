@@ -66,7 +66,6 @@ export const typePet = {
 }
 
 export const petAge = new Map([
-    [0, "Trẻ"],
     [1, "Trẻ"],
     [2, "Trưởng thành"],
     [3, "Già"],
