@@ -33,7 +33,7 @@ export default new Router({
         },
         {
             path: '/main-staff',
-            name: 'MainStaff',
+            redirect: '/main-staff/dashboard-staff',
             component: MainStaff,
             children: [{
                     path: "/main-staff/dashboard-staff",

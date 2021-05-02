@@ -96,9 +96,44 @@ export default {
         this.activeIndex = '5';
         break;
       default:
+        this.activeIndex = '0';
         break;
     }
     // this.activeIndex = this.$router.history.current.fullPath;
+  },
+
+  watch: {
+    $route(to, from) {
+      console.log(to, from);
+      switch (to.name) {
+      case "DashboardStaff":
+        this.activeIndex = '1';
+        break;
+      case "PetList":
+      case "PetDetail":
+        this.activeIndex = '2';
+        break;
+      case "PetAdopt":
+      case "ListFormAdopt":
+      case "Adoption":
+      case "ListAdoption":
+      case "AdoptionManage":
+      case "WaittingDetail":
+        this.activeIndex = '3';
+        break;
+      case "ReportRescue":
+      case "ListRescueReport":
+        this.activeIndex = '4';
+        break;
+      case "Volunteer":
+      case "VolunteerRegistration":
+        this.activeIndex = '5';
+        break;
+      default:
+        this.activeIndex = '0';
+        break;
+    }
+    },
   },
 
   methods: {

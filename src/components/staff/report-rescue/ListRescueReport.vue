@@ -66,7 +66,6 @@
           <el-pagination
             background
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
             :page-count="getTotalPage + 1"
             layout="prev, pager, next"
           ></el-pagination>
