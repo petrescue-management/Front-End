@@ -63,7 +63,7 @@
 
 <script>
 import { createRoleVolunteerForuser } from "@/api/staff/volunteerApi";
-// import EventBus from "@/EventBus";
+import EventBus from "@/EventBus";
 export default {
   name: "AddVolunteer",
   data() {
@@ -184,6 +184,7 @@ export default {
                 message: "Thêm thành công",
                 type: "success",
               });
+              EventBus.$emit("CloseAddVolunteerDialog", false);
             } else {
               this.$message({
                 message: "Thêm không thành công",

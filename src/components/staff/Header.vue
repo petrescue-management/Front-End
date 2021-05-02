@@ -129,13 +129,13 @@ export default {
       CenterService.updateNoti(this.getUser.centerId, id, value);
       switch (type) {
         case 1:
-          this.$router.push({ name: "AdoptionManage" });
+          this.$router.push({ name: "AdoptionManage" }).catch(() => { window.location.reload();})
           break;
         case 2:
-          this.$router.push({ name: "ListRescueReport" });
+          this.$router.push({ name: "ListRescueReport" }).catch(() => { window.location.reload();})
           break;
         case 3:
-          this.$router.push({ name: "VolunteerRegistration" });
+          this.$router.push({ name: "VolunteerRegistration" }).catch(() => { window.location.reload();})
           break;
         default:
           break;

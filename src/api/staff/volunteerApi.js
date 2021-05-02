@@ -1,12 +1,12 @@
 import { baseURL } from "../../enum/consts";
 
-export function getListVolunteerAPI(token) {
-    return fetch(baseURL + `api/users/get-list-volunteer-profile-of-center`, {
+export function getListVolunteerAPI(data) {
+    return fetch(baseURL + `api/users/get-list-volunteer-profile-of-center?IsActive=${data.IsActive}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
-            Authorization: "Bearer " + token
+            Authorization: "Bearer " + data.token
         }
     });
 }
