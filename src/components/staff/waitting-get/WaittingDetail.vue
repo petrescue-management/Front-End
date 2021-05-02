@@ -162,6 +162,7 @@ export default {
                 });
             });
             this.loading = false;
+            this.$router.push({ name: "AdoptionManage" });
           }
         });
       });
@@ -230,6 +231,8 @@ export default {
               type: "success",
             });
             this.loading = false;
+            let id = this.pet.adoptionRegistrationFormId;
+            this.$router.push({ name: "Adoption", params: { id } });
           }
         });
       });
