@@ -219,12 +219,11 @@ export default {
       imageUrl: "",
       check: false,
       form: {
-        email: "minh01223095445@gmail.com",
-        name: "Cứu Hộ Chó Mèo Sài Gòn Time - SGT",
+        email: "",
+        name: "",
         address: "",
-        phone: "0784445345",
-        description:
-          "Giải cứu các bé chó mèo :Trong hoàn cảnh cận kề với cái chết.Bị bỏ rơi vì già nua, bệnh tật.Bị lạc chủ.",
+        phone: "",
+        description:"",
       },
       rules: {
         email: [
