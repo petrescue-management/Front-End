@@ -62,7 +62,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <div class="container-img">
+      <div class="container-img" v-if="finderVideoUrl">
         <video  height="150" @click="openGallery()">
           <source :src="this.originalData.finderVideoUrl" width="200" height="200" type="video/mp4" />
         </video>
@@ -130,7 +130,7 @@ export default {
         finderName: this.finderForm.finderName,
         finderDescription: this.finderForm.finderDescription,
         finderImageUrl: this.getListImg(this.finderForm.finderImageUrl),
-        finderVideoUrl: this.finderForm.finderFormVidUrl,
+        finderVideoUrl: this.finderForm.finderFormVidUrl != '' ? this.finderForm.finderFormVidUrl : null,
       };
       this.media = [
         {

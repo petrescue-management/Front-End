@@ -116,7 +116,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { adoptionFormStatus, petGender } from "@/enum/consts";
+import { adoptionFormStatus, petGender ,petAge} from "@/enum/consts";
 import FormAdoptDetail from "./modal/FormAdoptDetail";
 import EventBus from "@/EventBus";
 export default {
@@ -211,7 +211,7 @@ export default {
         petName: petInfo.petName,
         petTypeName: petInfo.petTypeName,
         petGender: petGender.get(petInfo.petGender),
-        petAge: petInfo.petAge,
+        petAge: petAge.get(petInfo.petAge),
         weight: petInfo.weight,
         isVaccinated: petInfo.isVaccinated,
         isSterilized: petInfo.isSterilized,
