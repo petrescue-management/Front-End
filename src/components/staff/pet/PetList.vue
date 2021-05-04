@@ -70,6 +70,7 @@
           <b-button pill variant="primary" @click="goToAddPet()"> + Thêm thú cưng </b-button>
         </div>
       </div>
+      <div v-if="listPet.length != 0">>
       <div v-for="pet in listPet" :key="pet.id" class="contain">
         <div class="contain-img" @click="goToDetail(pet.id)">
           <img class="pet-img" :src="pet.img" width="100%" height="100%" />
@@ -93,7 +94,11 @@
           <br />
         </div>
       </div>
-
+      </div>
+      <div v-else style="text-align:center;margin-top: 20px">
+        <img src="@/assets/img/notfound.png" width="10%" height="auto"/>
+        <h4>Không có thú cưng nào</h4>
+      </div>
       <!-- <el-pagination
           background
           @current-change="handleCurrentChange"
