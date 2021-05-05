@@ -384,6 +384,8 @@ export default {
             petFurColorId: this.form.petColorId,
             petImgUrl: this.imageUrl,
           };
+
+          this.active = 0;
           CenterService.createdPetProfile(
             this.getUser.centerId,
             this.petDocumentId,
