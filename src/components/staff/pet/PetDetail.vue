@@ -7,10 +7,17 @@
           <h1 class="title">Thông Tin Từng Boss</h1>
         </div>
       </div>
-      <div style="padding: 20px 0 0 20px">
+      <div style="padding: 20px 0 0 20px; margin-bottom: 20px">
         <el-button type="info" icon="el-icon-back" @click="back()" plain
           >Trở về</el-button
         >
+      </div>
+      <div>
+        <el-steps :active="2" align-center>
+          <el-step title="Ngày mang về" description="24-05-2021"></el-step>
+          <el-step title="Ngày chờ nhận nuôi" description="24-05-2021"></el-step>
+          <el-step title="Ngày nhận nuôi" description="24-05-2021"></el-step>
+        </el-steps>
       </div>
       <div class="pet-info">
         <b-row class="info">
@@ -68,7 +75,7 @@
                   <FinderForm
                     :finderForm="pet.finderForm"
                     :petAttribute="pet.petAttribute"
-                    :location ="pet.location"
+                    :location="pet.location"
                   />
                 </div>
               </el-tab-pane>
@@ -179,7 +186,7 @@ export default {
         petTracking: petInfo.petTracking,
         finderForm: petInfo.finderForm,
         pickerForm: petInfo.pickerForm,
-        location : petInfo.location
+        location: petInfo.location,
       };
     },
 
@@ -190,8 +197,6 @@ export default {
         return list.split(";");
       }
     },
-
-    
 
     async getData() {
       this.loading = true;
@@ -212,7 +217,7 @@ export default {
       this.getData();
     });
 
-     EventBus.$on("CloseEditDialog", (visible) => {
+    EventBus.$on("CloseEditDialog", (visible) => {
       this.dialogEdit = visible;
       this.getData();
     });

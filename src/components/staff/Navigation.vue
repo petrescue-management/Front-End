@@ -47,7 +47,7 @@
           <span class="title">Danh sách cứu hộ</span>
         </template>
       </el-menu-item>
-      <el-menu-item
+      <!-- <el-menu-item
         index="5"
         :route="{ name: 'Volunteer' }"
         @click="goTo('Volunteer')"
@@ -56,7 +56,7 @@
           <i class="fas fa-user"></i>
           <span class="title">Tình nguyện viên</span>
         </template>
-      </el-menu-item>
+      </el-menu-item> -->
     </el-menu>
   </el-aside>
 </template>

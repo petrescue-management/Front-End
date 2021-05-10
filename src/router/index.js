@@ -11,9 +11,9 @@ import ReportRescue from '@/components/staff/report-rescue/ReportRescue'
 import PetAdopt from '@/components/staff/form-adopt/ListPetAdopt'
 import ListFormAdopt from '@/components/staff/form-adopt/ListForm'
 import ListAdoption from '@/components/staff/adopted/ListAdoption'
-import Volunteer from '@/components/staff/volunteer/ListVolunteer'
+// import Volunteer from '@/components/staff/volunteer/ListVolunteer'
 import Profile from '@/components/staff/profile/Profile'
-import VolunteerRegistration from '@/components/staff/volunteer/ListVolunteerRegistration'
+// import VolunteerRegistration from '@/components/staff/volunteer/ListVolunteerRegistration'
 import ListRescueReport from '@/components/staff/report-rescue/ListRescueReport'
 import Adoption from '@/components/staff/adopted/AdoptionDetail'
 import AdoptionManage from '@/components/staff/adopted/Adoption'
@@ -71,19 +71,9 @@ export default new Router({
                     component: ListAdoption
                 },
                 {
-                    path: "/main-staff/volunteer",
-                    name: "Volunteer",
-                    component: Volunteer
-                },
-                {
                     path: "/main-staff/profile",
                     name: "Profile",
                     component: Profile
-                },
-                {
-                    path: "/main-staff/volunteer-registration",
-                    name: "VolunteerRegistration",
-                    component: VolunteerRegistration
                 },
                 {
                     path: "/main-staff/report-rescue",

@@ -1,5 +1,5 @@
 //export const baseURL = "https://localhost:44305/"
-export const baseURL = "https://petrescueapi.azurewebsites.net/";
+export const baseURL = "https://petrescuecapston.azurewebsites.net/";
 export const emptyGuId = "00000000-0000-0000-0000-000000000000"
 
 export const adoptionFormStatus = new Map([

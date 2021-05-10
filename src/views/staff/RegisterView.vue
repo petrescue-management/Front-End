@@ -293,7 +293,7 @@ export default {
       this.formdata.forEach((data) => {
         const storageRef = firebase
           .storage()
-          .ref(`center-img/`)
+          .ref(`center/`)
           .child(`${data.name}`)
           .putString(data.path, "data_url");
 

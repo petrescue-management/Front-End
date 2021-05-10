@@ -1,7 +1,7 @@
 import { baseURL } from "../../enum/consts";
 
 export function getListPetDocumentAPI(data) {
-    return fetch(baseURL + `api/get-list-pet-document?page=${data.page}&limit=10`, {
+    return fetch(baseURL + `api/rescue-documents/get-list-pet-document?page=${data.page}&limit=10`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -12,7 +12,7 @@ export function getListPetDocumentAPI(data) {
 }
 
 export function getPetDocumentByIdAPI(data) {
-    return fetch(baseURL + `api/get-pet-document-by-id?petDocumentId=${data.petDocumentId}`, {
+    return fetch(baseURL + `api/rescue-documents/get-pet-document-by-id?petDocumentId=${data.petDocumentId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -28,7 +28,7 @@ export function updatePetDocumentAPI(data, token) {
         petDocumentStatus: data.petDocumentStatus,
         pets: data.pets
     };
-    return fetch(baseURL + `api/update-pet-document`, {
+    return fetch(baseURL + `api/rescue-documents/update-pet-document`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",
@@ -40,7 +40,7 @@ export function updatePetDocumentAPI(data, token) {
 }
 
 export function getListPetByPetDocumentIdAPI(petDocumentId) {
-    return fetch(baseURL + `api/get-list-petprofile-by-petdocumentid?petDocumentId=${petDocumentId}`, {
+    return fetch(baseURL + `api/rescue-documents/get-list-petprofile-by-petdocumentid?petDocumentId=${petDocumentId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

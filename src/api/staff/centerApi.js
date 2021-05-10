@@ -1,7 +1,7 @@
 import { baseURL } from "../../enum/consts";
 
 export function createCenterForm(data) {
-    return fetch(baseURL + `api/create-center-registration-form`, {
+    return fetch(baseURL + `api/center-registration-forms/create-center-registration-form`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -22,7 +22,7 @@ export function getCenterOpeningAPI(status) {
 }
 
 export function getCenterInfoAPI(data) {
-    return fetch(baseURL + `api/get-center-by-id/${data.id}`, {
+    return fetch(baseURL + `api/centers/get-center-by-id/${data.id}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -33,7 +33,7 @@ export function getCenterInfoAPI(data) {
 }
 
 export function getCountForCenter(token) {
-    return fetch(baseURL + `/api/get-count-for-center-home-page`, {
+    return fetch(baseURL + `/api/centers/get-count-for-center-home-page`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -52,7 +52,7 @@ export function updateProfileCenter(data) {
         centerAddress: data.centerAddress,
         phone: data.phone
     }
-    return fetch(baseURL + `api/update-center`, {
+    return fetch(baseURL + `api/centers/update-center`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",
@@ -67,7 +67,7 @@ export function updateCenter(data) {
     let requestBody = {
         status: data.status,
     }
-    return fetch(baseURL + `api/change-status-of-center`, {
+    return fetch(baseURL + `api/centers/change-status-of-center`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",

@@ -70,7 +70,7 @@
           <b-button pill variant="primary" @click="goToAddPet()"> + Thêm thú cưng </b-button>
         </div>
       </div>
-      <div v-if="listPet.length != 0">>
+      <div v-if="listPet.length != 0">
       <div v-for="pet in listPet" :key="pet.id" class="contain">
         <div class="contain-img" @click="goToDetail(pet.id)">
           <img class="pet-img" :src="pet.img" width="100%" height="100%" />

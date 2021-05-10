@@ -2,7 +2,7 @@ import { baseURL } from "../../enum/consts";
 const apiKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
 
 export function getListPetAPI(params) {
-    return fetch(baseURL + `api/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=-1`, {
+    return fetch(baseURL + `api/pet-profiles/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=-1`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -12,7 +12,7 @@ export function getListPetAPI(params) {
 }
 
 export function getPetByIdAPI(params) {
-    return fetch(baseURL + `api/get-document-pet?petProfileId=${params.petId}`, {
+    return fetch(baseURL + `api/pet-profiles/get-document-pet?petProfileId=${params.petId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -33,7 +33,7 @@ export function createNewPetAPI(data, token) {
         petFurColorId: data.petFurColorId,
         petImgUrl: data.petImgUrl
     }
-    return fetch(baseURL + `api/create-pet-profile`, {
+    return fetch(baseURL + `api/pet-profiles/create-pet-profile`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -45,7 +45,7 @@ export function createNewPetAPI(data, token) {
 }
 
 export function getAllPetColorsAPI() {
-    return fetch(baseURL + `api/get-all-pet-fur_colors`, {
+    return fetch(baseURL + `api/pet-profiles/get-all-pet-fur_colors`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -55,7 +55,7 @@ export function getAllPetColorsAPI() {
 }
 
 export function getPetBreedByTypeIdsAPI(typeId) {
-    return fetch(baseURL + `api/get-pet-breeds-by-type-id?id=${typeId}`, {
+    return fetch(baseURL + `api/pet-profiles/get-pet-breeds-by-type-id?id=${typeId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -65,7 +65,7 @@ export function getPetBreedByTypeIdsAPI(typeId) {
 }
 
 export function getAllPetTypeAPI() {
-    return fetch(baseURL + `api/get-all-pet-types`, {
+    return fetch(baseURL + `api/pet-profiles/get-all-pet-types`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -83,7 +83,7 @@ export function createPetTracking(data, token) {
         description: data.description,
         weight: data.weight,
     }
-    return fetch(baseURL + `/api/create-pet-tracking`, {
+    return fetch(baseURL + `/api/pet-profiles/create-pet-tracking`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -95,7 +95,7 @@ export function createPetTracking(data, token) {
 }
 
 export function getPetTrackingByIdAPI(data) {
-    return fetch(baseURL + `/api/get-pet-tracking-by-id?petTrackingId=${data.petTrackingId}`, {
+    return fetch(baseURL + `/api/pet-profiles/get-pet-tracking-by-id?petTrackingId=${data.petTrackingId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -118,7 +118,7 @@ export function updatePetProfile(data, token) {
         petImgUrl: data.imageUrl,
         petDocumentId: data.petDocumentId,
     }
-    return fetch(baseURL + `/api/update-pet-profile`, {
+    return fetch(baseURL + `/api/pet-profiles/update-pet-profile`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",

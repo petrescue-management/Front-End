@@ -1,12 +1,13 @@
 import firebase from 'firebase';
 
 var firebaseConfig = {
-    apiKey: "AIzaSyBZOR3FERmrQ1ZoLUNShtBqphdXTZkCb2w",
-    authDomain: "pet-rescue-fb.firebaseapp.com",
-    projectId: "pet-rescue-fb",
-    storageBucket: "pet-rescue-fb.appspot.com",
-    messagingSenderId: "918318848462",
-    appId: "1:918318848462:web:326b0953dd28ae60dbf39f"
+    apiKey: "AIzaSyDqHG6VBmDp9NCRzA8cH84CkwPL3X1vNck",
+    authDomain: "petrescue-efe22.firebaseapp.com",
+    databaseURL: "https://petrescue-efe22-default-rtdb.firebaseio.com",
+    projectId: "petrescue-efe22",
+    storageBucket: "petrescue-efe22.appspot.com",
+    messagingSenderId: "1010947716602",
+    appId: "1:1010947716602:web:a125904e617a79acca6043"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
