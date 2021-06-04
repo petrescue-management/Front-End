@@ -20,7 +20,6 @@
               )
             "
             v-loading="loading"
-            :default-sort="{ prop: 'date', order: 'ascending' }"
           >
             <el-table-column type="expand">
               <template slot-scope="props">
