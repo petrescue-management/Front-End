@@ -86,7 +86,7 @@ export default {
                 await getLocationAPI(petInfo.lat, petInfo.lng)
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log(data);
+                        petInfo.location = data.results[0].formatted_address
                         petInfo.location = "null"
                     });
             } else {

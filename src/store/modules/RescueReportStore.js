@@ -60,7 +60,7 @@ export default {
                 .then((response) => response.json())
                 .then((data) => {
                     console.log(data.results[0].formatted_address);
-                    doc.location = "null"
+                    doc.location = data.results[0].formatted_address
                 });
             commit("SET_DOC", doc);
         },
