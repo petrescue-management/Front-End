@@ -27,7 +27,7 @@ Vue.use(IconsPlugin);
 Vue.use(VueSelectImage)
 Vue.use(VueGoogleMaps, {
     load: {
-        key: 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk',
+        key: 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4',
         libraries: "places"
     },
     installComponents: true

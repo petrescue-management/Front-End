@@ -227,7 +227,7 @@ export default {
           petStatus: data.petStatus,
           status: petStatus.get(data.petStatus).name,
           color: petStatus.get(data.petStatus).color,
-          petProfileDescription: data.petProfileDescription,
+          description: data.description,
         });
       });
       this.listPet = _pet;
@@ -257,7 +257,7 @@ export default {
           petImgUrl: img,
           petBreedId: item.petBreedId,
           petStatus: item.petStatus,
-          petProfileDescription: item.petProfileDescription,
+          description: item.description,
         };
         pets.push(pet);
       });

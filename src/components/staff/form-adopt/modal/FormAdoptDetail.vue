@@ -256,6 +256,7 @@ export default {
         insertedBy: formInfo.insertedBy,
         insertedAt: formInfo.insertedAt,
       };
+      console.log(formInfo);
     },
 
     getDate() {

@@ -69,12 +69,15 @@ export default {
                         petBreedId: petProfile.petBreedId,
                         petFurColorName: petProfile.petFurColorName,
                         petFurColorId: petProfile.petFurColorId,
-                        petProfileDescription: petProfile.petProfileDescription,
+                        petProfileDescription: petProfile.description,
                         imageUrl: petProfile.petImgUrl,
+                        insertedAt: petProfile.insertedAt,
                         petTracking: data.listTracking,
                         petAttribute: data.petAttribute,
                         finderForm: data.finderForm,
                         pickerForm: data.pickerForm,
+                        adoptionRegistrationForm: data.adoptionRegistrationForm,
+                        listAdoptionReport: data.listAdoptionReport,
                         lat: data.finderForm ? data.finderForm.lat : null,
                         lng: data.finderForm ? data.finderForm.lng : null,
                     }
@@ -83,7 +86,8 @@ export default {
                 await getLocationAPI(petInfo.lat, petInfo.lng)
                     .then((response) => response.json())
                     .then((data) => {
-                        petInfo.location = data.results[0].formatted_address
+                        console.log(data);
+                        petInfo.location = "null"
                     });
             } else {
                 petInfo.location = null

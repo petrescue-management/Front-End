@@ -1,5 +1,5 @@
 import { baseURL } from "../../enum/consts";
-const apiKey = 'AIzaSyAZ4pja68qoa62hCzFdlmAu30iAb_CgmTk';
+const apiKey = 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4';
 
 export function getListPetAPI(params) {
     return fetch(baseURL + `api/pet-profiles/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=-1`, {
@@ -28,7 +28,7 @@ export function createNewPetAPI(data, token) {
         petGender: data.petGender,
         petAge: data.petAge,
         petDocumentId: data.petDocumentId,
-        petProfileDescription: data.petProfileDescription,
+        description: data.petProfileDescription,
         petBreedId: data.petBreedId,
         petFurColorId: data.petFurColorId,
         petImgUrl: data.petImgUrl
@@ -83,7 +83,7 @@ export function createPetTracking(data, token) {
         description: data.description,
         weight: data.weight,
     }
-    return fetch(baseURL + `/api/pet-profiles/create-pet-tracking`, {
+    return fetch(baseURL + `api/pet-trackings/create-pet-tracking`, {
         method: "POST",
         headers: {
             "content-type": "application/json",
@@ -95,7 +95,7 @@ export function createPetTracking(data, token) {
 }
 
 export function getPetTrackingByIdAPI(data) {
-    return fetch(baseURL + `/api/pet-profiles/get-pet-tracking-by-id?petTrackingId=${data.petTrackingId}`, {
+    return fetch(baseURL + `/api/pet-trackings/get-pet-tracking-by-id?petTrackingId=${data.petTrackingId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -112,7 +112,7 @@ export function updatePetProfile(data, token) {
         petName: data.petName,
         petGender: data.petGender,
         petAge: data.petAge,
-        petProfileDescription: data.description,
+        description: data.description,
         petBreedId: data.petBreedId,
         petFurColorId: data.petFurColorId,
         petImgUrl: data.imageUrl,

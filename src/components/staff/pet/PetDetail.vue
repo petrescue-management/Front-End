@@ -13,10 +13,13 @@
         >
       </div>
       <div>
-        <el-steps :active="2" align-center>
-          <el-step title="Ngày mang về" description="24-05-2021"></el-step>
-          <el-step title="Ngày chờ nhận nuôi" description="24-05-2021"></el-step>
-          <el-step title="Ngày nhận nuôi" description="24-05-2021"></el-step>
+        <el-steps :active="active" align-center>
+          <el-step
+            v-for="times in timeline"
+            :key="times.title"
+            :title="times.title"
+            :description="times.date"
+          ></el-step>
         </el-steps>
       </div>
       <div class="pet-info">
@@ -84,6 +87,22 @@
                   <PickerForm :pickerForm="pet.pickerForm" />
                 </div>
               </el-tab-pane>
+              <el-tab-pane
+                label="Thông tin người nhận nuôi"
+                v-if="pet.adoptionRegistrationForm"
+              >
+                <div v-if="pet.adoptionRegistrationForm">
+                  <Adopter :adopter="pet.adoptionRegistrationForm" />
+                </div>
+              </el-tab-pane>
+              <el-tab-pane
+                label="Báo cáo từ người nhận nuôi"
+                v-if="pet.adoptionRegistrationForm"
+              >
+                <div v-if="pet.adoptionRegistrationForm">
+                  <AdopterTracking :petTracking="pet.listAdoptionReport" />
+                </div>
+              </el-tab-pane>
             </el-tabs>
           </b-col>
         </b-row>
@@ -118,6 +137,8 @@ import FinderForm from "./modal/FinderForm.vue";
 import EventBus from "@/EventBus";
 import PickerForm from "./modal/PickerForm.vue";
 import EditPet from "./modal/EditPet.vue";
+import Adopter from "../adopted/modal/Adopter.vue";
+import AdopterTracking from "../adopted/modal/AdopterTracking.vue";
 export default {
   components: {
     InformationPet,
@@ -126,6 +147,8 @@ export default {
     FinderForm,
     PickerForm,
     EditPet,
+    Adopter,
+    AdopterTracking,
   },
   data() {
     return {
@@ -148,6 +171,8 @@ export default {
       loading: false,
       dialogAddTracking: false,
       dialogEdit: false,
+      timeline: [],
+      active: 0,
     };
   },
 
@@ -162,7 +187,8 @@ export default {
       this.$router.push({ name: "PetList" });
     },
 
-    async getPetInfo(petInfo) {
+    getPetInfo(petInfo) {
+      this.timeline = [];
       this.pet = {
         petProfileId: petInfo.petProfileId,
         petDocumentId: petInfo.petDocumentId,
@@ -186,8 +212,85 @@ export default {
         petTracking: petInfo.petTracking,
         finderForm: petInfo.finderForm,
         pickerForm: petInfo.pickerForm,
+        listAdoptionReport: petInfo.listAdoptionReport,
+        adoptionRegistrationForm: petInfo.adoptionRegistrationForm
+          ? {
+              adoptedAt: petInfo.adoptionRegistrationForm.updatedAt,
+              username: petInfo.adoptionRegistrationForm.userName,
+              address: petInfo.adoptionRegistrationForm.address,
+              email: petInfo.adoptionRegistrationForm.email,
+              phone: petInfo.adoptionRegistrationForm.phone,
+              job: petInfo.adoptionRegistrationForm.job,
+            }
+          : null,
         location: petInfo.location,
       };
+
+      let dateCreate = {};
+      if (petInfo.pickerForm) {
+        dateCreate = {
+          title: "Ngày mang về",
+          date: this.getDate(petInfo.pickerForm.pickerDate),
+        };
+      } else {
+        dateCreate = {
+          title: "Ngày đăng kí",
+          date: this.getDate(petInfo.insertedAt),
+        };
+      }
+      this.timeline.push(dateCreate);
+      let carryDate = {};
+      if (petInfo.petStatus === 1) {
+        carryDate = {
+          title: "Đang điều trị",
+          date: "",
+        };
+        this.active = 2;
+      } else if (petInfo.petStatus === 5) {
+        carryDate = {
+          title: "Đã chết",
+          date: "",
+        };
+        this.active = 2;
+      } else {
+        carryDate = {
+          title: "Chờ nhận nuôi",
+          date: "",
+        };
+        this.active = 2;
+      }
+      this.timeline.push(carryDate);
+      let dateAdoption = {};
+      if (petInfo.petStatus === 4) {
+        dateAdoption = {
+          title: "Ngày nhận nuôi",
+          date: this.getDate(petInfo.adoptionRegistrationForm.updatedAt),
+        };
+        this.active = 3;
+        this.timeline.push(dateAdoption);
+      } else if (petInfo.petStatus === 3) {
+        dateAdoption = {
+          title: "Chờ đến lấy",
+          date: "",
+        };
+        this.active = 3;
+        this.timeline.push(dateAdoption);
+      }
+    },
+
+    getDate(createdDate) {
+      let date = new Date(createdDate);
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      return (
+        (dd > 9 ? "" : "0") +
+        dd +
+        "-" +
+        (mm > 9 ? "" : "0") +
+        mm +
+        "-" +
+        date.getFullYear()
+      );
     },
 
     getListImg(list) {

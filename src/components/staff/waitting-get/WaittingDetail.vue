@@ -231,8 +231,8 @@ export default {
               type: "success",
             });
             this.loading = false;
-            let id = this.pet.adoptionRegistrationFormId;
-            this.$router.push({ name: "Adoption", params: { id } });
+            let id = this.pet.petId;
+            this.$router.push({ name: "PetDetail", params: { id } });
           }
         });
       });
@@ -253,7 +253,9 @@ export default {
         petStatus: pet.petStatus,
         status: petStatus.get(pet.petStatus).name,
         color: petStatus.get(pet.petStatus).color,
+        petId: pet.petId,
       };
+      console.log(this.pet);
     },
 
     getListImg(list) {

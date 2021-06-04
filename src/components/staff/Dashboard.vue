@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-main v-loading="loading">
-      <div class="row bg-title all-pet" style="height: 250px">
+      <div class="row bg-title dashboard" style="height: 250px">
         <div style="width: 5%"></div>
         <div style="width: 90%; margin: auto; z-index: 2">
           <h1 class="title"></h1>
@@ -10,7 +10,7 @@
       <div class="content" style="margin-top: 20px">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-xl-3 col-md-6">
+            <div class="col-xl-4 col-md-6">
               <stats-card>
                 <div slot="header" class="icon-warning">
                   <i class="nc-icon nc-chart text-warning"></i>
@@ -25,7 +25,7 @@
               </stats-card>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="col-xl-4 col-md-6">
               <stats-card>
                 <div slot="header" class="icon-success">
                   <i class="nc-icon nc-light-3 text-success"></i>
@@ -40,7 +40,7 @@
               </stats-card>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="col-xl-4 col-md-6">
               <stats-card>
                 <div slot="header" class="icon-danger">
                   <i class="nc-icon nc-vector text-danger"></i>
@@ -50,21 +50,6 @@
                   <h4 class="card-title">{{ petsFindingOwner }}</h4>
                 </div>
                 <div slot="footer"><i class="fa fa-clock-o"></i></div>
-              </stats-card>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-              <stats-card>
-                <div slot="header" class="icon-info">
-                  <i class="nc-icon nc-favourite-28 text-primary"></i>
-                </div>
-                <div slot="content">
-                  <p class="card-category">Tình nguyện viên</p>
-                  <h4 class="card-title">{{ volunteers }}</h4>
-                </div>
-                <div slot="footer">
-                  <i class="fa fa-refresh"></i>
-                </div>
               </stats-card>
             </div>
           </div>

@@ -379,7 +379,7 @@ export default {
             petName: this.form.name,
             petGender: this.form.gender,
             petAge: this.form.age,
-            petProfileDescription: this.form.desc,
+            description: this.form.desc,
             petBreedId: this.form.petBreedId,
             petFurColorId: this.form.petColorId,
             petImgUrl: this.imageUrl,

@@ -151,7 +151,7 @@ export default {
         } else {
           this.$message({
             message: "Đã có lỗi xảy ra",
-            type: "success",
+            type: "danger",
           });
         }
       });

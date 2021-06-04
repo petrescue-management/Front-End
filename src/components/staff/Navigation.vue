@@ -34,7 +34,7 @@
       >
         <template slot="title">
           <i class="fas fa-heart"></i>
-          <span class="title">Thú cưng nhận nuôi</span>
+          <span class="title">Đơn nhận nuôi</span>
         </template>
       </el-menu-item>
       <el-menu-item

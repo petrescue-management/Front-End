@@ -45,7 +45,7 @@ export function getListPetToBeRegistedAPI(data) {
 }
 
 export function getListAdoptionFormByPetIdAPI(petId, token) {
-    return fetch(baseURL + `api/adoption-registration-forms/get-list-adoption-registration-form-by-petid?petId=${petId}`, {
+    return fetch(baseURL + `api/pet-profiles/get-list-adoption-register-form-by-petid?petId=${petId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

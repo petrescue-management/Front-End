@@ -66,37 +66,41 @@
           </b-col>
         </b-row>
         <div style="text-align: center">
-          <b-button pill variant="info" @click="filterPet()"><b-icon icon="search" aria-hidden="true"></b-icon> Tìm thú cưng </b-button>
-          <b-button pill variant="primary" @click="goToAddPet()"> + Thêm thú cưng </b-button>
+          <b-button pill variant="info" @click="filterPet()"
+            ><b-icon icon="search" aria-hidden="true"></b-icon> Tìm thú cưng
+          </b-button>
+          <b-button pill variant="primary" @click="goToAddPet()">
+            + Thêm thú cưng
+          </b-button>
         </div>
       </div>
       <div v-if="listPet.length != 0">
-      <div v-for="pet in listPet" :key="pet.id" class="contain">
-        <div class="contain-img" @click="goToDetail(pet.id)">
-          <img class="pet-img" :src="pet.img" width="100%" height="100%" />
-        </div>
-        <div class="overlay">
-          <p class="name-pet" @click="goToDetail(pet.id)">{{ pet.name }}</p>
-          <hr class="tag" />
-          <p class="att-pet">Giới tính :</p>
-          {{ pet.petGender }}
-          <br />
-          <p class="att-pet">Tuổi :</p>
-          {{ pet.petAge }}
-          <br />
-          <p class="att-pet">Màu sắc :</p>
-          {{ pet.petFurColorName }}
-          <br />
-          <p class="att-pet">Tình trạng:</p>
-          <el-tag :type="pet.color" size="small">
-            {{ pet.status }}
-          </el-tag>
-          <br />
+        <div v-for="pet in listPet" :key="pet.id" class="contain">
+          <div class="contain-img" @click="goToDetail(pet.id)">
+            <img class="pet-img" :src="pet.img" width="100%" height="100%" />
+          </div>
+          <div class="overlay">
+            <p class="name-pet" @click="goToDetail(pet.id)">{{ pet.name }}</p>
+            <hr class="tag" />
+            <p class="att-pet">Giới tính :</p>
+            {{ pet.petGender }}
+            <br />
+            <p class="att-pet">Tuổi :</p>
+            {{ pet.petAge }}
+            <br />
+            <p class="att-pet">Màu sắc :</p>
+            {{ pet.petFurColorName }}
+            <br />
+            <p class="att-pet">Tình trạng:</p>
+            <el-tag :type="pet.color" size="small">
+              {{ pet.status }}
+            </el-tag>
+            <br />
+          </div>
         </div>
       </div>
-      </div>
-      <div v-else style="text-align:center;margin-top: 20px">
-        <img src="@/assets/img/notfound.png" width="10%" height="auto"/>
+      <div v-else style="text-align: center; margin-top: 20px">
+        <img src="@/assets/img/notfound.png" width="10%" height="auto" />
         <h4>Không có thú cưng nào</h4>
       </div>
       <!-- <el-pagination
@@ -106,7 +110,6 @@
           :total="totalPage"
           layout="prev, pager, next"
         ></el-pagination> -->
-
     </el-main>
     <el-dialog title="Thêm thú cưng" :visible.sync="dialogVisible" center>
       <AddPet v-if="dialogVisible" />
@@ -134,7 +137,7 @@ export default {
       totalPage: 0,
       dialogVisible: false,
       loading: false,
-      type: '',
+      type: "",
       listPetColor: [],
       listStatus: [],
       status: 0,
@@ -168,30 +171,30 @@ export default {
     },
 
     async getPetBreedByTypeId() {
-      if(this.type != ''){
-      let typeId = this.listPetType.filter((list) => {
-        return list.name == this.type;
-      });
-      console.log(typeId);
-      this.listPetBreed = [];
-      let all = {
-        value: "",
-        text: "Tất cả",
-      };
-      this.listPetBreed.push(all);
-      await getPetBreedByTypeIdsAPI(typeId[0].id)
-        .then((response) => response.json())
-        .then((data) =>
-          data.forEach((element) => {
-            let petbreed = {
-              value: element.petBreedName,
-              text: element.petBreedName,
-            };
-            this.listPetBreed.push(petbreed);
-          })
-        );
-      }else{
-        this.listPetBreed = []
+      if (this.type != "") {
+        let typeId = this.listPetType.filter((list) => {
+          return list.name == this.type;
+        });
+        console.log(typeId);
+        this.listPetBreed = [];
+        let all = {
+          value: "",
+          text: "Tất cả",
+        };
+        this.listPetBreed.push(all);
+        await getPetBreedByTypeIdsAPI(typeId[0].id)
+          .then((response) => response.json())
+          .then((data) =>
+            data.forEach((element) => {
+              let petbreed = {
+                value: element.petBreedName,
+                text: element.petBreedName,
+              };
+              this.listPetBreed.push(petbreed);
+            })
+          );
+      } else {
+        this.listPetBreed = [];
       }
     },
 
@@ -209,10 +212,12 @@ export default {
           isVaccinated: data.isVaccinated,
           color: petStatus.get(data.petStatus).color,
           status: petStatus.get(data.petStatus).name,
-          insertAt: data.insertAt
+          insertAt: data.insertAt,
         };
         this.listPet.push(pet);
-        this.listPet.sort((a, b) => (new Date(a.insertAt) < new Date(b.insertAt) ? 1 : -1));
+        this.listPet.sort((a, b) =>
+          new Date(a.insertAt) < new Date(b.insertAt) ? 1 : -1
+        );
       });
     },
 
@@ -331,6 +336,8 @@ export default {
   padding: 7px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  border-bottom-left-radius: 5%;
+  border-bottom-right-radius: 5%;
 }
 
 .name-pet {

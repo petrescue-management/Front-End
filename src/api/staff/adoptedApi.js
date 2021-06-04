@@ -1,7 +1,7 @@
 import { baseURL } from "../../enum/consts";
 
 export function getListAdoptedPetApi(data) {
-    return fetch(baseURL + `api/get-adoption-by-centerid?page=${data.page}&limit=8`, {
+    return fetch(baseURL + `api/pet-profiles/get-adoption-by-centerid?page=${data.page}&limit=8`, {
         method: "GET",
         headers: {
             "content-type": "application/json",
@@ -34,8 +34,8 @@ export function changeStatusAdoptionAPI(data, token) {
 }
 
 export function createAdoptionAPI(data, token) {
-    return fetch(baseURL + `api/create-adoption`, {
-        method: "POST",
+    return fetch(baseURL + `api/pet-profiles/pick-pet`, {
+        method: "PUT",
         headers: {
             "content-type": "application/json",
             Accept: "*/*",
@@ -46,7 +46,7 @@ export function createAdoptionAPI(data, token) {
 }
 
 export function rejectAdoptionFormAPI(data, token) {
-    return fetch(baseURL + `api/reject-adoption-form-after-accepted`, {
+    return fetch(baseURL + `api/adoption-registration-forms/reject-adoption-form-after-accepted`, {
         method: "PUT",
         headers: {
             "content-type": "application/json",
@@ -59,7 +59,7 @@ export function rejectAdoptionFormAPI(data, token) {
 
 
 export function getReportTrackingByIdAPI(data) {
-    return fetch(baseURL + `/api/get-by-adoption-report-tracking-id?adoptionReportTrackingId=${data.adoptionReportTrackingId}`, {
+    return fetch(baseURL + `api/adoption-report-trackings/get-by-adoption-report-tracking-id?adoptionReportTrackingId=${data.adoptionReportTrackingId}`, {
         method: "GET",
         headers: {
             "content-type": "application/json",

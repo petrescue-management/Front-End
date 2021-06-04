@@ -59,7 +59,8 @@ export default {
             await getLocationAPI(doc.finderForm.lat, doc.finderForm.lng)
                 .then((response) => response.json())
                 .then((data) => {
-                    doc.location = data.results[0].formatted_address
+                    console.log(data.results[0].formatted_address);
+                    doc.location = "null"
                 });
             commit("SET_DOC", doc);
         },

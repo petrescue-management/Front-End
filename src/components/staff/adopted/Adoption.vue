@@ -9,9 +9,9 @@
           <el-tab-pane label="Chờ đến lấy" name="2">
             <WaitingGet v-if="activeName == '2'"/>
           </el-tab-pane>
-          <el-tab-pane label="Đang nhận nuôi" name="3">
+          <!-- <el-tab-pane label="Đang nhận nuôi" name="3">
             <ListAdoption v-if="activeName == '3'"/>
-          </el-tab-pane>
+          </el-tab-pane> -->
         </el-tabs>
       </b-card>
     </el-main>
@@ -20,9 +20,9 @@
 <script>
 import ListPetAdopt from "../form-adopt/ListPetAdopt.vue";
 import WaitingGet from '../waitting-get/WaitingGet.vue';
-import ListAdoption from "./ListAdoption.vue";
+// import ListAdoption from "./ListAdoption.vue";
 export default {
-  components: { ListAdoption, ListPetAdopt, WaitingGet },
+  components: { ListPetAdopt, WaitingGet },
   data() {
     return {
       activeName: '1',
