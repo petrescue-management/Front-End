@@ -15,7 +15,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 import VueSelectImage from 'vue-select-image'
 
-
+const apiGGKey = 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4';
 // add stylesheet
 require('vue-select-image/dist/vue-select-image.css')
 require('vue-it-bigger/dist/vue-it-bigger.min.css')
@@ -27,7 +27,7 @@ Vue.use(IconsPlugin);
 Vue.use(VueSelectImage)
 Vue.use(VueGoogleMaps, {
     load: {
-        key: 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4',
+        key: apiGGKey,
         libraries: "places"
     },
     installComponents: true

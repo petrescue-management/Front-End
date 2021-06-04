@@ -1,5 +1,5 @@
 import { baseURL } from "../../enum/consts";
-const apiKey = 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4';
+const apiGGKey = 'AIzaSyBsvVQXdBTdwTxP3jNco77FjF1oDnbypc4';
 
 export function getListPetAPI(params) {
     return fetch(baseURL + `api/pet-profiles/get-pet?CenterId=${params.centerId}&PetStatus=${params.status}&PetTypeName=${params.type}&PetBreedName=${params.breed}&PetFurColorName=${params.color}&fields=detail&limit=-1`, {
@@ -130,7 +130,7 @@ export function updatePetProfile(data, token) {
 }
 
 export function getLocationAPI(lat, lng) {
-    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`, {
+    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiGGKey}`, {
         method: "GET",
     });
 }
